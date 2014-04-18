@@ -1,0 +1,34 @@
+{
+	"name": "cantareira",
+	"description": "Viewing cantareira data",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/miguelpeixe/cantareira.git"
+	},
+	"version": "0.0.1",
+	"author": "Miguel Peixe <miguel@cardume.art.br>",
+	"engines": {
+		"node": "0.10.x",
+		"npm": "1.2.x"
+	},
+	"scripts": {
+		"install": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mt > app.js"
+	},
+	"dependencies": {
+		"express": "latest",
+		"cheerio": "latest",
+		"request": "latest",
+		"moment": "latest",
+		"twix": "latest",
+		"underscore": "latest",
+		"async": "latest",
+		"browserify": "latest",
+		"uglify-js": "latest",
+		"d3": "latest",
+		"jquery": "latest"
+	},
+	"keywords": [
+		"scrapping",
+		"cantareira"
+	]
+}
