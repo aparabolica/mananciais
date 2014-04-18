@@ -3,11 +3,20 @@ var d3 = require('d3'),
 	_ = require('underscore'),
 	$ = require('jquery');
 
+require('moment/lang/pt-br');
+moment.lang('pt-BR');
+
 $(document).ready(function() {
 
-	var margin = {top: 100, right: 100, bottom: 100, left: 100},
-		width = $(window).width() - margin.left - margin.right,
-		height = $(window).height() - margin.top - margin.bottom;
+	var cantareira = [];
+	var selection;
+
+	var $chart = $('#chart');
+	var $info = $('#info');
+
+	var margin = {top: 100, right: 0, bottom: 0, left: 0},
+		width = $('body').width() - margin.left - margin.right,
+		height = $('body').height() - margin.top - margin.bottom;
 
 	var x = d3.time.scale()
 		.range([0, width]);
@@ -36,8 +45,6 @@ $(document).ready(function() {
 
 	$.get('data.json', function(data) {
 
-		var cantareira = [];
-
 		for(var date in data) {
 
 			cantareira.push({
@@ -64,25 +71,82 @@ $(document).ready(function() {
 		x.domain(d3.extent(cantareira, function(d) { return d.date; }));
 		y.domain([0, d3.max(cantareira, function(d) { return d.volume; })]);
 
-		svg.append("g")
-			.attr("class", "x axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xAxis);
+		// svg.append("g")
+		// 	.attr("class", "x axis")
+		// 	.attr("transform", "translate(0," + height + ")")
+		// 	.call(xAxis);
 
-		svg.append("g")
-			.attr("class", "y axis")
-			.call(yAxis)
-			.append("text")
-			.attr("transform", "rotate(-90)")
-			.attr("y", 6)
-			.attr("dy", ".71em")
-			.style("text-anchor", "end")
-		 	.text("Volume");
+		// svg.append("g")
+		// 	.attr("class", "y axis")
+		// 	.call(yAxis)
+		// 	.append("text")
+		// 	.attr("transform", "rotate(-90)")
+		// 	.attr("y", 6)
+		// 	.attr("dy", ".71em")
+		// 	.style("text-anchor", "end")
+		//  	.text("Volume");
 
-		svg.append("path")
+		var areaPath = svg.append("path")
 			.datum(cantareira)
 			.attr("class", "area")
 			.attr("d", area);
+
+		var circle = svg.append("circle")
+			.attr("r", 8)
+			.attr("cx", 0)
+			.attr("cy", 0)
+			.style({fill: '#fff', 'fill-opacity': .2, stroke: '#000', "stroke-width": '1px'})
+			.attr("opacity", 0);
+
+		var rect = svg.append("svg:rect")
+			.attr("class", "pane")
+			.attr("fill", "transparent")
+			.attr("width", width)
+			.attr("height", height);
+
+		rect.on("mousemove", function() {
+			var X_pixel = d3.mouse(this)[0],
+				X_date = x.invert(X_pixel),
+				Y_value;
+
+			cantareira.forEach(function(element, index, array) {
+				if ((index+1 < array.length) && (array[index].date <= X_date) && (array[index+1].date >= X_date)) {
+					if (X_date-array[index].date < array[index+1].date-X_date)
+						selection = array[index];
+					else
+						selection = array[index+1];
+
+					Y_value = selection.volume;
+				}
+			});
+
+			circle.attr("opacity", 1)
+				.attr("cx", X_pixel)
+				.attr("cy", Math.round(y(Y_value)));
+
+			updateInfo(selection);
+
+		});
+
+		function updateInfo(data) {
+
+			$info.empty();
+
+			var $head = $('<h2 />').text(moment(data.date).format('LL'));
+
+
+			$data = $('<table />');
+
+			data.data.forEach(function(item) {
+				var $tr = $('<tr />');
+				$tr.append('<td><h3>' + item[0] + '</h3></td><td>' + item[1] + '</td>');
+				$data.append($tr);
+			});
+
+			$info.append($head);
+			$info.append($data);
+
+		}
 
 	}, 'json');
 });
