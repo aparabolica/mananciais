@@ -14,7 +14,7 @@ $(document).ready(function() {
 	var $chart = $('#chart');
 	var $info = $('#info');
 
-	var margin = {top: 100, right: 0, bottom: 0, left: 0},
+	var margin = {top: 180, right: 20, bottom: 20, left: 20},
 		width = $('body').width() - margin.left - margin.right,
 		height = $('body').height() - margin.top - margin.bottom;
 
