@@ -97,11 +97,11 @@ $(document).ready(function() {
 		twoPi: 2 * Math.PI,
 		progress: 0,
 		total:  4278249,
-		formatPercent: d3.format("0.%"),
+		formatPercent: d3.format(".0%"),
 		arc: d3.svg.arc().startAngle(0).innerRadius(180).outerRadius(240)
 	}
 
-	progress.meter = svg.append('g').attr('class', 'progress-meter').attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+	progress.meter = svg.append('g').attr('class', 'progress-meter').attr("transform", "translate(" + $('body').width() / 2 + "," + $('body').height() / 2 + ")");
 	progress.meter.append('path').attr('class', 'background').attr('d', progress.arc.endAngle(progress.twoPi));
 
 	progress.foreground = progress.meter.append('path').attr('class', 'foreground');
