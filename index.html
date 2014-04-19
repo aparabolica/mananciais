@@ -14,11 +14,19 @@ html,body {
 	background: #222;
 }
 
-h1 {
+#site-header {
 	position: absolute;
-	top: 0;
-	left: 20px;
-	padding: 20px;
+	top: 20px;
+	left: 50px;
+	z-index: 100;
+}
+
+#site-header:hover .mananciais {
+	display: block;
+}
+
+#site-header h1 {
+	padding: 0;
 	margin: 0;
 	line-height: 20px;
 	font-family: sans-serif;
@@ -28,6 +36,44 @@ h1 {
 	font-family: "Lato";
 	font-weight: 200;
 	color: steelblue;
+}
+
+#site-header h1 .arrow {
+	margin-left: 10px;
+}
+
+#site-header h1 .arrow path {
+	fill: steelblue !important;
+}
+
+#site-header .mananciais {
+	display: none;
+	position: absolute;
+	top: 20px;
+	left: 0;
+	right: 0;
+	color: #f0f0f0;
+	font-family: "Lato";
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	font-weight: 200;
+	padding-top: 20px;
+}
+
+#site-header .mananciais li {
+	box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+	padding: 15px;
+	font-size: 18px;
+	line-height: 18px;
+	border-bottom: 1px solid #000;
+	cursor: pointer;
+	background: #111;
+}
+
+#site-header .mananciais li:hover {
+	color: steelblue;
+	background: #000;
 }
 
 #info {
@@ -149,7 +195,16 @@ h1 {
 }
 </style>
 <body>
-	<h1>Histórico do Sistema Cantareira</h1>
+	<header id="site-header">
+		<h1><span class="manancial">Mananciais de São Paulo</span> <span class="arrow"></span></h1>
+		<ul class="mananciais">
+			<li data-manancial="sistemaCantareira">Sistema Cantareira</li>
+			<li data-manancial="sistemaAltoTiete">Sistema Alto Tietê</li>
+			<li data-manancial="sistemaCotia">Sistema Alto Cotia</li>
+			<li data-manancial="sistemaRioGrande">Sistema Rio Grande</li>
+			<li data-manancial="sistemaRioClaro">Sistema Rio Claro</li>
+		</ul>
+	</header>
 	<div id="info">
 	</div>
 	<script type="text/javascript" src="app.js"></script>

@@ -1,7 +1,6 @@
 var $ = require('cheerio'),
 	_ = require('underscore'),
 	async = require('async'),
-	express = require('express'),
 	request = require('request'),
 	moment = require('moment'),
 	twix = require('twix'),

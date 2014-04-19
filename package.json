@@ -1,6 +1,6 @@
 {
 	"name": "cantareira",
-	"description": "Viewing cantareira data",
+	"description": "Visualizing São Paulo water sources historical data",
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/miguelpeixe/cantareira.git"
@@ -15,7 +15,6 @@
 		"install": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mt > app.js"
 	},
 	"dependencies": {
-		"express": "latest",
 		"cheerio": "latest",
 		"request": "latest",
 		"moment": "latest",
