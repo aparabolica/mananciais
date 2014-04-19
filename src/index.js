@@ -232,6 +232,9 @@ $(document).ready(function() {
 
 			});
 
+			selection = _.last(cantareira);
+			updateInfo(selection);
+
 			function updateInfo(data) {
 
 				$info.empty();
