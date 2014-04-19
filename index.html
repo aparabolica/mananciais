@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
 <style>
 
 html,body {
@@ -8,9 +9,25 @@ html,body {
 	margin: 0;
 	padding: 0;
 	position: relative;
-	font: "sans-serif";
+	font-family: "Lato", sans-serif;
 	overflow: hidden;
-	background: #444;
+	background: #222;
+}
+
+h1 {
+	position: absolute;
+	top: 0;
+	left: 20px;
+	padding: 20px;
+	margin: 0;
+	line-height: 20px;
+	font-family: sans-serif;
+	font-size: 20px;
+	text-transform: uppercase;
+	pointer-events: none;
+	font-family: "Lato";
+	font-weight: 200;
+	color: steelblue;
 }
 
 #info {
@@ -25,16 +42,26 @@ html,body {
 
 #info table {
 	width: 100%;
+	font-weight: 200;
+	font-size: 34px;
+	font-family: "Lato";
+}
+#info table tr {
+	float: left;
+	margin-right: 20px;
+}
+#info table td {
+	color: #eee;
+	width: 130px;
 }
 
-#info table td {
-	padding: 5px 10px 5px 0;
-	color: #eee;
+#info table path {
+	fill: #fff !important;
 }
 
 #info h2 {
 	position: fixed;
-	top: 0;
+	top: 20px;
 	margin-top: 0px;
 	left: 50%;
 	right: 20px;
@@ -43,6 +70,8 @@ html,body {
 	font-size: 50px;
 	line-height: 50px;
 	text-align: right;
+	font-family: "Lato";
+	font-weight: 200;
 }
 
 #info h3 {
@@ -50,21 +79,6 @@ html,body {
 	line-height: 18px;
 	margin: 0;
 	color: #aaa;
-}
-
-h1 {
-	position: absolute;
-	top: 0;
-	left: 0;
-	padding: 20px;
-	margin: 0;
-	line-height: 20px;
-	background: steelblue;
-	color: #fff;
-	font-family: sans-serif;
-	font-size: 20px;
-	text-transform: uppercase;
-	pointer-events: none;
 }
 
 .axis path,
@@ -76,25 +90,52 @@ h1 {
 
 .axis text {
 	fill: #777;
-	font-family: "sans-serif";
+	font-family: "Lato";
+	font-size: 14px;
 }
 
 .x.axis path {
 	display: none;
 }
 
-.line {
-	fill: none;
-	stroke: steelblue;
-	stroke-width: 1.5px;
+.pluviometria {
+	fill: rgba(0,0,0,0.7);
+	stroke: rgba(0,0,0,0.2);
+	stroke-width:1px;
 }
 
-.area {
-  fill: steelblue;
+.area.volume {
+	fill: steelblue;
+	stroke: rgba(0,0,0,0.1);
+	stroke-width: 2px;
+}
+
+.context .area.volume {
+	fill: #333;
+	-webkit-transition: fill .2s ease-in-out;
+}
+
+.context .axis text {
+	font-size: 10px;
+	-webkit-transition: fill .2s ease-in-out;
+}
+
+.context:hover .area.volume {
+	fill: #444;
+}
+
+.context:hover .axis text {
+	fill: #999;
+}
+
+.brush .extent {
+	stroke: #fff;
+	fill-opacity: .125;
+	shape-rendering: crispEdges;
 }
 </style>
 <body>
-	<h1>Volume do Sistema Cantareira</h1>
+	<h1>Histórico do Sistema Cantareira</h1>
 	<div id="info">
 	</div>
 	<script type="text/javascript" src="app.js"></script>
