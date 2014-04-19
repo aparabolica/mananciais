@@ -15,7 +15,6 @@ $(document).ready(function() {
 	var cantareira = [];
 	var selection;
 
-	var $chart = $('#chart');
 	var $info = $('#info');
 
 	var margin = {top: 0, right: 20, bottom: 200, left: 20},
@@ -92,152 +91,182 @@ $(document).ready(function() {
 		.attr("class", "context")
 		.attr("transform", "translate(" + filterMargin.left + "," + filterMargin.top + ")");
 
-	$.get('data.json', function(data) {
+	// Progress
 
-		for(var date in data) {
+	progress = {
+		twoPi: 2 * Math.PI,
+		progress: 0,
+		total:  4278249,
+		formatPercent: d3.format("0.%"),
+		arc: d3.svg.arc().startAngle(0).innerRadius(180).outerRadius(240)
+	}
 
-			cantareira.push({
-				'date': date,
-				'data': data[date].sistemaCantareira
-			})
+	progress.meter = svg.append('g').attr('class', 'progress-meter').attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+	progress.meter.append('path').attr('class', 'background').attr('d', progress.arc.endAngle(progress.twoPi));
 
-		}
+	progress.foreground = progress.meter.append('path').attr('class', 'foreground');
 
-		cantareira.forEach(function(d, i) {
-			try {
-				d.volume = parseFloat(d.data[0][1].replace(' %', '').replace(',', '.'));
-				d.pluviometria = parseFloat(d.data[1][1].replace(' mm', '').replace(',', '.'));
-				d.date = moment(d.date).toDate();
-			} catch(err) {
-				delete cantareira[i];
-				console.log('Error on date ' + d.date);
+	progress.text = progress.meter.append('text').attr('text-anchor', 'middle').attr('dy', '.35em');
+
+	d3.json('data.json')
+		.on('progress', function() {
+			var i = d3.interpolate(progress.progress, d3.event.loaded / progress.total);
+			d3.transition().tween('progress', function() {
+				return function(t) {
+					progress.progress = i(t);
+					progress.foreground.attr('d', progress.arc.endAngle(progress.twoPi * progress.progress));
+					progress.text.text(progress.formatPercent(progress.progress));
+				};
+			});
+		})
+		.get(function(err, data) {
+
+			progress.meter.transition().delay(250).attr("transform", "scale(0)");
+
+			for(var date in data) {
+
+				cantareira.push({
+					'date': date,
+					'data': data[date].sistemaCantareira
+				})
+
 			}
-		});
 
-		cantareira = _.compact(cantareira);
-
-		volume.x.domain(d3.extent(cantareira, function(d) { return d.date; }));
-		volume.y.domain([0, d3.max(cantareira, function(d) { return d.volume; })]);
-
-		// pluviometria.x.domain(d3.extent(cantareira, function(d) { return d.date; }));
-		// pluviometria.y.domain(d3.extent(cantareira, function(d) { return d.pluviometria; }));
-
-		filter.x1.domain(volume.x.domain());
-		filter.y1.domain(volume.y.domain());
-
-		// filter.x2.domain(pluviometria.x.domain());
-		// filter.y2.domain(pluviometria.y.domain());
-
-		focus.append("path")
-			.datum(cantareira)
-			.attr("class", "area volume")
-			.attr("d", volume.area);
-
-		focus.append("g")
-			.attr("class", "x axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(volume.xAxis);
-
-		// focus.append("path")
-		// 	.datum(cantareira)
-		// 	.attr("class", "line pluviometria")
-		// 	.attr("d", pluviometria.line);
-
-		var selectionLine = focus.append("line")
-			.attr("x1", 0)
-			.attr("y1", 0)
-			.attr("x2", 0)
-			.attr("y2", height)
-			.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5})
-			.attr("opacity", 0);
-
-		context.append("path")
-			.datum(cantareira)
-			.attr("class", "area volume")
-			.attr("d", filter.area);
-
-		// context.append("path")
-		// 	.datum(cantareira)
-		// 	.attr("class", "line pluviometria")
-		// 	.attr("d", filter.line);
-
-		context.append("g")
-			.attr("class", "x axis")
-			.attr("transform", "translate(0," + filterHeight + ")")
-			.call(filter.xAxis);
-
-		context.append("g")
-			.attr("class", "x brush")
-			.call(brush)
-			.selectAll("rect")
-			.attr("y", -6)
-			.attr("height", filterHeight + 7);
-
-		var rect = focus.append("svg:rect")
-			.attr("class", "pane")
-			.attr("fill", "transparent")
-			.attr("width", width)
-			.attr("height", height);
-
-		rect.on("mousemove", function() {
-			var X_pixel = d3.mouse(this)[0],
-				X_date = volume.x.invert(X_pixel),
-				Y_value;
-
-			cantareira.forEach(function(element, index, array) {
-				if ((index+1 < array.length) && (array[index].date <= X_date) && (array[index+1].date >= X_date)) {
-					if (X_date-array[index].date < array[index+1].date-X_date)
-						selection = array[index];
-					else
-						selection = array[index+1];
-
-					Y_value = selection.volume;
+			cantareira.forEach(function(d, i) {
+				try {
+					d.volume = parseFloat(d.data[0][1].replace(' %', '').replace(',', '.'));
+					d.pluviometria = parseFloat(d.data[1][1].replace(' mm', '').replace(',', '.'));
+					d.date = moment(d.date).toDate();
+				} catch(err) {
+					delete cantareira[i];
+					console.log('Error on date ' + d.date);
 				}
 			});
 
-			selectionLine.attr("opacity", 1)
-				.attr("x1", X_pixel)
-				.attr("x2", X_pixel);
+			cantareira = _.compact(cantareira);
 
-			updateInfo(selection);
+			volume.x.domain(d3.extent(cantareira, function(d) { return d.date; }));
+			volume.y.domain([0, d3.max(cantareira, function(d) { return d.volume; })]);
 
-		});
+			// pluviometria.x.domain(d3.extent(cantareira, function(d) { return d.date; }));
+			// pluviometria.y.domain(d3.extent(cantareira, function(d) { return d.pluviometria; }));
 
-		function updateInfo(data) {
+			filter.x1.domain(volume.x.domain());
+			filter.y1.domain(volume.y.domain());
 
-			$info.empty();
+			// filter.x2.domain(pluviometria.x.domain());
+			// filter.y2.domain(pluviometria.y.domain());
 
-			var $head = $('<h2 />').text(moment(data.date).format('LL'));
+			focus.append("path")
+				.datum(cantareira)
+				.attr("class", "area volume")
+				.attr("d", volume.area);
 
+			focus.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + height + ")")
+				.call(volume.xAxis);
 
-			$data = $('<table />');
+			// focus.append("path")
+			// 	.datum(cantareira)
+			// 	.attr("class", "line pluviometria")
+			// 	.attr("d", pluviometria.line);
 
-			data.data.forEach(function(item, i) {
+			var selectionLine = focus.append("line")
+				.attr("x1", 0)
+				.attr("y1", 0)
+				.attr("x2", 0)
+				.attr("y2", height)
+				.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5})
+				.attr("opacity", 0);
 
-				if(i == 0 || i == 1) {
-				
-					var $tr = $('<tr />');
-					var $label = $('<td />');
-					var $value = $('<td>' + item[1] + '</td>');
+			context.append("path")
+				.datum(cantareira)
+				.attr("class", "area volume")
+				.attr("d", filter.area);
 
-					if(i == 0)
-						$label.append($(water));
-					else if(i == 1)
-						$label.append($(rain));
+			// context.append("path")
+			// 	.datum(cantareira)
+			// 	.attr("class", "line pluviometria")
+			// 	.attr("d", filter.line);
 
-					$tr.append($label);
-					$tr.append($value);
+			context.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + filterHeight + ")")
+				.call(filter.xAxis);
 
-					$data.append($tr);
-				}
+			context.append("g")
+				.attr("class", "x brush")
+				.call(brush)
+				.selectAll("rect")
+				.attr("y", -6)
+				.attr("height", filterHeight + 7);
+
+			var rect = focus.append("svg:rect")
+				.attr("class", "pane")
+				.attr("fill", "transparent")
+				.attr("width", width)
+				.attr("height", height);
+
+			rect.on("mousemove", function() {
+				var X_pixel = d3.mouse(this)[0],
+					X_date = volume.x.invert(X_pixel),
+					Y_value;
+
+				cantareira.forEach(function(element, index, array) {
+					if ((index+1 < array.length) && (array[index].date <= X_date) && (array[index+1].date >= X_date)) {
+						if (X_date-array[index].date < array[index+1].date-X_date)
+							selection = array[index];
+						else
+							selection = array[index+1];
+
+						Y_value = selection.volume;
+					}
+				});
+
+				selectionLine.attr("opacity", 1)
+					.attr("x1", X_pixel)
+					.attr("x2", X_pixel);
+
+				updateInfo(selection);
+
 			});
 
-			$info.append($head);
-			$info.append($data);
+			function updateInfo(data) {
 
-		}
+				$info.empty();
 
-	}, 'json');
+				var $head = $('<h2 />').text(moment(data.date).format('LL'));
+
+
+				$data = $('<table />');
+
+				data.data.forEach(function(item, i) {
+
+					if(i == 0 || i == 1) {
+					
+						var $tr = $('<tr />');
+						var $label = $('<td />');
+						var $value = $('<td>' + item[1] + '</td>');
+
+						if(i == 0)
+							$label.append($(water));
+						else if(i == 1)
+							$label.append($(rain));
+
+						$tr.append($label);
+						$tr.append($value);
+
+						$data.append($tr);
+					}
+				});
+
+				$info.append($head);
+				$info.append($data);
+
+			}
+
+		});
 
 	function brushed() {
 		volume.x.domain(brush.empty() ? filter.x1.domain() : brush.extent());
