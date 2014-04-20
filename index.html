@@ -18,7 +18,7 @@ html,body {
 #site-header {
 	position: absolute;
 	top: 20px;
-	left: 50px;
+	left: 20px;
 	z-index: 100;
 }
 
@@ -97,11 +97,19 @@ html,body {
 	float: left;
 	margin-right: 20px;
 }
+#info table td:first-child {
+	width: 80px;
+}
+
 #info table td {
 	color: #eee;
 	width: 130px;
 }
 
+#info table svg {
+	width: 50px;
+	height: 50px;
+}
 #info table path {
 	fill: #fff !important;
 }
@@ -137,10 +145,30 @@ html,body {
 .axis text {
 	fill: #777;
 	font-family: "Lato";
-	font-size: 14px;
+	font-size: 12px;
 }
 
 .x.axis path {
+	display: none;
+}
+
+.y.axis {
+	opacity: 1;
+	-webkit-transition: opacity .2s ease-in-out;
+}
+
+.y.axis line {
+	stroke: rgba(255,255,255,0.2);
+	stroke-dasharray: 2,2;
+}
+
+.y.axis text {
+	fill: rgba(255,255,255,0.6);
+	text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+	font-size: 12px;
+}
+
+.y.axis path {
 	display: none;
 }
 

@@ -1,10 +1,14 @@
 var d3 = require('d3'),
 	_ = require('underscore'),
 	$ = require('jquery'),
+	moment = require('moment'),
 	parseData = require('./parse'),
 	icons = require('./icons'),
 	load = require('./load'),
 	updateInfo = require('./updateInfo');
+
+require('moment/lang/pt-br');
+moment.lang('pt-BR');
 
 $(document).ready(function() {
 
@@ -18,11 +22,22 @@ $(document).ready(function() {
 		filterWidth = width - 40,
 		filterHeight = margin.bottom - 140;
 
+	var timeFormat = d3.time.format.multi([
+		["%a %d", function(d) { return d.getMilliseconds(); }],
+		["%a %d", function(d) { return d.getSeconds(); }],
+		["%a %d", function(d) { return d.getMinutes(); }],
+		["%a %d", function(d) { return d.getHours(); }],
+		["%a %d", function(d) { return d.getDay() && d.getDate() != 1; }],
+		["%b %d", function(d) { return d.getDate() != 1; }],
+		["%B", function(d) { return d.getMonth(); }],
+		["%Y", function() { return true; }]
+	]);
+
 	var volume = {};
 	volume.x = d3.time.scale()
 		.range([0, width]);
 	volume.y = d3.scale.linear()
-		.range([height, 180]);
+		.range([height, 200]);
 	volume.area = d3.svg.area()
 		.interpolate("monotone")
 		.x(function(d) { return volume.x(d.date); })
@@ -30,7 +45,21 @@ $(document).ready(function() {
 		.y1(function(d) { return volume.y(d.volume); });
 	volume.xAxis = d3.svg.axis()
 		.scale(volume.x)
+		.tickFormat(timeFormat)
 		.orient("bottom");
+	volume.yFormat = function(d) {
+		return d === 100 ? d + '% de volume armazenado' : d + '%';
+	};
+	volume.yAxis = d3.svg.axis()
+		.scale(volume.y)
+		.tickSize(width)
+		.tickFormat(volume.yFormat)
+		.orient("right");
+	volume.customAxis = function(g) {
+		g.selectAll("text")
+			.attr("x", 4)
+			.attr("dy", -4);
+	};
 
 	var filter = {};
 	filter.x = d3.time.scale()
@@ -56,7 +85,8 @@ $(document).ready(function() {
 
 	var svg = d3.select("body").append("svg")
 		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom);
+		.attr("height", height + margin.top + margin.bottom)
+		.attr("id", "main-chart");
 
 	svg.append("defs").append("clipPath")
 		.attr("id", "clip")
@@ -84,10 +114,17 @@ $(document).ready(function() {
 			.attr("class", "area volume")
 			.attr("d", volume.area);
 
-		focus.append("g")
+		focus
+			.append("g")
 			.attr("class", "x axis")
 			.attr("transform", "translate(0," + height + ")")
 			.call(volume.xAxis);
+
+		focus
+			.append("g")
+			.attr("class", "y axis")
+			.call(volume.yAxis)
+			.call(volume.customAxis);
 
 		var selectionRect = focus.append("svg:rect")
 			.attr("class", "pane")
