@@ -10,8 +10,6 @@ $(document).ready(function() {
 
 	var selection;
 
-	var $info = $('#info');
-
 	var margin = {top: 0, right: 20, bottom: 200, left: 20},
 		width = $('body').width() - margin.left - margin.right,
 		height = $('body').height() - margin.top - margin.bottom;
@@ -149,7 +147,7 @@ $(document).ready(function() {
 				X_date = volume.x.invert(X_pixel),
 				Y_value;
 
-			parsed.forEach(function(element, index, array) {
+			_.each(parsed, function(element, index, array) {
 				if ((index+1 < array.length) && (array[index].date <= X_date) && (array[index+1].date >= X_date)) {
 					if (X_date-array[index].date < array[index+1].date-X_date)
 						selection = array[index];

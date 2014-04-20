@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('underscore'),
-	moment = require('moment');
+	d3 = require('d3');
 
 module.exports = function(data, key) {
 
@@ -16,11 +16,13 @@ module.exports = function(data, key) {
 
 	}
 
-	parsed.forEach(function(d, i) {
+	var formatTime = d3.time.format("%Y-%-m-%-d");
+
+	_.each(parsed, function(d, i) {
 		try {
 			d.volume = parseFloat(d.data[0][1].replace(' %', '').replace(',', '.'));
 			d.pluviometria = parseFloat(d.data[1][1].replace(' mm', '').replace(',', '.'));
-			d.date = moment(d.date).toDate();
+			d.date = formatTime.parse(d.date);
 		} catch(err) {
 			delete parsed[i];
 			console.log('Error on date ' + d.date);
@@ -30,7 +32,6 @@ module.exports = function(data, key) {
 			console.log('Missing data on ' + d.date);
 			delete parsed[i];
 		}
-
 	});
 
 	parsed = _.compact(parsed);
