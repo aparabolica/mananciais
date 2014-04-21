@@ -37,7 +37,7 @@ $(document).ready(function() {
 	volume.x = d3.time.scale()
 		.range([0, width]);
 	volume.y = d3.scale.linear()
-		.range([height, 200]);
+		.range([height, 220]);
 	volume.area = d3.svg.area()
 		.interpolate("monotone")
 		.x(function(d) { return volume.x(d.date); })
@@ -61,6 +61,24 @@ $(document).ready(function() {
 			.attr("dy", -4);
 	};
 
+	var pluviometria = {};
+
+	pluviometria.xValue = function(d) { return d.date; };
+	pluviometria.xScale = d3.time.scale().range([0, width]);
+	pluviometria.xMap = function(d) { return pluviometria.xScale(pluviometria.xValue(d)); };
+
+	pluviometria.yValue = function(d) { return d.volume; };
+	pluviometria.yScale = d3.scale.linear().range([height, 220]);
+	pluviometria.yMap = function(d) { return pluviometria.yScale(pluviometria.yValue(d)); };
+
+	pluviometria.cValue = function(d) { return d.pluviometria; };
+	pluviometria.cScale = d3.scale.linear().range(['rgba(42,110,194,1)', 'rgba(42,110,194,1)']);
+	pluviometria.cMap = function(d) { return pluviometria.cScale(pluviometria.cValue(d)); };
+
+	pluviometria.sValue = function(d) { return d.pluviometria; };
+	pluviometria.sScale = d3.scale.linear().range([0, 10]);
+	pluviometria.sMap = function(d) { return pluviometria.sScale(pluviometria.sValue(d)); };
+
 	var filter = {};
 	filter.x = d3.time.scale()
 		.range([0, filterWidth]);
@@ -81,6 +99,15 @@ $(document).ready(function() {
 		volume.x.domain(brush.empty() ? filter.x.domain() : brush.extent());
 		focus.select(".volume").attr("d", volume.area);
 		focus.select(".x.axis").call(volume.xAxis);
+
+		pluviometria.xScale.domain(brush.empty() ? filter.x.domain() : brush.extent());
+
+		svg
+			.selectAll(".dot")
+			.attr("class", "dot")
+			.attr("r", pluviometria.sMap)
+			.attr("cx", pluviometria.xMap)
+			.attr("cy", pluviometria.yMap);
 	}
 
 	var svg = d3.select("body").append("svg")
@@ -137,14 +164,56 @@ $(document).ready(function() {
 			.attr("y1", 0)
 			.attr("x2", 0)
 			.attr("y2", height)
+			.attr("class", "selection-line")
 			.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5})
 			.attr("opacity", 0);
+
+		pluviometria.xScale.domain(d3.extent(parsed, function(d) { return d.date; }));
+		pluviometria.sScale.domain(d3.extent(parsed, function(d) { return d.pluviometria; }));
+		pluviometria.cScale.domain(d3.extent(parsed, function(d) { return d.pluviometria; }));
+		pluviometria.yScale.domain([d3.min(parsed, pluviometria.yValue)-1, d3.max(parsed, pluviometria.yValue)+1]);
+
+		var pluviometriaDots = focus.append("g")
+			.attr("transform", "translate(0,0)")
+			.attr("class", "pluviometria");
+
+		var tooltip = d3.select("body").append("div")
+			.attr("class", "tooltip")
+			.style("opacity", 0);
+
+		pluviometriaDots
+			.selectAll(".dot")
+			.data(parsed)
+				.enter().append("circle")
+				.attr("class", "dot")
+				.attr("r", pluviometria.sMap)
+				.attr("cx", pluviometria.xMap)
+				.attr("cy", 220)
+				.on("mouseover", function(d) {
+					tooltip.transition()
+						.duration(200)
+						.style("opacity", 1);
+				
+						tooltip.html(icons.rain + d.pluviometria + "mm")
+						.style("left", (d3.event.pageX) + "px")
+						.style("top", (d3.event.pageY) + "px");
+				})
+				.on("mousemove", function(d) {
+					tooltip
+						.style("left", (d3.event.pageX) + "px")
+						.style("top", (d3.event.pageY) + "px");
+				})
+				.on("mouseout", function(d) {
+					tooltip.transition()
+						.duration(500)
+						.style("opacity", 0);
+				});
 
 		filter.x.domain(volume.x.domain());
 		filter.y.domain(volume.y.domain());
 
 		var contextPath = context.append("path")
-			.datum(parsed)
+			.datum(parsed)														
 			.attr("class", "area volume")
 			.attr("d", filter.area);
 
@@ -173,6 +242,17 @@ $(document).ready(function() {
 			contextPath.datum(parsed).transition().duration(2000).attr("d", filter.area);
 			focus.select(".x.axis").call(volume.xAxis);
 			context.select(".x.axis").call(filter.xAxis);
+
+			pluviometriaDots
+				.selectAll(".dot")
+				.data(parsed)
+				.transition()
+				.duration(2000)
+				.attr("class", "dot")
+				.attr("r", pluviometria.sMap)
+				.attr("cx", pluviometria.xMap)
+				.attr("cy", pluviometria.yMap);
+
 			selection = _.last(parsed);
 			updateInfo(selection);
 		});
