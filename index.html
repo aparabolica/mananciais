@@ -2,6 +2,14 @@
 <meta charset="utf-8">
 <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
 <title>Dados dos mananciais de São Paulo</title>
+<meta name="description" content="Uma visualização filtrável pelos sistemas administrados pela SABESP: Cantareira, Alto Tietê, Alto Cotia, Rio Grande e Rio Claro." />
+<meta name="author" content="Miguel Peixe" />
+<meta name="keywords" content="visualização,dados,cantareira,mananciais,são paulo,sabesp" />
+<link rel="author" href="https://plus.google.com/107521790602026194910"/>
+<meta property="og:image" content="img/thumb.png" />
+<meta property="og:title" content="Dados dos mananciais de São Paulo" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://lab.oeco.org.br/mananciais" />
 <style>
 
 html,body {
@@ -366,8 +374,55 @@ html,body {
 .selection-line {
 	pointer-events: none;
 }
+#site-footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	color: #fff;
+	text-transform: uppercase;
+	font-family: "Lato";
+	font-weight: 200;
+	font-size: 12px;
+	z-index: 3;
+}
+#site-footer p {
+	float: left;
+	margin: 0 20px 20px;
+}
+#site-footer p span {
+	float: left;
+}
+#site-footer p img {
+	height: 40px;
+	width: auto;
+	float: right;
+	margin-left: 20px;
+}
+#site-footer .social {
+	float: left;
+	margin: 10px 0 20px 20px;
+}
+#site-footer .social > div,
+#site-footer .social > iframe {
+	display: inline-block;
+	float: left;
+	margin-right: 20px;
+}
+#site-footer .credits {
+	float: right;
+	line-height: 40px;
+}
 </style>
 <body>
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=669235226468218";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
 	<header id="site-header">
 		<div class="header-options">
 			<div class="manancial-drop header-option">
@@ -382,8 +437,19 @@ html,body {
 			</div>
 		</div>
 	</header>
-	<div id="info">
-	</div>
+	<section id="info">
+	</section>
+	<footer id="site-footer">
+		<div class="social">
+			<div class="fb-like" data-href="https://lab.oeco.org.br/mananciais" data-colorscheme="dark" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
+			<a href="https://twitter.com/share" data-url="https://lab.oeco.org.br/mananciais" class="twitter-share-button" data-lang="pt-BR">Tuitar</a>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		</div>
+		<div class="credits">
+			<p class="dev"><span>Desenvolvimento</span> <a href="http://lab.oeco.org.br/" target="_blank" rel="external" title="EcoLAB"><img class="ecolab" src="img/ecolab.png" alt="EcoLAB" /></a></p>
+			<p class="data"><span>Dados</span> <a href="http://sabesp.com.br/" target="_blank" rel="external" title="SABESP"><img src="img/sabesp.png" alt="SABESP" /></a></p>
+		</div>
+	</footer>
 	<script type="text/javascript" src="app.js"></script>
 </body>
 </html>

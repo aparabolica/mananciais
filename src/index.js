@@ -14,13 +14,13 @@ $(document).ready(function() {
 
 	var selection;
 
-	var margin = {top: 0, right: 20, bottom: 200, left: 20},
+	var margin = {top: 0, right: 20, bottom: 260, left: 20},
 		width = $('body').width() - margin.left - margin.right,
 		height = $('body').height() - margin.top - margin.bottom;
 
-	var filterMargin = {top: height + 100, right: 40, bottom: 40, left: 40},
+	var filterMargin = {top: height + 60, right: 40, bottom: 40, left: 40},
 		filterWidth = width - 40,
-		filterHeight = margin.bottom - 140;
+		filterHeight = margin.bottom - 160;
 
 	var timeFormat = d3.time.format.multi([
 		["%a %d", function(d) { return d.getMilliseconds(); }],
