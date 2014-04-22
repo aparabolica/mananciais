@@ -1,5 +1,5 @@
 {
-	"name": "cantareira",
+	"name": "mananciais",
 	"description": "Visualizing São Paulo water sources historical data",
 	"repository": {
 		"type": "git",
@@ -15,6 +15,7 @@
 		"install": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mt > app.js"
 	},
 	"dependencies": {
+		"commander": "latest",
 		"cheerio": "latest",
 		"request": "latest",
 		"moment": "latest",
@@ -28,6 +29,8 @@
 	},
 	"keywords": [
 		"scrapping",
+		"mananciais",
+		"water sources",
 		"cantareira"
 	]
 }

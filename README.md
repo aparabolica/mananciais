@@ -1,6 +1,8 @@
-# Cantareira
+# Mananciais
 
-Ferramenta para armazenar dados publicados no site da SABESP e gerar visualizações em d3.
+Ferramenta para armazenar dados publicados no site da SABESP e visualizar.
+
+---
 
 ## Instalação
 
@@ -12,7 +14,17 @@ npm install
 
 Atualize a base de dados:
 ```
-node scrap.js
+node mananciais.js --update
 ```
 
-Rode o index.html
+Veja por data:
+```
+node mananciais.js --date 2013-2-1
+``` 
+
+Veja por manancial:
+```
+node mananciais.js --date 2013-2-1 --manancial sistemaCantareira
+``` 
+
+Visualize acessando o index.html
