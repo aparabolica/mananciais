@@ -1,6 +1,6 @@
 # Mananciais
 
-Ferramenta para armazenar dados publicados no site da SABESP e visualizar.
+Ferramenta para armazenar e visualizar dados publicados no site da [SABESP](http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx).
 
 ---
 
