@@ -43,8 +43,6 @@ module.exports = function() {
 		data = res;
 		scrap();
 	}).on('error', function(err) {
-		console.log(err);
-		data = {};
 		console.log('Iniciando nova base de dados');
 		scrap();
 	});
