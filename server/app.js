@@ -1,28 +1,23 @@
 #!/usr/bin/env node
 
 var program = require('commander'),
+	_ = require('underscore'),
+	csv = require('csv'),
 	scrap = require('./scrap');
 
-function formatDate(item) {
+function formatItems(items) {
 
 	var sep = '======================================\n';
 
-	var output = '';
+	var output = sep + '\n';
 
-	for(var key in item) {
-		output += sep + key + '\n' + sep;
-		output += formatManancial(item[key]);
-	}
-
-	return output;
-}
-
-function formatManancial(item) {
-	var output = '';
-	item.forEach(function(d) {
-		output += d[0] + '\t\t\t\t' + d[1] + '\n';
+	items.forEach(function(item) {
+		for(var key in item) {
+			output += key + '\t\t\t\t' + item[key] + '\n';
+		}
+		output += '\n' + sep + '\n';
 	});
-	output += '\n\n';
+
 	return output;
 }
 
@@ -35,14 +30,17 @@ program
 
 if(program.date) {
 	if(typeof(program.date) == 'string') {
-		var data = require('../data.json');
-		if(program.manancial && typeof(program.manancial) == 'string') {
-			console.log('\nBuscando dados em: ' + program.date + ' de ' + program.manancial + '\n');
-			console.log(formatManancial(data[program.date][program.manancial]));
-		} else {
-			console.log('\nBuscando dados em: ' + program.date + '\n');
-			console.log(formatDate(data[program.date]));
-		}
+		csv().from.path('data/data.csv', {
+			columns: true
+		}).to.array(function(data) {
+			if(program.manancial && typeof(program.manancial) == 'string') {
+				console.log('\nBuscando dados em: ' + program.date + ' de ' + program.manancial + '\n');
+				console.log(formatItems(_.filter(data, function(d) { return d['data'] == program.date && d['manancial'] == program.manancial; })));
+			} else {
+				console.log('\nBuscando dados em: ' + program.date + '\n');
+				console.log(formatItems(_.filter(data, function(d) { return d['data'] == program.date; })));
+			}
+		});
 	}
 }
 
