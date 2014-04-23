@@ -18,6 +18,7 @@
 		"commander": "latest",
 		"cheerio": "latest",
 		"request": "latest",
+		"csv": "latest",
 		"moment": "latest",
 		"twix": "latest",
 		"underscore": "latest",

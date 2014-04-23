@@ -20,7 +20,7 @@ module.exports = function(url, svg, callback) {
 
 	progress.text = progress.meter.append('text').attr('text-anchor', 'middle').attr('dy', '.35em');
 
-	d3.json('data.json').on('progress', function() {
+	d3.csv('data/data.csv').on('progress', function() {
 			var i = d3.interpolate(progress.progress, d3.event.loaded / progress.total);
 			d3.transition().tween('progress', function() {
 				return function(t) {

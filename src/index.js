@@ -104,8 +104,6 @@ $(document).ready(function() {
 
 		svg
 			.selectAll(".dot")
-			.attr("class", "dot")
-			.attr("r", pluviometria.sMap)
 			.attr("cx", pluviometria.xMap)
 			.attr("cy", pluviometria.yMap);
 	}
@@ -168,10 +166,10 @@ $(document).ready(function() {
 			.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5})
 			.attr("opacity", 0);
 
-		pluviometria.xScale.domain(d3.extent(parsed, function(d) { return d.date; }));
+		pluviometria.xScale.domain(volume.x.domain());
+		pluviometria.yScale.domain(volume.y.domain());
 		pluviometria.sScale.domain(d3.extent(parsed, function(d) { return d.pluviometria; }));
 		pluviometria.cScale.domain(d3.extent(parsed, function(d) { return d.pluviometria; }));
-		pluviometria.yScale.domain([d3.min(parsed, pluviometria.yValue)-1, d3.max(parsed, pluviometria.yValue)+1]);
 
 		var pluviometriaDots = focus.append("g")
 			.attr("transform", "translate(0,0)")
@@ -213,7 +211,7 @@ $(document).ready(function() {
 		filter.y.domain(volume.y.domain());
 
 		var contextPath = context.append("path")
-			.datum(parsed)														
+			.datum(parsed)
 			.attr("class", "area volume")
 			.attr("d", filter.area);
 

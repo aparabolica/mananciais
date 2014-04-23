@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-var program = require('commander');
+var program = require('commander'),
+	scrap = require('./scrap');
 
 function formatDate(item) {
 
@@ -48,6 +49,6 @@ if(program.date) {
 if(program.update) {
 
 	console.log('Scrapping data');
-	require('./scrap.js');
+	scrap();
 
 }
