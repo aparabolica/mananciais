@@ -8,7 +8,7 @@ module.exports = function(url, svg, callback) {
 	var progress = {
 		twoPi: 2 * Math.PI,
 		progress: 0,
-		total:  4278249,
+		total:  1725166,
 		formatPercent: d3.format(".0%"),
 		arc: d3.svg.arc().startAngle(0).innerRadius(180).outerRadius(240)
 	};
