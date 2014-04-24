@@ -51,9 +51,9 @@ module.exports = function() {
 
 };
 
-// First connection to get form data;
-
 function scrap() {
+
+	// First connection to get form data;
 	request({
 		url: sabesp,
 		jar: true,
@@ -183,15 +183,14 @@ function scrap() {
 			})
 
 		}, function(err) {
-			if(err) {
-				console.log(err);
-			} else {
-				data = newData;
-				fs.writeFile('data/data.csv', toCSV(data), function(err) {
-					if(err) console.log(err);
-					else console.log('CSV updated');
-				});
-			}
+			if(err) console.log(err);
+
+			data = newData;
+			fs.writeFile('data/data.csv', toCSV(data), function(err) {
+				if(err) console.log(err);
+				else console.log('CSV updated');
+			});
+
 		});
 
 	});
