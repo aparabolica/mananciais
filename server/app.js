@@ -7,22 +7,6 @@ var program = require('commander'),
 	csv = require('csv'),
 	scrap = require('./scrap');
 
-function formatItems(items) {
-
-	var sep = '======================================\n';
-
-	var output = sep + '\n';
-
-	items.forEach(function(item) {
-		for(var key in item) {
-			output += key + '\t\t\t\t' + item[key] + '\n';
-		}
-		output += '\n' + sep + '\n';
-	});
-
-	return output;
-}
-
 function print(s) {
 	console.log(colorsTmpl(s));
 }
@@ -52,7 +36,7 @@ if(program.date) {
 
 if(program.update) {
 
-	console.log('Scrapping data');
+	print('{yellow}{bold}Scrapping data{/bold}{/yellow}');
 	scrap();
 
 }
