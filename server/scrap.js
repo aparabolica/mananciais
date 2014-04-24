@@ -81,7 +81,6 @@ function scrap() {
 					}
 				});
 				if(passed) {
-					console.log('Dia ' + date + ' já registrado na base de dados');
 					newData = newData.concat(dateData);
 					return cb();
 				}

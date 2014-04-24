@@ -14,8 +14,11 @@
 	"scripts": {
 		"install": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mt > app.js"
 	},
+	"bin": "./mananciais.js",
 	"dependencies": {
 		"commander": "latest",
+		"colors-tmpl": "latest",
+		"tablify": "latest",
 		"cheerio": "latest",
 		"request": "latest",
 		"csv": "latest",

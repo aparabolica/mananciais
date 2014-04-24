@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 var program = require('commander'),
+	colorsTmpl = require('colors-tmpl'),
+	tablify = require('tablify'),
 	_ = require('underscore'),
 	csv = require('csv'),
 	scrap = require('./scrap');
@@ -21,6 +23,10 @@ function formatItems(items) {
 	return output;
 }
 
+function print(s) {
+	console.log(colorsTmpl(s));
+}
+
 program
 	.version('0.0.1')
 	.option('-u, --update', 'Scrap data from SABESP and update local database')
@@ -34,11 +40,11 @@ if(program.date) {
 			columns: true
 		}).to.array(function(data) {
 			if(program.manancial && typeof(program.manancial) == 'string') {
-				console.log('\nBuscando dados em: ' + program.date + ' de ' + program.manancial + '\n');
-				console.log(formatItems(_.filter(data, function(d) { return d['data'] == program.date && d['manancial'] == program.manancial; })));
+				print('\n{yellow}{bold}Buscando dados em: ' + program.date + ' de ' + program.manancial + '{/bold}{/yellow}\n');
+				print(tablify(_.filter(data, function(d) { return d['data'] == program.date && d['manancial'] == program.manancial; })));
 			} else {
-				console.log('\nBuscando dados em: ' + program.date + '\n');
-				console.log(formatItems(_.filter(data, function(d) { return d['data'] == program.date; })));
+				print('\n{yellow}{bold}Buscando dados em: ' + program.date + '{/bold}{/yellow}\n');
+				print(tablify(_.filter(data, function(d) { return d['data'] == program.date; })));
 			}
 		});
 	}
