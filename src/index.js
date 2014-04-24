@@ -4,6 +4,7 @@ var d3 = require('d3'),
 	moment = require('moment'),
 	parseData = require('./parse'),
 	icons = require('./icons'),
+	details = require('./details'),
 	load = require('./load'),
 	updateInfo = require('./updateInfo');
 
@@ -11,6 +12,20 @@ require('moment/lang/pt-br');
 moment.lang('pt-BR');
 
 $(document).ready(function() {
+
+	$('.about-link').click(function() {
+		$('section#about').show();
+		return false;
+	});
+
+	$(document).keyup(function(e) {
+		if (e.keyCode == 27) { $('section#about').hide() }
+	});
+
+	$('.close-about').click(function() {
+		$('section#about').hide();
+		return false;
+	});
 
 	var selection;
 
@@ -232,10 +247,15 @@ $(document).ready(function() {
 		$('#site-header .mananciais').on('click', 'li', function() {
 			$(this).parent().find('li').show();
 			$(this).hide();
+			$('.manancial-info').empty();
 			var manancial = $(this).data('manancial');
 			var text = $(this).text();
 			$('h1 .manancial').text(text);
 			parsed = parseData(data, manancial);
+			if(details[manancial]) {
+				var info = '<p>' + details[manancial].join('</p><p>') + '</p>';
+				$('.manancial-info').append('<div class="info"><div class="toggler">' + icons.info + '</div><div class="info-container"><div class="info-content">' + info + '</div></div>');
+			}
 			focusPath.datum(parsed).transition().duration(2000).attr("d", volume.area);
 			contextPath.datum(parsed).transition().duration(2000).attr("d", filter.area);
 			focus.select(".x.axis").call(volume.xAxis);
