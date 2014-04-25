@@ -1,3 +1,5 @@
+'use strict';
+
 var d3 = require('d3'),
 	_ = require('underscore'),
 	$ = require('jquery'),
@@ -6,7 +8,10 @@ var d3 = require('d3'),
 	icons = require('./icons'),
 	details = require('./details'),
 	load = require('./load'),
-	updateInfo = require('./updateInfo');
+	updateInfo = require('./updateInfo'),
+	data;
+
+window.$ = window.jQuery = $;
 
 require('moment/lang/pt-br');
 moment.lang('pt-BR');
@@ -33,10 +38,6 @@ $(document).ready(function() {
 	var margin = {top: 0, right: 20, bottom: 260, left: 20},
 		width = $('body').width() - margin.left - margin.right,
 		height = $('body').height() - margin.top - margin.bottom;
-
-	var filterMargin = {top: height + 60, right: 40, bottom: 40, left: 40},
-		filterWidth = width - 40,
-		filterHeight = margin.bottom - 160;
 
 	var timeFormat = d3.time.format.multi([
 		["%a %d", function(d) { return d.getMilliseconds(); }],
@@ -95,6 +96,30 @@ $(document).ready(function() {
 	pluviometria.sScale = d3.scale.linear().range([0, 10]);
 	pluviometria.sMap = function(d) { return pluviometria.sScale(pluviometria.sValue(d)); };
 
+	/*
+	 * Filter
+	 */
+
+	var filterMargin = {top: height + 60, right: width/2, bottom: 40, left: 20},
+		filterWidth = width - filterMargin.right - filterMargin.left,
+		filterHeight = margin.bottom - 160,
+		filterStart,
+		filterEnd;
+
+	$('#filter').css({
+		'position': 'absolute',
+		'top': filterMargin.top,
+		'left': filterWidth + 40,
+		'width': filterMargin.right,
+		'height': filterHeight
+	});
+
+	var filterResultTmpl = '';
+	filterResultTmpl += '<p class="volume">' + icons.water + '<span class="val"></span> <span class="label">de variação de volume</span></p>';
+	filterResultTmpl += '<p class="pluviometria">' + icons.rain + '<span class="val"></span> <span class="label">de pluviometria acumulada</span></p>';
+
+	$('#filter .filter-result').hide().append($(filterResultTmpl));
+
 	var filter = {};
 	filter.x = d3.time.scale()
 		.range([0, filterWidth]);
@@ -109,7 +134,7 @@ $(document).ready(function() {
 		.scale(filter.x)
 		.orient("bottom");
 
-	var brush = d3.svg.brush().x(filter.x).on("brush", brushed);
+	var brush = d3.svg.brush().x(filter.x).on("brush", _.debounce(brushed, 200));
 
 	function brushed() {
 		volume.x.domain(brush.empty() ? filter.x.domain() : brush.extent());
@@ -118,13 +143,58 @@ $(document).ready(function() {
 
 		pluviometria.xScale.domain(brush.empty() ? filter.x.domain() : brush.extent());
 		
-		ga('send', 'event', 'graph', 'filtered');
+		//ga('send', 'event', 'graph', 'filtered');
 
 		svg
 			.selectAll(".dot")
 			.attr("cx", pluviometria.xMap)
 			.attr("cy", pluviometria.yMap);
+
+		if(!brush.empty())
+			filterInfo(brush.extent());
+		else
+			$('#filter .filter-result').hide();
 	}
+
+	function filterInfo() {
+
+		if(filterStart.date && filterEnd.date) {
+
+			var extent = [filterStart.date, filterEnd.date];
+
+			var variation = getVariation(extent);
+
+			$('#filter .filter-input .start').val(moment(extent[0]).format('DD/MM/YYYY'));
+			$('#filter .filter-input .end').val(moment(extent[1]).format('DD/MM/YYYY'));
+
+			$('#filter .filter-result .volume .val').text(variation.volume + ' %');
+			$('#filter .filter-result .pluviometria .val').text(variation.pluviometria + ' mm');
+
+			$('#filter .filter-result').show();
+
+		}
+
+	}
+
+	function getVariation(extent) {
+
+		var start = _.find(data, function(d) { return moment(extent[0]).isSame(d.date, 'day'); });
+		var end = _.find(data, function(d) { return moment(extent[1]).isSame(d.date, 'day'); });
+
+		var between = _.filter(data, function(d) { return moment(d.date).isAfter(extent[0]) && moment(d.date).isBefore(extent[1]); });
+
+		var pluviometria = start.pluviometria + end.pluviometria;
+
+		_.each(between, function(d) { pluviometria = pluviometria + d.pluviometria });
+
+		return {
+			volume: (-start.volume + end.volume).toFixed(1),
+			pluviometria: pluviometria.toFixed(1)
+		};
+
+	}
+
+	/*****/
 
 	var svg = d3.select("body").append("svg")
 		.attr("width", width + margin.left + margin.right)
@@ -145,9 +215,51 @@ $(document).ready(function() {
 		.attr("class", "context")
 		.attr("transform", "translate(" + filterMargin.left + "," + filterMargin.top + ")");
 
-	load('data.json', svg, function(err, data) {
+	load('data.json', svg, function(err, d) {
 
-		var parsed = parseData(data, 'sistemaCantareira');
+		var parsed = parseData(d, 'sistemaCantareira');
+
+		// set global
+		data = parsed;
+
+		// set filter inputs
+		filterStart = $('#filter .filter-input .start').datepicker({
+			onRender: function(date) {
+				return date.valueOf() < data[0].date.valueOf() ? 'disabled' : '';
+			}
+		}).on('changeDate', function(ev) {
+			if(ev.date.valueOf() > data[0].date.valueOf()) {
+				var newDate = new Date(ev.date);
+				newDate.setDate(newDate.getDate() + 1);
+				filterStart.setValue(newDate);
+				filterInfo();
+			}
+			filterStart.hide();
+		}).data('datepicker');
+
+		filterEnd = $('#filter .filter-input .end').datepicker({
+			onRender: function(date) {
+
+				if(!filterStart.date)
+					return 'disabled';
+
+				if(date.valueOf() <= filterStart.date.valueOf())
+					return 'disabled';
+
+				if(date.valueOf() > _.last(data).date.valueOf())
+					return 'disabled';
+
+				return '';
+			}
+		}).on('changeDate', function(ev) {
+			if(ev.date.valueOf() < filterStart.date.valueOf()) {
+				var newDate = new Date(ev.date);
+				newDate.setDate(newDate.getDate() + 1);
+				filterEnd.setValue(newDate);
+				filterInfo();
+			}
+			filterEnd.hide();
+		}).data('datepicker');
 
 		volume.x.domain(d3.extent(parsed, function(d) { return d.date; }));
 		volume.y.domain([0, d3.max(parsed, function(d) { return d.volume; })]);

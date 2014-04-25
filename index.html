@@ -10,7 +10,9 @@
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://oeco.github.io/mananciais/" />
 <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
+<link href='dist/bootstrap.css' rel='stylesheet' type='text/css'>
 <link href='dist/app.css' rel='stylesheet' type='text/css'>
+<link href='dist/datepicker.css' rel='stylesheet' type='text/css'>
 <body>
 	<div id="fb-root"></div>
 	<script>(function(d, s, id) {
@@ -53,6 +55,16 @@
 	</section>
 	<section id="info">
 	</section>
+	<section id="filter">
+		<div class="filter-input">
+			<h3>Filtro</h3>
+			<label><span>de</span> <input class="start" type="text" placeholder="data inicial" /></label>
+			<label><span>para</span> <input class="end" type="text" placeholder="data final" /></label>
+		</div>
+		<div class="filter-result">
+			<h3>Dados</h3>
+		</div>
+	</section>
 	<footer id="site-footer">
 		<div class="social">
 			<div class="fb-like" data-href="http://oeco.github.io/mananciais/" data-colorscheme="dark" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
@@ -76,5 +88,6 @@
 	  ga('send', 'pageview');
 	</script>
 	<script type="text/javascript" src="dist/app.js"></script>
+	<script type="text/javascript" src="dist/bootstrap-datepicker.js"></script>
 </body>
 </html>

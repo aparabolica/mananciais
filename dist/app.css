@@ -5,8 +5,16 @@ html,body {
 	padding: 0;
 	position: relative;
 	font-family: "Lato", sans-serif;
+	font-weight: 200;
 	overflow: hidden;
 	background: #222;
+}
+
+h1,
+h2,
+h3 {
+	font-family: "Lato";
+	font-weight: 200;
 }
 
 #site-header {
@@ -16,7 +24,7 @@ html,body {
 	right: 0;
 	background: #111;
 	padding: 20px;
-	height: 20px;
+	height: 60px;
 	z-index: 100;
 }
 
@@ -387,6 +395,91 @@ html,body {
 	fill-opacity: .125;
 	shape-rendering: crispEdges;
 }
+#filter .filter-result,
+#filter .filter-input {
+	float: left;
+	color: #fff;
+}
+
+#filter .filter-result {
+	width: 65%;
+}
+
+#filter .filter-input {
+	width: 35%;
+}
+
+
+#filter .filter-input label {
+	margin: 8px 0;
+	display: block;
+	font-weight: 200;
+}
+
+#filter .filter-input label span {
+	width: 15%;
+	display: inline-block;
+	line-height: 30px;
+	font-size: 12px;
+	border-right: 1px solid #404040;
+}
+
+#filter .filter-input input {
+	width: 65%;
+	padding: 0;
+	background: transparent;
+	border: 0;
+	color: #fff;
+	font-size: 20px;
+	height: 30px;
+	font-family: "Lato";
+	font-weight: 200;
+	margin: 0;
+	outline: 0;
+	padding-left: 10px;
+}
+
+#filter h3 {
+	font-size: 12px;
+	line-height: 12px;
+	color: #999;
+	margin: 0 0 10px;
+	padding: 0 0 10px;
+	border-bottom: 1px solid #444;
+	text-transform: uppercase;
+	font-weight: 400;
+}
+
+#filter .filter-result svg {
+	width: 30px;
+	height: 30px;
+	margin-right: 10px;
+	float: left;
+}
+
+#filter .filter-result p {
+	color: #aaa;
+	line-height: 30px;
+	margin: 8px 0;
+}
+
+#filter .filter-result p .label {
+	font-size: 12px;
+	text-transform: uppercase;
+	display: inline-block;
+	margin-left: 10px;
+	padding: 0;
+	font-weight: 200;
+	text-align: left;
+	color: #aaa;
+}
+
+#filter .filter-result p .val {
+	font-size: 20px;
+	color: #fff;
+	font-weight: 400;
+}
+
 .progress-meter .background {
   fill: transparent;
 }
