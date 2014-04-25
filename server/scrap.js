@@ -5,7 +5,9 @@ var $ = require('cheerio'),
 	request = require('request'),
 	moment = require('moment'),
 	twix = require('twix'),
-	fs = require('fs');
+	fs = require('fs'),
+	tablify = require('tablify'),
+	progress = require('progress');
 
 var sabesp = 'http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx',
 	startTime = moment('2003-01-01'),
@@ -26,13 +28,6 @@ module.exports = function() {
 		});
 	}
 
-	// Push present day
-	range.push({
-		cmbAno: endTime.year(),
-		cmbMes: endTime.month() + 1,
-		cmbDia: endTime.date()
-	});
-
 	/*
 	 * Initialize db
 	 */
@@ -47,11 +42,65 @@ module.exports = function() {
 		scrap();
 	});
 
-	console.log('Base de dados encontrada. Atualizando...');
+	console.log('Base de dados encontrada.');
 
 };
 
 function scrap() {
+
+	var toDownload = [];
+
+	if(data.length) {
+
+		console.log();
+		var bar = new progress('Checando dados [:bar] :percent', {
+			complete: '=',
+			incomplete: ' ',
+			width: 40,
+			total: range.length
+		});
+
+		range.forEach(function(option, i) {
+
+			var date = option.cmbAno + '-' + option.cmbMes + '-' + option.cmbDia;
+
+			var dateData = _.filter(data, function(d) { return d['data'] == date; });
+
+			var valid = true;
+
+			if(dateData.length == 6) {
+				dateData.forEach(function(item) {
+					for(var key in item) {
+						if(!item[key])
+							valid = false;
+					}
+				});
+			} else {
+				valid = false;
+			}
+
+			if(!valid) {
+				toDownload.push(option);
+			} else {
+				newData = newData.concat(dateData);
+			}
+
+			bar.tick();
+
+		});
+
+		if(toDownload.length == 0) {
+			console.log('\nBase de dados já está atualizada');
+			return;
+		}
+
+	} else {
+
+		toDownload = range;
+
+	}
+
+	console.log('\n' + toDownload.length + ' entradas faltando.');
 
 	// First connection to get form data;
 	request({
@@ -66,25 +115,21 @@ function scrap() {
 
 		var validation = getValidation(body);
 
-		async.eachSeries(range, function(option, cb) {
+		console.log();
+		var bar = new progress('Baixando :title [:bar] :percent', {
+			complete: '=',
+			incomplete: ' ',
+			width: 40,
+			total: toDownload.length
+		});
+
+		async.eachSeries(toDownload, function(option, cb) {
 
 			var date = option.cmbAno + '-' + option.cmbMes + '-' + option.cmbDia;
 
-			var dateData = _.filter(data, function(d) { return d['data'] == date; });
+			bar.tick(1, { title: date });
 
-			if(dateData.length == 6) {
-				var passed = true;
-				dateData.forEach(function(item) {
-					for(var key in item) {
-						if(!item[key])
-							passed = false;
-					}
-				});
-				if(passed) {
-					newData = newData.concat(dateData);
-					return cb();
-				}
-			}
+			var dateData = [];
 
 			request({
 				url: sabesp,
@@ -100,82 +145,80 @@ function scrap() {
 				form: _.extend(option, validation)
 			}, function(err, res, body) {
 
-				if(err) {
-
-					console.log(err);
-					cb('Error');
-
-				} else {
-
-					dateData = [];
-
-					console.log('Processando dados do dia: ' + date);
+				if(!err) {
 
 					validation = getValidation(body);
 
 					var html = $.load(body);
 					var dataTable = html('#tabDados');
 
-					var trPos = 1;
+					if(dataTable.length) {
 
-					// Mananciais
-					for(var m = 0; m <= 5; m++) {
+						var trPos = 1;
 
-						var item = {
-							data: date
-						};
+						// Mananciais
+						for(var m = 0; m <= 5; m++) {
 
-						// Dados
-						for(var d = 1; d <= 6; d++) {
+							var item = {
+								data: date
+							};
 
-							var dataItem = dataTable.find('tr:nth-child(' + trPos + ')');
+							// Dados
+							for(var d = 1; d <= 6; d++) {
 
-							if(dataItem.length) {
+								var dataItem = dataTable.find('tr:nth-child(' + trPos + ')');
 
-								if(d == 1) {
-								
-									var title = dataItem.find('td img').attr('src');
-									if(title) {
-										title = title.replace('imagens/', '').replace('.gif', '');
-									}
+								if(dataItem.length) {
 
-									item['manancial'] = title;
-
-								} else if(d !== 6) {
-
-									if(title) {
-
-										var key = dataItem.find('td:nth-child(1)').text();
-										var value = dataItem.find('td:nth-child(2)').text();
-
-										/*
-										 * Houve uma diferença na métrica de 20% utilizada a partir de 1 de setembro de 2004 no Sistema Cantareira
-										 */
-										if(title == 'sistemaCantareira' && key == 'volume armazenado' && moment(date).isBefore('2004-09-01')) {
-											var parsed = parseFloat(value.replace(' %', '').replace(',', '.'));
-											parsed = parsed + 20;
-											value = parsed + ' %';
-											value = value.replace('.',',');
+									if(d == 1) {
+									
+										var title = dataItem.find('td img').attr('src');
+										if(title) {
+											title = title.replace('imagens/', '').replace('.gif', '');
 										}
 
-										item[key] = value;
+										item['manancial'] = title;
+
+									} else if(d !== 6) {
+
+										if(title) {
+
+											var key = dataItem.find('td:nth-child(1)').text();
+											var value = dataItem.find('td:nth-child(2)').text();
+
+											/*
+											 * Houve uma diferença na métrica de 20% utilizada a partir de 1 de setembro de 2004 no Sistema Cantareira
+											 */
+											if(title == 'sistemaCantareira' && key == 'volume armazenado' && moment(date).isBefore('2004-09-01')) {
+												var parsed = parseFloat(value.replace(' %', '').replace(',', '.'));
+												parsed = (parsed + 16.4).toFixed(1);
+												value = parsed + ' %';
+												value = value.replace('.',',');
+											}
+
+											item[key] = value;
+
+										}
 
 									}
+
+								} else {
+
+									cb();
 
 								}
 
+								trPos++;
+
 							}
 
-							trPos++;
+							dateData.push(item);
 
 						}
 
-
-						dateData.push(item);
+						newData = newData.concat(dateData);
 
 					}
-
-					newData = newData.concat(dateData);
 
 					cb();
 				}
@@ -183,14 +226,15 @@ function scrap() {
 			})
 
 		}, function(err) {
-			if(err) console.log(err);
-
-			data = newData;
-			fs.writeFile('data/data.csv', toCSV(data), function(err) {
-				if(err) console.log(err);
-				else console.log('CSV updated');
-			});
-
+			if(err) {
+				console.log(err);
+			} else {
+				data = _.sortBy(newData, function(d) { return new Date(d['data']).getTime(); });
+				fs.writeFile('data/data.csv', toCSV(data), function(err) {
+					if(err) console.log(err);
+					else console.log('CSV updated');
+				});
+			}
 		});
 
 	});

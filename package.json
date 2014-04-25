@@ -19,6 +19,7 @@
 		"commander": "latest",
 		"colors-tmpl": "latest",
 		"tablify": "latest",
+		"progress": "latest",
 		"cheerio": "latest",
 		"request": "latest",
 		"csv": "latest",

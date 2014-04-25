@@ -40,9 +40,13 @@ html,body {
 	text-align: right;
 }
 
-#site-header h2 a {
+#site-header a {
 	color: #aaa;
 	text-decoration: none;
+}
+
+#site-header a:hover {
+	color: #fff;
 }
 
 #site-header h2 img {
@@ -201,7 +205,7 @@ html,body {
 
 #info table td {
 	color: #eee;
-	width: 130px;
+	width: 150px;
 }
 
 #info table svg {
