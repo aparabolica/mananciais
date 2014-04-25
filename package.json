@@ -3,8 +3,17 @@
 	"description": "Visualizing São Paulo water sources historical data",
 	"repository": {
 		"type": "git",
-		"url": "git://github.com/miguelpeixe/cantareira.git"
+		"url": "git://github.com/oeco/mananciais.git"
 	},
+    "bugs" : {
+        "url" : "https://github.com/oeco/mananciais/issues"
+    },
+    "licenses" : [
+        {
+            "type" : "GPLv3",
+            "url" : "https://github.com/oeco/mananciais/raw/master/LICENSE"
+        }
+    ],
 	"version": "0.0.1",
 	"author": "Miguel Peixe <miguel@cardume.art.br>",
 	"engines": {
