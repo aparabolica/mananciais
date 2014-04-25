@@ -20,6 +20,8 @@ module.exports = function(url, svg, callback) {
 
 	progress.text = progress.meter.append('text').attr('text-anchor', 'middle').attr('dy', '.35em');
 
+	ga('send', 'screenview', {'screenName': 'Loading'});
+
 	d3.csv('data/data.csv').on('progress', function() {
 			var i = d3.interpolate(progress.progress, d3.event.loaded / progress.total);
 			d3.transition().tween('progress', function() {
@@ -30,6 +32,8 @@ module.exports = function(url, svg, callback) {
 				};
 			});
 		}).get(function(err, data) {
+			ga('send', 'screenview', {'screenName': 'Graph'});
+			ga('send', 'event', 'graph', 'loaded');
 			progress.meter.transition().delay(250).attr("transform", "scale(0)");
 			if(typeof callback == 'function')
 				callback(err, data);

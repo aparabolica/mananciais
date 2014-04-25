@@ -116,6 +116,8 @@ $(document).ready(function() {
 		focus.select(".x.axis").call(volume.xAxis);
 
 		pluviometria.xScale.domain(brush.empty() ? filter.x.domain() : brush.extent());
+		
+		ga('send', 'event', 'graph', 'filtered');
 
 		svg
 			.selectAll(".dot")
@@ -250,6 +252,7 @@ $(document).ready(function() {
 			$('.manancial-info').empty();
 			var manancial = $(this).data('manancial');
 			var text = $(this).text();
+			ga('send', 'event', 'graph', 'changed', null, manancial);
 			$('h1 .manancial').text(text);
 			parsed = parseData(data, manancial);
 			if(details[manancial]) {
