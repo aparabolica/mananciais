@@ -28,6 +28,13 @@ module.exports = function() {
 		});
 	}
 
+	// Push present day
+	range.push({
+		cmbAno: endTime.year(),
+		cmbMes: endTime.month() + 1,
+		cmbDia: endTime.date()
+	});
+
 	/*
 	 * Initialize db
 	 */
