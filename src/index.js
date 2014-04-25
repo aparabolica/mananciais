@@ -14,6 +14,7 @@ moment.lang('pt-BR');
 $(document).ready(function() {
 
 	$('.about-link').click(function() {
+		ga('send', 'screenview', {'screenName': 'About'});
 		$('section#about').show();
 		return false;
 	});
