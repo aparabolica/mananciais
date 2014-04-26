@@ -156,12 +156,7 @@ $(document).ready(function() {
 			$('#filter .filter-result').hide();
 	}
 
-	function filterInfo() {
-
-		if(filterStart.date && filterEnd.date) {
-
-			var extent = [filterStart.date, filterEnd.date];
-
+	function filterInfo(extent) {
 			var variation = getVariation(extent);
 
 			$('#filter .filter-input .start').val(moment(extent[0]).format('DD/MM/YYYY'));
@@ -172,16 +167,29 @@ $(document).ready(function() {
 
 			$('#filter .filter-result').show();
 
-		}
-
 	}
 
 	function getVariation(extent) {
 
-		var start = _.find(data, function(d) { return moment(extent[0]).isSame(d.date, 'day'); });
-		var end = _.find(data, function(d) { return moment(extent[1]).isSame(d.date, 'day'); });
+		var startIndex;
 
-		var between = _.filter(data, function(d) { return moment(d.date).isAfter(extent[0]) && moment(d.date).isBefore(extent[1]); });
+		var start = _.find(data, function(d, i) {
+			startIndex = i;
+			return extent[0].getFullYear() == d.date.getFullYear() &&
+				extent[0].getMonth() == d.date.getMonth() &&
+				extent[0].getDate() == d.date.getDate();
+		});
+
+		var dataFrom = _.rest(data, startIndex);
+
+		var between = [start];
+
+		var end = _.find(dataFrom, function(d) {
+			between.push(d);
+			return extent[1].getFullYear() == d.date.getFullYear() &&
+				extent[1].getMonth() == d.date.getMonth() &&
+				extent[1].getDate() == d.date.getDate();
+		});
 
 		var pluviometria = start.pluviometria + end.pluviometria;
 
@@ -222,44 +230,44 @@ $(document).ready(function() {
 		// set global
 		data = parsed;
 
-		// set filter inputs
-		filterStart = $('#filter .filter-input .start').datepicker({
-			onRender: function(date) {
-				return date.valueOf() < data[0].date.valueOf() ? 'disabled' : '';
-			}
-		}).on('changeDate', function(ev) {
-			if(ev.date.valueOf() > data[0].date.valueOf()) {
-				var newDate = new Date(ev.date);
-				newDate.setDate(newDate.getDate() + 1);
-				filterStart.setValue(newDate);
-				filterInfo();
-			}
-			filterStart.hide();
-		}).data('datepicker');
+		// // set filter inputs
+		// filterStart = $('#filter .filter-input .start').datepicker({
+		// 	onRender: function(date) {
+		// 		return date.valueOf() < data[0].date.valueOf() ? 'disabled' : '';
+		// 	}
+		// }).on('changeDate', function(ev) {
+		// 	if(ev.date.valueOf() > data[0].date.valueOf()) {
+		// 		var newDate = new Date(ev.date);
+		// 		newDate.setDate(newDate.getDate() + 1);
+		// 		filterStart.setValue(newDate);
+		// 		filterInfo();
+		// 	}
+		// 	filterStart.hide();
+		// }).data('datepicker');
 
-		filterEnd = $('#filter .filter-input .end').datepicker({
-			onRender: function(date) {
+		// filterEnd = $('#filter .filter-input .end').datepicker({
+		// 	onRender: function(date) {
 
-				if(!filterStart.date)
-					return 'disabled';
+		// 		if(!filterStart.date)
+		// 			return 'disabled';
 
-				if(date.valueOf() <= filterStart.date.valueOf())
-					return 'disabled';
+		// 		if(date.valueOf() <= filterStart.date.valueOf())
+		// 			return 'disabled';
 
-				if(date.valueOf() > _.last(data).date.valueOf())
-					return 'disabled';
+		// 		if(date.valueOf() > _.last(data).date.valueOf())
+		// 			return 'disabled';
 
-				return '';
-			}
-		}).on('changeDate', function(ev) {
-			if(ev.date.valueOf() < filterStart.date.valueOf()) {
-				var newDate = new Date(ev.date);
-				newDate.setDate(newDate.getDate() + 1);
-				filterEnd.setValue(newDate);
-				filterInfo();
-			}
-			filterEnd.hide();
-		}).data('datepicker');
+		// 		return '';
+		// 	}
+		// }).on('changeDate', function(ev) {
+		// 	if(ev.date.valueOf() < filterStart.date.valueOf()) {
+		// 		var newDate = new Date(ev.date);
+		// 		newDate.setDate(newDate.getDate() + 1);
+		// 		filterEnd.setValue(newDate);
+		// 		filterInfo();
+		// 	}
+		// 	filterEnd.hide();
+		// }).data('datepicker');
 
 		volume.x.domain(d3.extent(parsed, function(d) { return d.date; }));
 		volume.y.domain([0, d3.max(parsed, function(d) { return d.volume; })]);
@@ -367,7 +375,7 @@ $(document).ready(function() {
 			var text = $(this).text();
 			ga('send', 'event', 'graph', 'changed', null, manancial);
 			$('h1 .manancial').text(text);
-			parsed = parseData(data, manancial);
+			parsed = data = parseData(d, manancial);
 			if(details[manancial]) {
 				var info = '<p>' + details[manancial].join('</p><p>') + '</p>';
 				$('.manancial-info').append('<div class="info"><div class="toggler">' + icons.info + '</div><div class="info-container"><div class="info-content">' + info + '</div></div>');
@@ -386,7 +394,7 @@ $(document).ready(function() {
 				.attr("r", pluviometria.sMap)
 				.attr("cx", pluviometria.xMap)
 				.attr("cy", pluviometria.yMap);
-
+				
 			selection = _.last(parsed);
 			updateInfo(selection);
 		});
