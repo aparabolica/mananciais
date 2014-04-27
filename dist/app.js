@@ -22409,6 +22409,31 @@ $(document).ready(function() {
 		'height': filterHeight
 	});
 
+	var inputExtent = []
+
+	$('#filter input').on('keyup', _.debounce(function() {
+
+		console.log($(this).attr('class'));
+
+		var date = moment($(this).val(), 'DD/MM/YYYY');
+
+		var i = $(this).is('.start') ? 0 : 1;
+
+		if($(this).val().length !== 10 || !date.isValid()) {
+			$(this).addClass('invalid');
+			delete inputExtent[i];
+			brush.clear();
+		} else {
+			inputExtent[i] = date.toDate();
+			if(inputExtent[0] && inputExtent[1]) {
+				brush.extent(inputExtent);
+			}
+			brush.event(context.selectAll(".brush"));
+		}
+
+
+	}, 50));
+
 	var filterResultTmpl = '';
 	filterResultTmpl += '<p class="volume">' + icons.water + '<span class="val"></span> <span class="label">de variação de volume</span></p>';
 	filterResultTmpl += '<p class="pluviometria">' + icons.rain + '<span class="val"></span> <span class="label">de pluviometria acumulada</span></p>';
@@ -22524,45 +22549,6 @@ $(document).ready(function() {
 
 		// set global
 		data = parsed;
-
-		// // set filter inputs
-		// filterStart = $('#filter .filter-input .start').datepicker({
-		// 	onRender: function(date) {
-		// 		return date.valueOf() < data[0].date.valueOf() ? 'disabled' : '';
-		// 	}
-		// }).on('changeDate', function(ev) {
-		// 	if(ev.date.valueOf() > data[0].date.valueOf()) {
-		// 		var newDate = new Date(ev.date);
-		// 		newDate.setDate(newDate.getDate() + 1);
-		// 		filterStart.setValue(newDate);
-		// 		filterInfo();
-		// 	}
-		// 	filterStart.hide();
-		// }).data('datepicker');
-
-		// filterEnd = $('#filter .filter-input .end').datepicker({
-		// 	onRender: function(date) {
-
-		// 		if(!filterStart.date)
-		// 			return 'disabled';
-
-		// 		if(date.valueOf() <= filterStart.date.valueOf())
-		// 			return 'disabled';
-
-		// 		if(date.valueOf() > _.last(data).date.valueOf())
-		// 			return 'disabled';
-
-		// 		return '';
-		// 	}
-		// }).on('changeDate', function(ev) {
-		// 	if(ev.date.valueOf() < filterStart.date.valueOf()) {
-		// 		var newDate = new Date(ev.date);
-		// 		newDate.setDate(newDate.getDate() + 1);
-		// 		filterEnd.setValue(newDate);
-		// 		filterInfo();
-		// 	}
-		// 	filterEnd.hide();
-		// }).data('datepicker');
 
 		volume.x.domain(d3.extent(parsed, function(d) { return d.date; }));
 		volume.y.domain([0, d3.max(parsed, function(d) { return d.volume; })]);
@@ -22689,7 +22675,7 @@ $(document).ready(function() {
 				.attr("r", pluviometria.sMap)
 				.attr("cx", pluviometria.xMap)
 				.attr("cy", pluviometria.yMap);
-				
+
 			selection = _.last(parsed);
 			updateInfo(selection);
 		});
@@ -22722,6 +22708,10 @@ $(document).ready(function() {
 
 		selection = _.last(parsed);
 		updateInfo(selection);
+
+		// Init filter
+		$('#filter').show();
+		filterInfo([moment().subtract('days', 7).toDate(), new Date()]);
 
 	});
 

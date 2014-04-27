@@ -24,7 +24,7 @@ h3 {
 	right: 0;
 	background: #111;
 	padding: 20px;
-	height: 60px;
+	height: 20px;
 	z-index: 100;
 }
 
@@ -395,6 +395,11 @@ h3 {
 	fill-opacity: .125;
 	shape-rendering: crispEdges;
 }
+
+#filter {
+	display: none;
+}
+
 #filter .filter-result,
 #filter .filter-input {
 	float: left;
