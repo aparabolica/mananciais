@@ -3,7 +3,7 @@
 var d3 = require('d3'),
 	$ = require('jquery');
 
-module.exports = function(url, svg, callback) {
+module.exports = function(svg, callback) {
 
 	var progress = {
 		twoPi: 2 * Math.PI,

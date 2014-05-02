@@ -248,7 +248,7 @@ $(document).ready(function() {
 		.attr("class", "context")
 		.attr("transform", "translate(" + filterMargin.left + "," + filterMargin.top + ")");
 
-	load('data.json', svg, function(err, d) {
+	load(svg, function(err, d) {
 
 		var parsed = parseData(d, 'sistemaCantareira');
 
@@ -383,6 +383,11 @@ $(document).ready(function() {
 
 			selection = _.last(parsed);
 			updateInfo(selection);
+
+			// Init filter
+			$('#filter').show();
+			filterInfo([moment(selection.date).subtract('days', 7).toDate(), moment(selection.date).toDate()]);
+
 		});
 
 		$('#site-header .mananciais li:nth-child(1)').click();
