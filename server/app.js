@@ -63,6 +63,7 @@ if(program.serve) {
 
 	app.listen(port, function() {
 		print('{yellow}{bold}Server running at port ' + port + '{/bold}{/yellow}');
+		print('{bold}Data url: http://localhost:' + port + '/data.csv{/bold}');
 	});
 
 }
