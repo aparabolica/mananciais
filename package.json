@@ -28,6 +28,7 @@
 	"bin": "./mananciais.js",
 	"dependencies": {
 		"express": "latest",
+		"cors": "latest",
 		"commander": "latest",
 		"colors-tmpl": "latest",
 		"tablify": "latest",

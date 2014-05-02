@@ -47,19 +47,22 @@ if(program.serve) {
 	var port = process.env.PORT || 3000;
 
 	var express = require('express');
+
 	var app = express();
-	app.use(express.static('data'));
-	app.all('*', function(req, res, next) {
+
+	app.use(require('cors')());
+
+	app.get('/data.csv', function(req, res) {
 		res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Headers", "X-Requested-With");
-		next();
+		res.sendfile('data.csv', {root: './data'});
 	});
-
-	print('{yellow}{bold}Server running at port ' + port + '{/bold}{/yellow}');
 
 	setInterval(scrap, 1000 * 60 * 60 * 3); // 3 hours interval
 	scrap();
 
-	app.listen(port);
+	app.listen(port, function() {
+		print('{yellow}{bold}Server running at port ' + port + '{/bold}{/yellow}');
+	});
 
 }

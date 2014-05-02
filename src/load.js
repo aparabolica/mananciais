@@ -22,7 +22,8 @@ module.exports = function(url, svg, callback) {
 
 	ga('send', 'screenview', {'screenName': 'Loading'});
 
-	d3.csv('http://evening-castle-4224.herokuapp.com/data.csv').on('progress', function() {
+	d3.csv('http://localhost:3000/data.csv')
+		.on('progress', function() {
 			var i = d3.interpolate(progress.progress, d3.event.loaded / progress.total);
 			d3.transition().tween('progress', function() {
 				return function(t) {
@@ -31,7 +32,8 @@ module.exports = function(url, svg, callback) {
 					progress.text.text(progress.formatPercent(progress.progress));
 				};
 			});
-		}).get(function(err, data) {
+		})
+		.get(function(err, data) {
 			ga('send', 'screenview', {'screenName': 'Graph'});
 			ga('send', 'event', 'graph', 'loaded');
 			progress.meter.transition().delay(250).attr("transform", "scale(0)");
