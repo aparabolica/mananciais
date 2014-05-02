@@ -19,7 +19,7 @@ node mananciais.js --update
 
 ## Servidor
 
-Dentro desta aplicação também existe um serivor que atualiza a base de 3 em 3 horas e serve os dados com [CORS](http://pt.wikipedia.org/wiki/Cross-origin_resource_sharing) ativado.
+Dentro desta aplicação também existe um servidor que atualiza a base de 3 em 3 horas e serve os dados com [CORS](http://pt.wikipedia.org/wiki/Cross-origin_resource_sharing) ativado.
 
 Rode o servidor:
 ```
