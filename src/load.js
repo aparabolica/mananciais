@@ -22,7 +22,7 @@ module.exports = function(url, svg, callback) {
 
 	ga('send', 'screenview', {'screenName': 'Loading'});
 
-	d3.csv('data/data.csv').on('progress', function() {
+	d3.csv('http://evening-castle-4224.herokuapp.com/data.csv').on('progress', function() {
 			var i = d3.interpolate(progress.progress, d3.event.loaded / progress.total);
 			d3.transition().tween('progress', function() {
 				return function(t) {
