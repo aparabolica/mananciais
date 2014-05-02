@@ -16,6 +16,7 @@ program
 	.option('-u, --update', 'Scrap data from SABESP and update local database')
 	.option('-d, --date [value]', 'Get specific date from database.')
 	.option('-m, --manancial [value]', 'Get info on specific date from an especific water system. Date parameter is required')
+	.option('serve', 'Run server and update database on a 3 hours interval')
 	.parse(process.argv);
 
 if(program.date) {
@@ -38,5 +39,26 @@ if(program.update) {
 
 	print('{yellow}{bold}Scrapping data{/bold}{/yellow}');
 	scrap();
+
+}
+
+if(program.serve) {
+
+	var port = process.env.PORT || 3000;
+
+	var express = require('express');
+	var app = express();
+	app.use(express.static('data'));
+	app.get('*', function(req, res) {
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	});
+
+	print('{yellow}{bold}Server running at port ' + port + '{/bold}{/yellow}');
+
+	setInterval(scrap, 1000 * 60 * 60 * 3); // 3 hours interval
+	scrap();
+
+	app.listen(port);
 
 }
