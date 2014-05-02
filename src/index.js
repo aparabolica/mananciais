@@ -178,7 +178,7 @@ $(document).ready(function() {
 		if(!brush.empty())
 			filterInfo(brush.extent());
 		else
-			$('#filter .filter-result').hide();
+			filterInfo([moment(_.last(data).date).subtract('days', 7).toDate(), _.last(data).date]);
 	}
 
 	function filterInfo(extent) {
@@ -416,7 +416,7 @@ $(document).ready(function() {
 
 		// Init filter
 		$('#filter').show();
-		filterInfo([moment().subtract('days', 7).toDate(), new Date()]);
+		filterInfo([moment(selection.date).subtract('days', 7).toDate(), moment(selection.date).toDate()]);
 
 	});
 
