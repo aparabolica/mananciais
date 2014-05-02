@@ -22,7 +22,7 @@ module.exports = function(url, svg, callback) {
 
 	ga('send', 'screenview', {'screenName': 'Loading'});
 
-	d3.csv('http://localhost:3000/data.csv')
+	d3.csv('http://cantareira-data.herokuapp.com/data.csv')
 		.on('progress', function() {
 			var i = d3.interpolate(progress.progress, d3.event.loaded / progress.total);
 			d3.transition().tween('progress', function() {
