@@ -39,14 +39,15 @@ module.exports = function() {
 	 * Initialize db
 	 */
 
-	csv().from.path('data/data.csv', {
-		columns: true
-	}).to.array(function(res) {
-		data = res;
-		scrap();
-	}).on('error', function(err) {
-		console.log('Iniciando nova base de dados');
-		scrap();
+	fs.readFile('data/data.csv', function(err, csvData) {
+		csv.parse(csvData, { columns: true }, function(err, output) {
+			if(err) {
+				console.log('Iniciando nova base de dados');
+			} else {
+				data = output;
+			}
+			scrap();
+		});
 	});
 
 	console.log('Base de dados encontrada.');

@@ -50,12 +50,18 @@ if(program.serve) {
 
 	var app = express();
 
+	app.use('/', express.static(__dirname + '/../public'));
+
 	app.use(require('cors')());
 
 	app.get('/data.csv', function(req, res) {
 		res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Headers", "X-Requested-With");
 		res.sendfile('data.csv', {root: './data'});
+	});
+
+	app.get('/*', function(req, res) {
+		res.sendfile('public/index.html');
 	});
 
 	setInterval(scrap, 1000 * 60 * 60 * 3); // 3 hours interval

@@ -4,8 +4,8 @@ var moment = require('moment'),
 	$ = require('jquery'),
 	icons = require('./icons');
 
-require('moment/lang/pt-br');
-moment.lang('pt-BR');
+require('moment/locale/pt-br');
+moment.locale('pt-BR');
 
 module.exports = function(data) {
 

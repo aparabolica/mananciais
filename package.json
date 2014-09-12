@@ -22,7 +22,7 @@
 	},
 	"main": "mananciais.js",
 	"scripts": {
-		"install": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mt > dist/app.js",
+		"install": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mt > public/app.js",
 		"start": "node mananciais.js serve"
 	},
 	"bin": "./mananciais.js",

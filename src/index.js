@@ -13,8 +13,8 @@ var d3 = require('d3'),
 
 window.$ = window.jQuery = $;
 
-require('moment/lang/pt-br');
-moment.lang('pt-BR');
+require('moment/locale/pt-br');
+moment.locale('pt-BR');
 
 $(document).ready(function() {
 
