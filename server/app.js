@@ -3,6 +3,7 @@
 var program = require('commander'),
 	colorsTmpl = require('colors-tmpl'),
 	tablify = require('tablify'),
+	fs = require('fs'),
 	_ = require('underscore'),
 	csv = require('csv'),
 	scrap = require('./scrap');
@@ -50,14 +51,19 @@ if(program.serve) {
 
 	var app = express();
 
+	app.use(require('compression')());
+
 	app.use('/', express.static(__dirname + '/../public'));
 
 	app.use(require('cors')());
 
 	app.get('/data.csv', function(req, res) {
-		res.header("Access-Control-Allow-Origin", "*");
-		res.header("Access-Control-Allow-Headers", "X-Requested-With");
-		res.sendfile('data.csv', {root: './data'});
+		fs.readFile('data/data.csv', function(err, data) {
+			res.header("Content-Length", data.length);
+			res.header("Access-Control-Allow-Origin", "*");
+			res.header("Access-Control-Allow-Headers", "X-Requested-With");
+			res.sendfile('data.csv', {root: './data'});
+		});
 	});
 
 	app.get('/*', function(req, res) {
