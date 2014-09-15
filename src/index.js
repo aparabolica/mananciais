@@ -88,13 +88,11 @@ $(document).ready(function() {
 	pluviometria.yScale = d3.scale.linear().range([height, 220]);
 	pluviometria.yMap = function(d) { return pluviometria.yScale(pluviometria.yValue(d)); };
 
-	pluviometria.cValue = function(d) { return d.pluviometria; };
-	pluviometria.cScale = d3.scale.linear().range(['rgba(42,110,194,1)', 'rgba(42,110,194,1)']);
-	pluviometria.cMap = function(d) { return pluviometria.cScale(pluviometria.cValue(d)); };
-
 	pluviometria.sValue = function(d) { return d.pluviometria; };
 	pluviometria.sScale = d3.scale.linear().range([0, 10]);
 	pluviometria.sMap = function(d) { return pluviometria.sScale(pluviometria.sValue(d)); };
+
+	var stories = {};
 
 	/*
 	 * Filter
@@ -117,8 +115,6 @@ $(document).ready(function() {
 	var inputExtent = []
 
 	$('#filter input').on('keyup', _.debounce(function() {
-
-		console.log($(this).attr('class'));
 
 		var date = moment($(this).val(), 'DD/MM/YYYY');
 
@@ -167,6 +163,7 @@ $(document).ready(function() {
 		focus.select(".x.axis").call(volume.xAxis);
 
 		pluviometria.xScale.domain(brush.empty() ? filter.x.domain() : brush.extent());
+		stories.xScale.domain(brush.empty() ? filter.x.domain() : brush.extent());
 		
 		//ga('send', 'event', 'graph', 'filtered');
 
@@ -174,6 +171,11 @@ $(document).ready(function() {
 			.selectAll(".dot")
 			.attr("cx", pluviometria.xMap)
 			.attr("cy", pluviometria.yMap);
+
+		svg
+			.selectAll(".story")
+			.attr("cx", stories.xMap)
+			.attr("cy", stories.yMap);
 
 		if(!brush.empty())
 			filterInfo(brush.extent());
@@ -293,7 +295,6 @@ $(document).ready(function() {
 		pluviometria.xScale.domain(volume.x.domain());
 		pluviometria.yScale.domain(volume.y.domain());
 		pluviometria.sScale.domain(d3.extent(parsed, function(d) { return d.pluviometria; }));
-		pluviometria.cScale.domain(d3.extent(parsed, function(d) { return d.pluviometria; }));
 
 		var pluviometriaDots = focus.append("g")
 			.attr("transform", "translate(0,0)")
@@ -330,6 +331,15 @@ $(document).ready(function() {
 						.duration(500)
 						.style("opacity", 0);
 				});
+
+
+		var storiesDots = focus.append("g")
+			.attr("transform", "translate(0,0)")
+			.attr("class", "stories");
+
+		var storiesTooltip = d3.select("body").append("div")
+			.attr("class", "story-content")
+			.style("opacity", 0);
 
 		filter.x.domain(volume.x.domain());
 		filter.y.domain(volume.y.domain());
@@ -381,6 +391,14 @@ $(document).ready(function() {
 				.attr("cx", pluviometria.xMap)
 				.attr("cy", pluviometria.yMap);
 
+			stories.yValue = function(d) { return _.find(parsed, function(p) { return d.date.isSame(p.date, 'day'); }).volume; };
+
+			storiesDots
+				.selectAll(".story")
+				.transition()
+				.duration(2000)
+				.attr("cy", stories.yMap);
+
 			selection = _.last(parsed);
 			updateInfo(selection);
 
@@ -421,7 +439,64 @@ $(document).ready(function() {
 
 		// Init filter
 		$('#filter').show();
-		filterInfo([moment(selection.date).subtract('days', 7).toDate(), moment(selection.date).toDate()]);
+		filterInfo([moment(selection.date).subtract('days', 7).toDate(), moment(selection.date).toDate()]);		
+
+
+		/*
+		 * Stories
+		 */
+
+		stories = {};
+
+		stories.xValue = function(d) { return d.date; };
+		stories.xScale = d3.time.scale().range([0, width]);
+		stories.xMap = function(d) { return stories.xScale(stories.xValue(d)); };
+
+		stories.yValue = function(d) { return _.find(parsed, function(p) { return d.date.isSame(p.date, 'day'); }).volume; };
+		stories.yScale = d3.scale.linear().range([height, 220]);
+		stories.yMap = function(d) { return stories.yScale(stories.yValue(d)) - 20; };
+
+		var storiesData;
+
+		$.get('/events', function(data) {
+
+			storiesData = data;
+			_.each(storiesData, function(item) {
+				item.date = moment(item.data, 'DD/MM/YYYY');
+			});			
+
+			stories.xScale.domain(volume.x.domain());
+			stories.yScale.domain(volume.y.domain());
+
+			storiesDots
+				.selectAll(".story")
+				.data(storiesData)
+					.enter().append("circle")
+					.attr("class", "story")
+					.attr("r", 5)
+					.attr("cx", stories.xMap)
+					.attr("cy", stories.yMap)
+					.on("mouseover", function(d) {
+						storiesTooltip.transition()
+							.duration(200)
+							.style("opacity", 1);
+					
+							storiesTooltip.html(d.titulo)
+							.style("left", (d3.event.pageX) + "px")
+							.style("top", (d3.event.pageY) + "px");
+					})
+					.on("mousemove", function(d) {
+						storiesTooltip
+							.style("left", (d3.event.pageX) + "px")
+							.style("top", (d3.event.pageY) + "px");
+					})
+					.on("mouseout", function(d) {
+						storiesTooltip.transition()
+							.duration(500)
+							.style("opacity", 0);
+					});
+
+		}, 'json');
 
 	});
 
