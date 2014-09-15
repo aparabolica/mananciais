@@ -177,6 +177,13 @@ $(document).ready(function() {
 			.attr("cx", stories.xMap)
 			.attr("cy", stories.yMap);
 
+		svg
+			.selectAll(".stories line")
+			.attr("x1", stories.xMap)
+			.attr("y1", stories.yMap)
+			.attr("x2", stories.xMap)
+			.attr("y2", stories.offsetMap);
+
 		if(!brush.empty())
 			filterInfo(brush.extent());
 		else
@@ -399,6 +406,15 @@ $(document).ready(function() {
 				.duration(2000)
 				.attr("cy", stories.yMap);
 
+			storiesDots
+				.selectAll('line')
+				.transition()
+				.duration(2000)
+				.attr("x1", stories.xMap)
+				.attr("y1", stories.yMap)
+				.attr("x2", stories.xMap)
+				.attr("y2", stories.offsetMap);
+
 			selection = _.last(parsed);
 			updateInfo(selection);
 
@@ -454,7 +470,9 @@ $(document).ready(function() {
 
 		stories.yValue = function(d) { return _.find(parsed, function(p) { return d.date.isSame(p.date, 'day'); }).volume; };
 		stories.yScale = d3.scale.linear().range([height, 220]);
-		stories.yMap = function(d) { return stories.yScale(stories.yValue(d)) - 20; };
+		stories.yMap = function(d) { return stories.yScale(stories.yValue(d)) * 0.85; };
+
+		stories.offsetMap = function(d) { return stories.yScale(stories.yValue(d)); };
 
 		var storiesData;
 
@@ -469,6 +487,17 @@ $(document).ready(function() {
 			stories.yScale.domain(volume.y.domain());
 
 			storiesDots
+				.selectAll('line')
+				.data(storiesData)
+					.enter().append('line')
+					.attr("x1", stories.xMap)
+					.attr("y1", stories.yMap)
+					.attr("x2", stories.xMap)
+					.attr("y2", stories.offsetMap)
+					.attr('class', 'story-line')
+					.style({stroke: '#fc0', 'stroke-width': '1px', 'stroke-opacity': .5});
+
+			storiesDots
 				.selectAll(".story")
 				.data(storiesData)
 					.enter().append("circle")
@@ -480,8 +509,8 @@ $(document).ready(function() {
 						storiesTooltip.transition()
 							.duration(200)
 							.style("opacity", 1);
-					
-							storiesTooltip.html(d.titulo)
+
+							storiesTooltip.html('<p class="date">' + d.date.format('DD/MM/YYYY') + '</p><h3>' + d.titulo + '</h3>')
 							.style("left", (d3.event.pageX) + "px")
 							.style("top", (d3.event.pageY) + "px");
 					})
