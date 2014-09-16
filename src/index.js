@@ -92,7 +92,7 @@ $(document).ready(function() {
 	pluviometria.sScale = d3.scale.linear().range([0, 10]);
 	pluviometria.sMap = function(d) { return pluviometria.sScale(pluviometria.sValue(d)); };
 
-	var stories = {};
+	var stories = require('./stories')();
 
 	/*
 	 * Filter
@@ -158,31 +158,21 @@ $(document).ready(function() {
 	var brush = d3.svg.brush().x(filter.x).on("brush", _.debounce(brushed, 200));
 
 	function brushed() {
-		volume.x.domain(brush.empty() ? filter.x.domain() : brush.extent());
+
+		var extent = brush.empty() ? filter.x.domain() : brush.extent();
+
+		volume.x.domain(extent);
 		focus.select(".volume").attr("d", volume.area);
 		focus.select(".x.axis").call(volume.xAxis);
 
-		pluviometria.xScale.domain(brush.empty() ? filter.x.domain() : brush.extent());
-		stories.xScale.domain(brush.empty() ? filter.x.domain() : brush.extent());
-		
-		//ga('send', 'event', 'graph', 'filtered');
+		pluviometria.xScale.domain(extent);
+
+		stories.brush(extent);
 
 		svg
 			.selectAll(".dot")
 			.attr("cx", pluviometria.xMap)
 			.attr("cy", pluviometria.yMap);
-
-		svg
-			.selectAll(".story")
-			.attr("cx", stories.xMap)
-			.attr("cy", stories.yMap);
-
-		svg
-			.selectAll(".stories line")
-			.attr("x1", stories.xMap)
-			.attr("y1", stories.yMap)
-			.attr("x2", stories.xMap)
-			.attr("y2", stories.offsetMap);
 
 		if(!brush.empty())
 			filterInfo(brush.extent());
@@ -339,15 +329,6 @@ $(document).ready(function() {
 						.style("opacity", 0);
 				});
 
-
-		var storiesDots = focus.append("g")
-			.attr("transform", "translate(0,0)")
-			.attr("class", "stories");
-
-		var storiesTooltip = d3.select("body").append("div")
-			.attr("class", "story-content")
-			.style("opacity", 0);
-
 		filter.x.domain(volume.x.domain());
 		filter.y.domain(volume.y.domain());
 
@@ -398,32 +379,7 @@ $(document).ready(function() {
 				.attr("cx", pluviometria.xMap)
 				.attr("cy", pluviometria.yMap);
 
-			stories.yValue = function(d) {
-				var volumeData = _.find(parsed, function(p) {
-					return d.date.unix() == p.date.getTime() / 1000;
-				});
-
-				if(volumeData) {
-					return volumeData.volume;
-				} else {
-					return -1000;
-				}
-			};
-
-			storiesDots
-				.selectAll(".story")
-				.transition()
-				.duration(2000)
-				.attr("cy", stories.yMap);
-
-			storiesDots
-				.selectAll('line')
-				.transition()
-				.duration(2000)
-				.attr("x1", stories.xMap)
-				.attr("y1", stories.yMap)
-				.attr("x2", stories.xMap)
-				.attr("y2", stories.offsetMap);
+			stories.updateData(parsed);
 
 			selection = _.last(parsed);
 			updateInfo(selection);
@@ -433,6 +389,8 @@ $(document).ready(function() {
 			filterInfo([moment(selection.date).subtract('days', 7).toDate(), moment(selection.date).toDate()]);
 
 		});
+
+		stories.draw(parsed, focus, volume, width, height);
 
 		$('#site-header .mananciais li:nth-child(1)').click();
 
@@ -465,88 +423,7 @@ $(document).ready(function() {
 
 		// Init filter
 		$('#filter').show();
-		filterInfo([moment(selection.date).subtract('days', 7).toDate(), moment(selection.date).toDate()]);		
-
-
-		/*
-		 * Stories
-		 */
-
-		stories = {};
-
-		stories.xValue = function(d) { return d.date; };
-		stories.xScale = d3.time.scale().range([0, width]);
-		stories.xMap = function(d) { return stories.xScale(stories.xValue(d)); };
-
-		stories.yValue = function(d) {
-			var volumeData = _.find(parsed, function(p) {
-				return d.date.unix() == p.date.getTime() / 1000;
-			});
-
-			if(volumeData) {
-				return volumeData.volume;
-			} else {
-				return -1000;
-			}
-		};
-		
-		stories.yScale = d3.scale.linear().range([height, 220]);
-		stories.yMap = function(d) { return stories.yScale(stories.yValue(d)) * 0.85; };
-
-		stories.offsetMap = function(d) { return stories.yScale(stories.yValue(d)); };
-
-		var storiesData;
-
-		$.get('/events', function(data) {
-
-			storiesData = data;
-			_.each(storiesData, function(item) {
-				item.date = moment(item.data, 'DD/MM/YYYY');
-			});			
-
-			stories.xScale.domain(volume.x.domain());
-			stories.yScale.domain(volume.y.domain());
-
-			storiesDots
-				.selectAll('line')
-				.data(storiesData)
-					.enter().append('line')
-					.attr("x1", stories.xMap)
-					.attr("y1", stories.yMap)
-					.attr("x2", stories.xMap)
-					.attr("y2", stories.offsetMap)
-					.attr('class', 'story-line')
-					.style({stroke: '#fc0', 'stroke-width': '1px', 'stroke-opacity': .5});
-
-			storiesDots
-				.selectAll(".story")
-				.data(storiesData)
-					.enter().append("circle")
-					.attr("class", "story")
-					.attr("r", 5)
-					.attr("cx", stories.xMap)
-					.attr("cy", stories.yMap)
-					.on("mouseover", function(d) {
-						storiesTooltip.transition()
-							.duration(200)
-							.style("opacity", 1);
-
-							storiesTooltip.html('<p class="date">' + d.date.format('DD/MM/YYYY') + '</p><h3>' + d.titulo + '</h3>')
-							.style("left", (d3.event.pageX) + "px")
-							.style("top", (d3.event.pageY) + "px");
-					})
-					.on("mousemove", function(d) {
-						storiesTooltip
-							.style("left", (d3.event.pageX) + "px")
-							.style("top", (d3.event.pageY) + "px");
-					})
-					.on("mouseout", function(d) {
-						storiesTooltip.transition()
-							.duration(500)
-							.style("opacity", 0);
-					});
-
-		}, 'json');
+		filterInfo([moment(selection.date).subtract('days', 7).toDate(), moment(selection.date).toDate()]);
 
 	});
 
