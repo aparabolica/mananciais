@@ -36,8 +36,15 @@ $(document).ready(function() {
 	var selection;
 
 	var margin = {top: 0, right: 20, bottom: 260, left: 20},
-		width = $('body').width() - margin.left - margin.right,
-		height = $('body').height() - margin.top - margin.bottom;
+		width,
+		height;
+
+	var updateDimensions = function() {
+		width = $(window).width() - margin.left - margin.right,
+		height = $(window).height() - margin.top - margin.bottom;
+	};
+
+	updateDimensions();
 
 	var volume = require('./volume')();
 
@@ -51,18 +58,10 @@ $(document).ready(function() {
 
 	var stories = require('./stories')();
 
-	/*****/
-
 	var svg = d3.select("body").append("svg")
 		.attr("width", width + margin.left + margin.right)
 		.attr("height", height + margin.top + margin.bottom)
 		.attr("id", "main-chart");
-
-	svg.append("defs").append("clipPath")
-		.attr("id", "clip")
-		.append("rect")
-			.attr("width", width)
-			.attr("height", height);
 
 	var focus = svg.append("g")
 		.attr("class", "focus")
@@ -163,6 +162,20 @@ $(document).ready(function() {
 
 		selection = _.last(parsed);
 		updateInfo(selection);
+
+		$(window).resize(function() {
+
+			updateDimensions();
+
+			svg.attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+
+			//volume.resize(width, height);
+
+			//filter.resize(width, height, margin);
+			//pluviometria.resize(width, height, margin);
+			//filter.resize(width, height, margin);
+
+		}).resize();
 
 	});
 

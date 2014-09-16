@@ -31,6 +31,8 @@ module.exports = function() {
 
 		container = svgContainer;
 
+		volume.data = data;
+
 		var x = d3.time.scale().range([0, width]);
 		var y = d3.scale.linear().range([height, 220]);
 		var area = d3.svg.area()
@@ -71,6 +73,24 @@ module.exports = function() {
 
 	};
 
+	// Under development
+	volume.resize = function(width, height) {
+
+		volume.svg.x = d3.time.scale().range([0, width]);
+		volume.svg.y = d3.scale.linear().range([height, 220]);
+		volume.svg.axis.y = d3.svg.axis().scale(volume.svg.y).tickSize(width).tickFormat(yAxisFormat).orient("right");
+		volume.svg.area.y0(height);
+
+		//volume.svg.x.domain(volume.svg.x.domain());
+		//volume.svg.y.domain(volume.svg.y.domain());
+
+		//volume.svg.node.datum(volume.data).attr('d', volume.svg.area);
+
+		container.select(".x.axis").attr("transform", "translate(0," + height + ")").call(volume.svg.axis.x);
+		container.select(".y.axis").call(volume.svg.axis.y).call(axisPosition);
+
+	};
+
 	volume.brush = function(extent) {
 
 		volume.svg.x.domain(extent);
@@ -80,6 +100,8 @@ module.exports = function() {
 	};
 
 	volume.updateData = function(data) {
+
+		volume.data = data;
 
 		volume.svg.node.datum(data).transition().duration(2000).attr("d", volume.svg.area);
 		container.select(".x.axis").call(volume.svg.axis.x);
