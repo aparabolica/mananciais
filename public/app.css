@@ -547,6 +547,7 @@ h3 {
 .story {
 	stroke-width: 0;
 	fill: #fc0;
+	cursor: pointer;
 }
 .story-content {
 	position: absolute;

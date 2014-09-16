@@ -398,7 +398,17 @@ $(document).ready(function() {
 				.attr("cx", pluviometria.xMap)
 				.attr("cy", pluviometria.yMap);
 
-			stories.yValue = function(d) { return _.find(parsed, function(p) { return d.date.isSame(p.date, 'day'); }).volume; };
+			stories.yValue = function(d) {
+				var volumeData = _.find(parsed, function(p) {
+					return d.date.unix() == p.date.getTime() / 1000;
+				});
+
+				if(volumeData) {
+					return volumeData.volume;
+				} else {
+					return -1000;
+				}
+			};
 
 			storiesDots
 				.selectAll(".story")
@@ -468,7 +478,18 @@ $(document).ready(function() {
 		stories.xScale = d3.time.scale().range([0, width]);
 		stories.xMap = function(d) { return stories.xScale(stories.xValue(d)); };
 
-		stories.yValue = function(d) { return _.find(parsed, function(p) { return d.date.isSame(p.date, 'day'); }).volume; };
+		stories.yValue = function(d) {
+			var volumeData = _.find(parsed, function(p) {
+				return d.date.unix() == p.date.getTime() / 1000;
+			});
+
+			if(volumeData) {
+				return volumeData.volume;
+			} else {
+				return -1000;
+			}
+		};
+		
 		stories.yScale = d3.scale.linear().range([height, 220]);
 		stories.yMap = function(d) { return stories.yScale(stories.yValue(d)) * 0.85; };
 
