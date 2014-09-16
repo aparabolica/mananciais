@@ -45,8 +45,8 @@ module.exports = function() {
 				item.date = moment(item.data, 'DD/MM/YYYY');
 			});			
 
-			stories.svg.x.scale.domain(domain.x.domain());
-			stories.svg.y.scale.domain(domain.y.domain());
+			stories.svg.x.scale.domain(domain.svg.x.domain());
+			stories.svg.y.scale.domain(domain.svg.y.domain());
 
 			stories.svg.node
 				.selectAll('line')
@@ -86,7 +86,8 @@ module.exports = function() {
 							.duration(500)
 							.style("opacity", 0);
 					});
-			}, 'json');
+
+		}, 'json');
 
 		return stories;
 
@@ -108,7 +109,7 @@ module.exports = function() {
 			.attr("x2", stories.svg.x.map)
 			.attr("y2", stories.svg.y.offsetMap);
 
-	}
+	};
 
 	stories.updateData = function(data) {
 
@@ -137,7 +138,7 @@ module.exports = function() {
 			.attr("y1", stories.svg.y.map)
 			.attr("y2", stories.svg.y.offsetMap);
 
-	}
+	};
 
 	return stories;
 

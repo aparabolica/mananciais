@@ -23,7 +23,7 @@
 	"main": "mananciais.js",
 	"scripts": {
 		"postinstall": "npm run build",
-		"build": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mt > public/app.js",
+		"build": "./node_modules/.bin/browserify src/index.js > public/app.js",
 		"start": "node mananciais.js serve"
 	},
 	"bin": "./mananciais.js",

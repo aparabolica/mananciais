@@ -1,10 +1,7 @@
 'use strict';
 
 var d3 = require('d3'),
-	_ = require('underscore'),
-	$ = require('jquery'),
-	icons = require('./icons'),
-	moment = require('moment');
+	icons = require('./icons');
 
 module.exports = function() {
 
@@ -33,8 +30,8 @@ module.exports = function() {
 			node: svgContainer.append("g").attr("transform", "translate(0,0)").attr("class", "pluviometria")
 		};
 
-		pluviometria.svg.x.scale.domain(domain.x.domain());
-		pluviometria.svg.y.scale.domain(domain.y.domain());
+		pluviometria.svg.x.scale.domain(domain.svg.x.domain());
+		pluviometria.svg.y.scale.domain(domain.svg.y.domain());
 		pluviometria.svg.s.scale.domain(d3.extent(data, function(d) { return d.pluviometria; }));
 
 		pluviometria.svg.node
@@ -44,7 +41,7 @@ module.exports = function() {
 				.attr("class", "dot")
 				.attr("r", pluviometria.svg.s.map)
 				.attr("cx", pluviometria.svg.x.map)
-				.attr("cy", 220)
+				.attr("cy", pluviometria.svg.y.map)
 				.on("mouseover", function(d) {
 					pluviometria.tooltip.transition()
 						.duration(200)
@@ -77,7 +74,7 @@ module.exports = function() {
 			.attr("cx", pluviometria.svg.x.map)
 			.attr("cy", pluviometria.svg.y.map);
 
-	}
+	};
 
 	pluviometria.updateData = function(data) {
 
@@ -91,8 +88,8 @@ module.exports = function() {
 			.attr("cx", pluviometria.svg.x.map)
 			.attr("cy", pluviometria.svg.y.map);
 
-	}
+	};
 
 	return pluviometria;
 
-}
+};
