@@ -137,8 +137,6 @@ module.exports = function() {
 			.attr("y1", stories.svg.y.map)
 			.attr("y2", stories.svg.y.offsetMap);
 
-		return stories;
-
 	}
 
 	return stories;

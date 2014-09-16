@@ -78,20 +78,7 @@ $(document).ready(function() {
 			.attr("dy", -4);
 	};
 
-	var pluviometria = {};
-
-	pluviometria.xValue = function(d) { return d.date; };
-	pluviometria.xScale = d3.time.scale().range([0, width]);
-	pluviometria.xMap = function(d) { return pluviometria.xScale(pluviometria.xValue(d)); };
-
-	pluviometria.yValue = function(d) { return d.volume; };
-	pluviometria.yScale = d3.scale.linear().range([height, 220]);
-	pluviometria.yMap = function(d) { return pluviometria.yScale(pluviometria.yValue(d)); };
-
-	pluviometria.sValue = function(d) { return d.pluviometria; };
-	pluviometria.sScale = d3.scale.linear().range([0, 10]);
-	pluviometria.sMap = function(d) { return pluviometria.sScale(pluviometria.sValue(d)); };
-
+	var pluviometria = require('./pluviometria')();
 	var stories = require('./stories')();
 
 	/*
@@ -165,14 +152,9 @@ $(document).ready(function() {
 		focus.select(".volume").attr("d", volume.area);
 		focus.select(".x.axis").call(volume.xAxis);
 
-		pluviometria.xScale.domain(extent);
+		pluviometria.brush(extent);
 
 		stories.brush(extent);
-
-		svg
-			.selectAll(".dot")
-			.attr("cx", pluviometria.xMap)
-			.attr("cy", pluviometria.yMap);
 
 		if(!brush.empty())
 			filterInfo(brush.extent());
@@ -289,46 +271,6 @@ $(document).ready(function() {
 			.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5})
 			.attr("opacity", 0);
 
-		pluviometria.xScale.domain(volume.x.domain());
-		pluviometria.yScale.domain(volume.y.domain());
-		pluviometria.sScale.domain(d3.extent(parsed, function(d) { return d.pluviometria; }));
-
-		var pluviometriaDots = focus.append("g")
-			.attr("transform", "translate(0,0)")
-			.attr("class", "pluviometria");
-
-		var tooltip = d3.select("body").append("div")
-			.attr("class", "tooltip")
-			.style("opacity", 0);
-
-		pluviometriaDots
-			.selectAll(".dot")
-			.data(parsed)
-				.enter().append("circle")
-				.attr("class", "dot")
-				.attr("r", pluviometria.sMap)
-				.attr("cx", pluviometria.xMap)
-				.attr("cy", 220)
-				.on("mouseover", function(d) {
-					tooltip.transition()
-						.duration(200)
-						.style("opacity", 1);
-				
-						tooltip.html(icons.rain + d.pluviometria + "mm")
-						.style("left", (d3.event.pageX) + "px")
-						.style("top", (d3.event.pageY) + "px");
-				})
-				.on("mousemove", function(d) {
-					tooltip
-						.style("left", (d3.event.pageX) + "px")
-						.style("top", (d3.event.pageY) + "px");
-				})
-				.on("mouseout", function(d) {
-					tooltip.transition()
-						.duration(500)
-						.style("opacity", 0);
-				});
-
 		filter.x.domain(volume.x.domain());
 		filter.y.domain(volume.y.domain());
 
@@ -369,17 +311,8 @@ $(document).ready(function() {
 			focus.select(".x.axis").call(volume.xAxis);
 			context.select(".x.axis").call(filter.xAxis);
 
-			pluviometriaDots
-				.selectAll(".dot")
-				.data(parsed)
-				.transition()
-				.duration(2000)
-				.attr("class", "dot")
-				.attr("r", pluviometria.sMap)
-				.attr("cx", pluviometria.xMap)
-				.attr("cy", pluviometria.yMap);
-
 			stories.updateData(parsed);
+			pluviometria.updateData(parsed);
 
 			selection = _.last(parsed);
 			updateInfo(selection);
@@ -391,6 +324,7 @@ $(document).ready(function() {
 		});
 
 		stories.draw(parsed, focus, volume, width, height);
+		pluviometria.draw(parsed, focus, volume, width, height);
 
 		$('#site-header .mananciais li:nth-child(1)').click();
 
