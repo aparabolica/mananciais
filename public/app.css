@@ -549,6 +549,10 @@ h3 {
 	fill: #fc0;
 	cursor: pointer;
 }
+.story.cluster {
+	stroke: rgba(0,0,0,0.5);
+	stroke-width: 5px;
+}
 .story-content {
 	position: absolute;
 	width: 200px;
