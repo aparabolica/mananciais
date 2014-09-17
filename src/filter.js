@@ -10,8 +10,6 @@ module.exports = function(brushedCb) {
 
 	var filter = {};
 
-	var context;
-
 	var resultsTmpl = '';
 	resultsTmpl += '<p class="volume">' + icons.water + '<span class="val"></span> <span class="label">de variação de volume</span></p>';
 	resultsTmpl += '<p class="pluviometria">' + icons.rain + '<span class="val"></span> <span class="label">de pluviometria acumulada</span></p>';
@@ -38,7 +36,7 @@ module.exports = function(brushedCb) {
 		filter.svg.x.domain(d3.extent(data, function(d) { return d.date; }));
 		filter.svg.y.domain([0, d3.max(data, function(d) { return d.volume; })]);
 
-		context = filter.svg.node.append("path")
+		filter.context = filter.svg.node.append("path")
 			.datum(data)
 			.attr("class", "area volume")
 			.attr("d", filter.svg.area);
@@ -62,11 +60,25 @@ module.exports = function(brushedCb) {
 
 	}
 
+	filter.brushArea = function(extent) {
+
+		filter.svg.x.domain(extent);
+		filter.redraw();
+
+	};
+
+	filter.redraw = function() {
+
+		filter.context.attr("d", filter.svg.area);
+		filter.svg.node.select('.x.axis').call(filter.svg.axis.x);
+
+	};
+
 	filter.updateData = function(data) {
 
 		var selection = _.last(data);
 
-		context.datum(data).transition().duration(2000).attr("d", filter.svg.area);
+		filter.context.datum(data).transition().duration(2000).attr("d", filter.svg.area);
 		filter.svg.node.select(".x.axis").call(filter.svg.axis.x);
 
 		$('#filter').show();
@@ -108,7 +120,7 @@ module.exports = function(brushedCb) {
 			axis: {
 				x: d3.svg.axis().scale(x).orient("bottom")
 			},
-			node: container.append("g").attr("class", "context").attr("transform", "translate(" + filter.positions.margin.left + "," + filter.positions.margin.top + ")")
+			node: container.append("g").attr("class", "context").attr("transform", "translate(" + filter.positions.margin.left + "," + filter.positions.margin.top + ")").attr('width', filter.positions.width).attr('height', filter.positions.height).style({'overflow': 'hidden'})
 		};
 
 	}

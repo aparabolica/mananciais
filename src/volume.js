@@ -25,18 +25,15 @@ module.exports = function() {
 
 	var volume = {};
 
-	var container;
-
 	volume.draw = function(data, svgContainer, width, height) {
 
-		container = svgContainer;
+		volume.container = svgContainer;
 
 		volume.data = data;
 
 		var x = d3.time.scale().range([0, width]);
 		var y = d3.scale.linear().range([height, 220]);
 		var area = d3.svg.area()
-			.interpolate("monotone")
 			.x(function(d) { return volume.svg.x(d.date); })
 			.y0(height)
 			.y1(function(d) { return volume.svg.y(d.volume); });
@@ -86,16 +83,22 @@ module.exports = function() {
 
 		//volume.svg.node.datum(volume.data).attr('d', volume.svg.area);
 
-		container.select(".x.axis").attr("transform", "translate(0," + height + ")").call(volume.svg.axis.x);
-		container.select(".y.axis").call(volume.svg.axis.y).call(axisPosition);
+		volume.container.select(".x.axis").attr("transform", "translate(0," + height + ")").call(volume.svg.axis.x);
+		volume.container.select(".y.axis").call(volume.svg.axis.y).call(axisPosition);
 
 	};
 
 	volume.brush = function(extent) {
 
 		volume.svg.x.domain(extent);
+		volume.redraw();
+
+	};
+
+	volume.redraw = function() {
+
 		volume.svg.node.attr("d", volume.svg.area);
-		container.select(".x.axis").call(volume.svg.axis.x);
+		volume.container.select(".x.axis").call(volume.svg.axis.x);
 
 	};
 
@@ -104,7 +107,7 @@ module.exports = function() {
 		volume.data = data;
 
 		volume.svg.node.datum(data).transition().duration(2000).attr("d", volume.svg.area);
-		container.select(".x.axis").call(volume.svg.axis.x);
+		volume.container.select(".x.axis").call(volume.svg.axis.x);
 
 	};
 

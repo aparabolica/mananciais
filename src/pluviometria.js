@@ -65,16 +65,28 @@ module.exports = function() {
 
 	};
 
+	pluviometria.hide = function() {
+		pluviometria.svg.node.style({'display': 'none'});
+	};
+
 	pluviometria.brush = function(extent) {
+
+		pluviometria.svg.node.style({'display': 'block'});
 
 		pluviometria.svg.x.scale.domain(extent);
 
-		pluviometria.svg.node
-			.selectAll(".dot")
-			.attr("cx", pluviometria.svg.x.map)
-			.attr("cy", pluviometria.svg.y.map);
+		pluviometria.redraw();
 
 	};
+
+	pluviometria.redraw = function() {
+
+		pluviometria.svg.node
+			.selectAll(".dot")
+			.attr("r", pluviometria.svg.s.map)
+			.attr("cx", pluviometria.svg.x.map)
+			.attr("cy", pluviometria.svg.y.map);
+	}
 
 	pluviometria.updateData = function(data) {
 

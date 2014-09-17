@@ -49,9 +49,9 @@ $(document).ready(function() {
 	var volume = require('./volume')();
 
 	var filter = require('./filter')(function(extent) {
-		volume.brush(extent);
-		pluviometria.brush(extent);
-		stories.brush(extent);
+		//volume.brush(extent);
+		//pluviometria.brush(extent);
+		//stories.brush(extent);
 	});
 
 	var pluviometria = require('./pluviometria')();
@@ -63,9 +63,19 @@ $(document).ready(function() {
 		.attr("height", height + margin.top + margin.bottom)
 		.attr("id", "main-chart");
 
+	var zoom = d3.behavior.zoom();
+
 	var focus = svg.append("g")
 		.attr("class", "focus")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+		.call(zoom);
+
+	// svg.append("rect")
+	// 	.attr("class", "zoom-pane")
+	// 	.attr('fill', 'transparent')
+	// 	.attr("width", width + margin.left + margin.right)
+	// 	.attr("height", height + margin.top + margin.bottom)
+	// 	.call(zoom);
 
 	load(svg, function(err, d) {
 
@@ -107,6 +117,7 @@ $(document).ready(function() {
 		};
 
 		volume.draw(parsed, focus, width, height);
+
 		filter.draw(parsed, svg, width, height, margin);
 
 		var selectionRect = focus.append("svg:rect")
@@ -121,7 +132,7 @@ $(document).ready(function() {
 			.attr("x2", 0)
 			.attr("y2", height)
 			.attr("class", "selection-line")
-			.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5})
+			.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5, 'pointer-events': 'none'})
 			.attr("opacity", 0);
 
 		stories.draw(parsed, focus, volume, width, height);
@@ -176,6 +187,21 @@ $(document).ready(function() {
 			//filter.resize(width, height, margin);
 
 		}).resize();
+
+		zoom.x(volume.svg.x).scaleExtent([1,15]).on("zoom", function() {
+			volume.redraw();
+			stories.preBrush(volume.svg.x.domain());
+			pluviometria.hide();
+			drawTools();
+		});
+
+		var drawTools = _.debounce(function() {
+			setTimeout(function() {
+				filter.brushArea(volume.svg.x.domain());
+				pluviometria.brush(volume.svg.x.domain());
+				stories.brush(volume.svg.x.domain());
+			}, 100);
+		}, 300);
 
 	});
 

@@ -21,8 +21,9 @@ module.exports = function() {
 			},
 			y: {
 				value: function(d) {
+					var unix = d.date.unix();
 					var volumeData = _.find(data, function(p) {
-						return d.date.unix() == p.date.getTime() / 1000;
+						return unix == p.date.getTime() / 1000;
 					});
 
 					if(volumeData) {
@@ -101,7 +102,33 @@ module.exports = function() {
 
 	};
 
+	stories.hide = function() {
+		stories.svg.node.style({'display': 'none'});
+	};
+
+	stories.preBrush = function(extent) {
+
+		stories.svg.node.style({'display': 'block'});
+
+		stories.svg.x.scale.domain(extent);
+
+		stories.svg.node
+			.selectAll('line')
+			.attr("x1", function(d) { return getClusterCoords(d.stories).cx; })
+			.attr("y1", function(d) { return getClusterCoords(d.stories).cy; })
+			.attr("x2", function(d) { return getClusterCoords(d.stories).cx; })
+			.attr("y2", function(d) { return getClusterCoords(d.stories).cyO; });
+
+		stories.svg.node
+			.selectAll(".story")
+			.attr("cx", function(d) { return getClusterCoords(d.stories).cx; })
+			.attr("cy", function(d) { return getClusterCoords(d.stories).cy; });
+
+	};
+
 	stories.brush = function(extent) {
+
+		stories.svg.node.style({'display': 'block'});
 
 		stories.svg.x.scale.domain(extent);
 
@@ -195,22 +222,34 @@ module.exports = function() {
 
 		_.each(groups, function(group) {
 
-			var cx = _.map(group, function(c) { return c._cx; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
-			var cy = _.map(group, function(c) { return c._cy; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
-			var cyO = _.map(group, function(c) { return c._cyO; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
-
-			clusters.push({
+			clusters.push(_.extend({
 				titulo: group.length + ' artigos',
-				stories: group,
-				cx: cx,
-				cy: cy,
-				cyO: cyO
-			});
+				stories: group
+			}, getClusterCoords(group)));
 
 		});
 
 		return clusters;
 
+	}
+
+	function getClusterCoords(group) {
+
+		_.each(group, function(story) {
+			story._cx = stories.svg.x.scale(stories.svg.x.value(story));
+			story._cy = stories.svg.y.scale(stories.svg.y.value(story)) * 0.9;
+			story._cyO = stories.svg.y.scale(stories.svg.y.value(story));
+		});
+
+		var cx = _.map(group, function(c) { return c._cx; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
+		var cy = _.map(group, function(c) { return c._cy; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
+		var cyO = _.map(group, function(c) { return c._cyO; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
+
+		return {
+			cx: cx,
+			cy: cy,
+			cyO: cyO
+		};
 	}
 
 	return stories;
