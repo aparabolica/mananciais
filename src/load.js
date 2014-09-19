@@ -22,7 +22,7 @@ module.exports = function(svg, callback) {
 
 	ga('send', 'screenview', {'screenName': 'Loading'});
 
-	d3.csv('/data.csv')
+	d3.csv('/data')
 		.on('progress', function() {
 			var i = d3.interpolate(progress.progress, d3.event.loaded / progress.total);
 			d3.transition().tween('progress', function() {
