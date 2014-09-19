@@ -1,0 +1,126 @@
+{% extends './layouts/default.html' %}
+
+{% block main %}
+  
+{% endblock %}
+
+{% block content %}
+
+	<script src="d3.v3.min.js" charset="utf-8"></script>
+
+	<style>
+		
+		svg {
+		  font: 10px sans-serif;
+		}
+
+		#intro {
+			color: white;
+			/*display: center;*/
+			text-align: center;
+		}
+
+		.title {
+		  font: 300 78px Helvetica Neue;
+		  fill: #666;
+		}
+
+		.system-info {
+		  text-anchor: middle;		 
+		}
+
+	</style>
+
+	<div id="intro">
+
+		<h2>Escolha o sistema que abastece sua região:</h2>
+
+		<div id="viz"></div>
+		
+	</div>
+
+	<script>
+
+		// The data
+		var data = [{
+				name: "Alto Cotia",
+				capacity: 16.5, // in million of m3
+				level: 0.10
+			},{
+				name: "Alto Tietê",
+				capacity: 517.3,
+				level: 0.20
+			},{
+				name: "Cantareira",
+				capacity: 990,
+				level: 0.32
+			},{
+				name: "Guarapiranga",
+				capacity: 272,
+				level: 0.40
+			},{
+				name: "Rio Claro",
+				capacity: 13.7,
+				level: 0.58
+			},{
+				name: "Rio Grande",
+				capacity: 995,
+				level: 0.63
+		}];
+
+		// Formatting
+		var margin = {top: 20, right: 20, bottom: 20, left: 50};
+		var width = 600 - margin.left - margin.right;
+		var height = 400 - margin.top - margin.bottom;
+
+		// Scales
+		var x = d3.scale.ordinal().domain(data.map(function(d){ return d.name })).rangeBands( [0, width], 0.2);
+		var y = d3.scale.linear().domain([0, 1]).range([height,0]);
+
+		var xAxis = d3.svg.axis().scale(x).orient("bottom");
+		var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5, "%");
+
+
+		// SVG
+		var svg = d3.select("#viz").append("svg")
+				.attr("width", width + margin.left + margin.right)
+			    .attr("height", height + margin.top + margin.bottom)
+			.append("g")
+			    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		   
+		var barGroup = svg.append("g").attr("class", "bar");
+
+		// Init bars
+		barGroup.selectAll("rect")
+				.data(data)
+			.enter().append("rect")
+				.attr("x", function(d) { return x(d.name) })
+				.attr("y", height)
+				.attr("height", 0 )
+				.attr("width", x.rangeBand())
+				.style("fill", "steelblue");
+
+		// Animate bars
+		barGroup.selectAll("rect")
+			.transition()
+			.duration(500)
+			.attr("y", function(d) { return  y(d.level) })
+			.attr("height", function(d){return height - y(d.level)})
+
+		// X Axis
+		svg.append("g")
+			.attr("transform", "translate(0," + height + ")")
+			.attr("class", "x axis")
+			.call(xAxis);
+
+		// Y Axis
+		svg.append("g")
+			.attr("class", "y axis")
+			.call(yAxis);
+
+
+
+
+	</script>
+
+{% endblock %}

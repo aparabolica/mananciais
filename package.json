@@ -1,56 +1,62 @@
 {
-	"name": "mananciais",
-	"description": "Visualizing São Paulo water sources historical data",
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/oeco/mananciais.git"
-	},
-	"bugs" : {
-		"url" : "https://github.com/oeco/mananciais/issues"
-	},
-	"licenses" : [
-	{
-		"type" : "GPLv3",
-		"url" : "https://github.com/oeco/mananciais/raw/master/LICENSE"
-	}
-	],
-	"version": "0.0.1",
-	"author": "Miguel Peixe <miguel@cardume.art.br>",
-	"engines": {
-		"node": "0.10.x",
-		"npm": "1.2.x"
-	},
-	"main": "mananciais.js",
-	"scripts": {
-		"postinstall": "npm run build",
-		"build": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mt > public/app.js",
-		"start": "node mananciais.js serve"
-	},
-	"bin": "./mananciais.js",
-	"dependencies": {
-		"express": "latest",
-		"compression": "latest",
-		"cors": "latest",
-		"commander": "latest",
-		"colors-tmpl": "latest",
-		"tablify": "latest",
-		"progress": "latest",
-		"cheerio": "latest",
-		"request": "latest",
-		"csv": "latest",
-		"moment": "latest",
-		"twix": "latest",
-		"underscore": "latest",
-		"async": "latest",
-		"browserify": "latest",
-		"uglify-js": "latest",
-		"d3": "latest",
-		"jquery": "latest"
-	},
-	"keywords": [
-		"scrapping",
-		"mananciais",
-		"water sources",
-		"cantareira"
-	]
+  "name": "mananciais",
+  "description": "Visualizing São Paulo water sources historical data",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/oeco/mananciais.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oeco/mananciais/issues"
+  },
+  "licenses": [
+    {
+      "type": "GPLv3",
+      "url": "https://github.com/oeco/mananciais/raw/master/LICENSE"
+    }
+  ],
+  "version": "0.0.1",
+  "author": "Miguel Peixe <miguel@cardume.art.br>",
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  },
+  "main": "mananciais.js serve",
+  "scripts": {
+    "postinstall": "npm run build",
+    "build": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mt > public/app.js",
+    "start": "node mananciais.js serve",
+    "nodemon": "./node_modules/.bin/nodemon mananciais.js serve"
+  },
+  "bin": "./mananciais.js",
+  "dependencies": {
+    "async": "^0.9.0",
+    "browserify": "^5.11.2",
+    "cheerio": "^0.17.0",
+    "colors-tmpl": "^0.1.0",
+    "commander": "^2.3.0",
+    "compression": "^1.1.0",
+    "cors": "^2.4.2",
+    "csv": "^0.4.0",
+    "d3": "^3.4.11",
+    "express": "^4.9.0",
+    "jquery": "^2.1.1",
+    "moment": "^2.8.3",
+    "progress": "^1.1.8",
+    "request": "^2.42.0",
+    "swig": "^1.4.2",
+    "tablify": "^0.1.5",
+    "twix": "^0.5.1",
+    "uglify-js": "^2.4.15",
+    "underscore": "^1.7.0",
+    "view-helpers": "^0.1.5"
+  },
+  "keywords": [
+    "scrapping",
+    "mananciais",
+    "water sources",
+    "cantareira"
+  ],
+  "devDependencies": {
+    "nodemon": "^1.2.1"
+  }
 }

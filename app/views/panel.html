@@ -1,0 +1,62 @@
+{% extends './layouts/default.html' %}
+
+{% block main %}
+	
+{% endblock %}
+
+{% block content %}
+
+	<div id="fb-root">
+		<script>(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=669235226468218";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));</script>
+		<header id="site-header">
+			<h2><a href="http://www.oeco.org.br/oeco-data" target="_blank" rel="external" title="OEco Data"><img src="img/oeco.png" alt="OEco" /> Data</a></h2>
+			<div class="header-options">
+				<div class="manancial-drop header-option">
+					<div class="header-option-trigger">
+						<h1><span class="manancial">Mananciais de São Paulo</span> <span class="arrow"></span></h1>
+						<ul class="mananciais options">
+							<li data-manancial="sistemaCantareira">Sistema Cantareira</li>
+							<li data-manancial="sistemaGuarapiranga">Sistema Guarapiranga</li>
+							<li data-manancial="sistemaAltoTiete">Sistema Alto Tietê</li>
+							<li data-manancial="sistemaCotia">Sistema Alto Cotia</li>
+							<li data-manancial="sistemaRioGrande">Sistema Rio Grande</li>
+							<li data-manancial="sistemaRioClaro">Sistema Rio Claro</li>
+						</ul>
+					</div>
+					<div class="manancial-info"></div>
+				</div>
+			</div>
+			<a class="about-link" href="#">Sobre</a>
+		</header>
+		<section id="about">
+			<a class="close-about"></a>
+			<div class="about-content">
+				<p>O aplicativo sobre os sistemas de abastecimento de São Paulo obtêm, através de um programa, dados de nível dos reservatórios e precipitação do <a href="http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx" target="_blank" rel="external">site da Sabesp</a>. Para obter estes dados, a técnica utilizada foi a raspagem, ou scrapping como é conhecido em inglês. De maneira resumida, o que fizemos foi <a href="https://github.com/oeco/mananciais/blob/master/server/scrap.js" target="_blank" rel="external">um código em linguagem JavaScript</a>, que permite que a cada atualização no site da Sabesp esteja sincronizada com <a href="https://github.com/oeco/mananciais/blob/master/data/data.csv" target="_blank" rel="external">nossa base de dados</a>.</p>
+
+				<p>A visualização utiliza a <a href="http://d3js.org/" target="_blank" rel="external">biblioteca D3 (Data Driven Documents)</a>, que também é baseada em JavaScript. Ela permite também a filtragem dos dados por períodos específicos de tempo.</p>
+
+				<p>O trabalho foi inspirado pela <a href="http://matheus.co/represas/#/" target="_blank" rel="external">visualização realizada pelo estúdio Jurema</a> há duas semanas. Nossa contribuição é exatamente permitir uma análise da série histórica dos dados sobre os reservatórios</p>
+
+				<p>Segue aqui o o código-aberto da aplicação: <a href="https://github.com/oeco/mananciais">https://github.com/oeco/mananciais</a></p>
+			</div>
+		</section>
+		<section id="info">
+		</section>
+		<section id="filter">
+			<div class="filter-input">
+				<h3>Filtro</h3>
+				<label><span>de</span> <input class="start" type="text" placeholder="data inicial" disabled /></label>
+				<label><span>até</span> <input class="end" type="text" placeholder="data final" disabled /></label>
+			</div>
+			<div class="filter-result">
+				<h3>Dados</h3>
+			</div>
+		</section>
+	</div>
+{% endblock %}
