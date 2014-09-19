@@ -12,7 +12,7 @@ var fs = require('fs');
 
 module.exports = function (app, passport) {
 
-	app.get('/data.csv', function(req, res) {
+	app.get('/data', function(req, res) {
 		fs.readFile('data/data.csv', function(err, data) {
 			res.header("Content-Length", data.length);
 			res.header("Access-Control-Allow-Origin", "*");

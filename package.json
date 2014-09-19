@@ -14,7 +14,7 @@
       "url": "https://github.com/oeco/mananciais/raw/master/LICENSE"
     }
   ],
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Miguel Peixe <miguel@cardume.art.br>",
   "engines": {
     "node": "0.10.x",

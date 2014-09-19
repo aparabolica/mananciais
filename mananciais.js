@@ -6,7 +6,8 @@ var program = require('commander'),
 	fs = require('fs'),
 	_ = require('underscore'),
 	csv = require('csv'),
-	scrap = require('./lib/scrap');
+	scrap = require('./lib/scrap'),
+	request = require('request');
 
 function print(s) {
 	console.log(colorsTmpl(s));
