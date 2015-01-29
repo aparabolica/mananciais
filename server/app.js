@@ -103,10 +103,6 @@ if(program.serve) {
 	app.get('/data', getData);
 	app.get('/data.csv', getData);
 
-	app.get('/events', function(req, res) {
-
-	});
-
 	app.get('/*', function(req, res) {
 		res.sendfile('public/index.html');
 	});
