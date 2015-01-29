@@ -179,7 +179,7 @@ function scrap() {
 								if(dataItem.length) {
 
 									if(d == 1) {
-									
+
 										var title = dataItem.find('td img').attr('src');
 										if(title) {
 											title = title.replace('imagens/', '').replace('.gif', '');

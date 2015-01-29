@@ -91,13 +91,17 @@ if(program.serve) {
 	// });
 
 	var getData = function(req, res) {
-		fs.readFile('data/data.csv', function(err, data) {
-			res.header("Content-Type", 'text/plain');
-			res.header("Content-Length", data.length);
-			res.header("Access-Control-Allow-Origin", "*");
-			res.header("Access-Control-Allow-Headers", "X-Requested-With");
-			res.send(data);
-		});
+		res.header("Content-Type", 'text/plain');
+		res.header("Access-Control-Allow-Origin", "*");
+		res.header("Access-Control-Allow-Headers", "X-Requested-With");
+		res.sendfile('data/data.csv');
+		// fs.readFile('data/data.csv', function(err, data) {
+		// 	res.header("Content-Type", 'text/plain');
+		// 	res.header("Content-Length", data.length);
+		// 	res.header("Access-Control-Allow-Origin", "*");
+		// 	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+		// 	res.send(data);
+		// });
 	};
 
 	app.get('/data', getData);
