@@ -90,7 +90,7 @@ if(program.serve) {
 		res.send(events);
 	});
 
-	app.get('/data', function(req, res) {
+	var getData = function(req, res) {
 		fs.readFile('data/data.csv', function(err, data) {
 			res.header("Content-Type", 'text/plain');
 			res.header("Content-Length", data.length);
@@ -98,7 +98,10 @@ if(program.serve) {
 			res.header("Access-Control-Allow-Headers", "X-Requested-With");
 			res.send(data);
 		});
-	});
+	};
+
+	app.get('/data', getData);
+	app.get('/data.csv', getData);
 
 	app.get('/events', function(req, res) {
 
