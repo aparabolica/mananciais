@@ -108,7 +108,7 @@ function scrap() {
 
 	}
 
-	console.log('\n' + toDownload.length + ' entradas faltando.');
+	console.log('\n' + toDownload.length + ' entradas faltando ou com erro.');
 
 	// First connection to get form data;
 	request({

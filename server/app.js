@@ -6,7 +6,8 @@ var program = require('commander'),
 	fs = require('fs'),
 	_ = require('underscore'),
 	csv = require('csv'),
-	scrap = require('./scrap');
+	scrap = require('./scrap'),
+	request = require('request');
 
 function print(s) {
 	console.log(colorsTmpl(s));
@@ -57,13 +58,50 @@ if(program.serve) {
 
 	app.use(require('cors')());
 
-	app.get('/data.csv', function(req, res) {
+	function getEvents(cb) {
+		var csvUrl = 'https://docs.google.com/spreadsheets/d/17oq0WUIfUZTp7l0y1dtN9mqZuPInSZW2wclgUAvU8YQ/export?format=csv';
+		request(csvUrl, function(err, res, body) {
+			if(!err) {
+				csv.parse(body, { columns: true }, function(err, output) {
+					if(!err) {
+						cb(output);
+					} else {
+						cb(false);
+					}
+				});
+			} else {
+				cb(false);
+			}
+		});
+	}
+
+	var events = [];
+	getEvents(function(data) {
+		if(data) events = data;
+	});
+
+	setInterval(function() {
+		getEvents(function(data) {
+			if(data) events = data;
+		});
+	}, 1000 * 60 * 2);
+
+	app.get('/events', function(req, res) {
+		res.send(events);
+	});
+
+	app.get('/data', function(req, res) {
 		fs.readFile('data/data.csv', function(err, data) {
+			res.header("Content-Type", 'text/plain');
 			res.header("Content-Length", data.length);
 			res.header("Access-Control-Allow-Origin", "*");
 			res.header("Access-Control-Allow-Headers", "X-Requested-With");
-			res.sendfile('data.csv', {root: './data'});
+			res.send(data);
 		});
+	});
+
+	app.get('/events', function(req, res) {
+
 	});
 
 	app.get('/*', function(req, res) {
