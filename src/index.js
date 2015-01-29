@@ -49,26 +49,30 @@ $(document).ready(function() {
 	var volume = require('./volume')();
 
 	var filter = require('./filter')(function(extent) {
-		//volume.brush(extent);
-		//pluviometria.brush(extent);
-		//stories.brush(extent);
+		// Brush graph by filter
+		volume.brush(extent);
+		pluviometria.brush(extent);
+		if(stories)
+			stories.brush(extent);
 	});
 
 	var pluviometria = require('./pluviometria')();
 
-	var stories = require('./stories')();
+	// var stories = require('./stories')();
+	var stories = false;
 
 	var svg = d3.select("body").append("svg")
 		.attr("width", width + margin.left + margin.right)
 		.attr("height", height + margin.top + margin.bottom)
 		.attr("id", "main-chart");
 
-	var zoom = d3.behavior.zoom();
+	// var zoom = d3.behavior.zoom();
+	var zoom = zoom;
 
 	var focus = svg.append("g")
 		.attr("class", "focus")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-		.call(zoom);
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		//.call(zoom);
 
 	// svg.append("rect")
 	// 	.attr("class", "zoom-pane")
@@ -108,7 +112,8 @@ $(document).ready(function() {
 
 			volume.updateData(data);
 			filter.updateData(data);
-			stories.updateData(data);
+			if(stories)
+				stories.updateData(data);
 			pluviometria.updateData(data);
 
 			selection = _.last(data);
@@ -135,7 +140,8 @@ $(document).ready(function() {
 			.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5, 'pointer-events': 'none'})
 			.attr("opacity", 0);
 
-		stories.draw(parsed, focus, volume, width, height);
+		if(stories)
+			stories.draw(parsed, focus, volume, width, height);
 		pluviometria.draw(parsed, focus, volume, width, height);
 
 		$('#site-header .arrow').append($(icons.arrow));
@@ -188,18 +194,22 @@ $(document).ready(function() {
 
 		}).resize();
 
-		zoom.x(volume.svg.x).scaleExtent([1,15]).on("zoom", function() {
-			volume.redraw();
-			stories.preBrush(volume.svg.x.domain());
-			pluviometria.hide();
-			drawTools();
-		});
+		if(zoom) {
+			zoom.x(volume.svg.x).scaleExtent([1,15]).on("zoom", function() {
+				volume.redraw();
+				if(stories)
+					stories.preBrush(volume.svg.x.domain());
+				pluviometria.hide();
+				drawTools();
+			});
+		}
 
 		var drawTools = _.debounce(function() {
 			setTimeout(function() {
 				filter.brushArea(volume.svg.x.domain());
 				pluviometria.brush(volume.svg.x.domain());
-				stories.brush(volume.svg.x.domain());
+				if(stories)
+					stories.brush(volume.svg.x.domain());
 			}, 100);
 		}, 300);
 
