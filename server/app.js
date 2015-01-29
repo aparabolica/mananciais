@@ -52,11 +52,11 @@ if(program.serve) {
 
 	var app = express();
 
-	app.use(require('compression')());
+	//app.use(require('compression')());
 
 	app.use('/', express.static(__dirname + '/../public'));
 
-	app.use(require('cors')());
+	//app.use(require('cors')());
 
 	function getEvents(cb) {
 		var csvUrl = 'https://docs.google.com/spreadsheets/d/17oq0WUIfUZTp7l0y1dtN9mqZuPInSZW2wclgUAvU8YQ/export?format=csv';
