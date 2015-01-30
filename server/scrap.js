@@ -13,9 +13,7 @@ var sabesp = 'http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx',
 	startTime = moment('2003-01-01'),
 	endTime = moment(),
 	itr = startTime.twix(endTime).iterate('days'),
-	range = [],
-	data = [],
-	newData = [];
+	range = [];
 
 module.exports = function() {
 
@@ -41,12 +39,13 @@ module.exports = function() {
 
 	fs.readFile('data/data.csv', function(err, csvData) {
 		csv.parse(csvData, { columns: true }, function(err, output) {
+			var data = [];
 			if(err) {
 				console.log('Iniciando nova base de dados');
 			} else {
 				data = output;
 			}
-			scrap();
+			scrap(data);
 		});
 	});
 
@@ -54,9 +53,10 @@ module.exports = function() {
 
 };
 
-function scrap() {
+function scrap(data) {
 
 	var toDownload = [];
+	var newData = [];
 
 	if(data.length) {
 
@@ -241,6 +241,7 @@ function scrap() {
 				fs.writeFile('data/data.csv', toCSV(data), function(err) {
 					if(err) console.log(err);
 					else console.log('CSV updated');
+					data = newData = null;
 				});
 			}
 		});

@@ -111,12 +111,12 @@ if(program.serve) {
 		res.sendfile('public/index.html');
 	});
 
-	setInterval(scrap, 1000 * 60 * 60 * 3); // 3 hours interval
-	scrap();
-
 	app.listen(port, function() {
 		print('{yellow}{bold}Server running at port ' + port + '{/bold}{/yellow}');
 		print('{bold}Data url: http://localhost:' + port + '/data.csv{/bold}');
 	});
+
+	setInterval(scrap, 1000 * 60 * 60 * 3); // 3 hours interval
+	scrap();
 
 }

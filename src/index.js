@@ -110,6 +110,8 @@ $(document).ready(function() {
 
 			parsed = data = parseData(d, manancial);
 
+			console.log(parsed);
+
 			volume.updateData(data);
 			filter.updateData(data);
 			if(stories)
@@ -156,22 +158,26 @@ $(document).ready(function() {
 		selectionRect.on("mousemove", function() {
 			var X_pixel = d3.mouse(this)[0],
 				X_date = volume.svg.x.invert(X_pixel),
-				Y_value;
+				selection = false;
+
+			selectionLine.attr("opacity", 1)
+				.attr("x1", X_pixel)
+				.attr("x2", X_pixel);
 
 			_.each(parsed, function(element, index, array) {
+
+				if(selection)
+					return false;
+
 				if ((index+1 < array.length) && (array[index].date <= X_date) && (array[index+1].date >= X_date)) {
 					if (X_date-array[index].date < array[index+1].date-X_date)
 						selection = array[index];
 					else
 						selection = array[index+1];
-
-					Y_value = selection.volume;
 				}
+
 			});
 
-			selectionLine.attr("opacity", 1)
-				.attr("x1", X_pixel)
-				.attr("x2", X_pixel);
 
 			updateInfo(selection);
 
