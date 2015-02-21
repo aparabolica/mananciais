@@ -110,8 +110,6 @@ $(document).ready(function() {
 
 			parsed = data = parseData(d, manancial);
 
-			console.log(parsed);
-
 			volume.updateData(data);
 			filter.updateData(data);
 			if(stories)

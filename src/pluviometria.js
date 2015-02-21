@@ -46,7 +46,7 @@ module.exports = function() {
 					pluviometria.tooltip.transition()
 						.duration(200)
 						.style("opacity", 1);
-				
+
 						pluviometria.tooltip.html(icons.rain + d.pluviometria + "mm")
 						.style("left", (d3.event.pageX) + "px")
 						.style("top", (d3.event.pageY) + "px");

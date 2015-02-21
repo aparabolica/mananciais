@@ -241,7 +241,7 @@ function scrap(data) {
 				fs.writeFile('data/data.csv', toCSV(data), function(err) {
 					if(err) console.log(err);
 					else console.log('CSV updated');
-					data = newData = null;
+					data = newData = [];
 				});
 			}
 		});

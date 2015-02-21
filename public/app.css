@@ -34,7 +34,7 @@ h3 {
 	margin: 0;
 	padding: 0;
 	float: left;
-	width: 10%;
+	width: 20%;
 	line-height: 19px;
 	font-size: 12px;
 	font-family: "Lato";
@@ -42,6 +42,10 @@ h3 {
 	color: #aaa;
 	text-transform: uppercase;
 	text-decoration: none;
+}
+
+#site-header h2 {
+	margin-top: -15px;
 }
 
 #site-header .about-link {
@@ -63,7 +67,7 @@ h3 {
 }
 
 #site-header .header-options {
-	width: 80%;
+	width: 60%;
 	display: table;
 	float: left;
 }
@@ -175,6 +179,10 @@ h3 {
 	background: #f0f0f0;
 	top: 15px;
 	left: -5px;
+	transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-khtml-transform: rotate(45deg);
 	-webkit-transform: rotate(45deg);
 }
 

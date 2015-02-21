@@ -16,7 +16,7 @@ module.exports = function(data) {
 	var $head = $('<h2 />').html(icons.calendar + moment(data.date).format('LL'));
 	var $data = $('<table />');
 
-	$data.append(getInfo(data, 'volume armazenado'));
+	$data.append(getInfo(data, 'volume'));
 	$data.append(getInfo(data, 'pluviometria do dia'));
 
 	$info.append($head);
@@ -25,13 +25,19 @@ module.exports = function(data) {
 }
 
 function getInfo(data, key) {
-	
+
+	var label = data[key];
+
+	if(key == 'volume') {
+		label = label.toFixed(1).replace('.', ',') + ' %';
+	}
+
 	var $tr = $('<tr />');
 	var $label = $('<td />');
-	var $value = $('<td>' + data[key] + '</td>');
+	var $value = $('<td>' + label + '</td>');
 
 	// Volume
-	if(key == 'volume armazenado') {
+	if(key == 'volume') {
 		$label.append($(icons.water));
 		var cssClass = '';
 		if(data.volume < 10) {

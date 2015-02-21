@@ -106,8 +106,8 @@ module.exports = function() {
 
 		volume.data = data;
 
-		volume.svg.node.datum(data).transition().duration(2000).attr("d", volume.svg.area);
 		volume.container.select(".x.axis").call(volume.svg.axis.x);
+		volume.svg.node.datum(data).transition().duration(2000).attr("d", volume.svg.area);
 
 	};
 
