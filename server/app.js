@@ -6,7 +6,7 @@ var program = require('commander'),
 	fs = require('fs'),
 	_ = require('underscore'),
 	csv = require('csv'),
-	scrap = require('./scrap'),
+	scrape = require('./scrape'),
 	request = require('request');
 
 function print(s) {
@@ -15,7 +15,7 @@ function print(s) {
 
 program
 	.version('0.0.1')
-	.option('-u, --update', 'Scrap data from SABESP and update local database')
+	.option('-u, --update', 'Scrape data from SABESP and update local database')
 	.option('-d, --date [value]', 'Get specific date from database.')
 	.option('-m, --manancial [value]', 'Get info on specific date from an especific water system. Date parameter is required')
 	.option('serve', 'Run server and update database on a 3 hours interval')
@@ -40,7 +40,7 @@ if(program.date) {
 if(program.update) {
 
 	print('{yellow}{bold}Scrapping data{/bold}{/yellow}');
-	scrap();
+	scrape();
 
 }
 
@@ -116,7 +116,7 @@ if(program.serve) {
 		print('{bold}Data url: http://localhost:' + port + '/data.csv{/bold}');
 	});
 
-	setInterval(scrap, 1000 * 60 * 60 * 3); // 3 hours interval
-	scrap();
+	setInterval(scrape, 1000 * 60 * 60 * 3); // 3 hours interval
+	scrape();
 
 }
