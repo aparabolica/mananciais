@@ -116,7 +116,7 @@ if(program.serve) {
 		print('{bold}Data url: http://localhost:' + port + '/data.csv{/bold}');
 	});
 
-	setInterval(scrape, 1000 * 60 * 60 * 3); // 3 hours interval
-	scrape();
+	// setInterval(scrape, 1000 * 60 * 60 * 3); // 3 hours interval
+	// scrape();
 
 }
