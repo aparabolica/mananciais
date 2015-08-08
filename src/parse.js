@@ -17,33 +17,32 @@ module.exports = function(data, key) {
 			d.date = formatTime.parse(d['data']);
 		} catch(err) {
 			delete parsed[i];
-			console.log('Error on date ' + d.date);
 		}
 
 		/*
 		 * VOLUME MORTO
 		 */
-		// if(key == 'sistemaCantareira') {
+		if(key == 'sistemaCantareira') {
 
-		// 	if(d.date > new Date('2014-05-16')) {
-		// 		d.originalVolume = d.volume;
-		// 		d.volume = d.volume - 18.5;
-		// 	}
+			if(d.date > new Date('2014-05-16')) {
+				d.originalVolume = d.volume;
+				d.volume_indice_2 = d.volume;
+				d.volume = d.volume - 18.5;
+			}
 
-		// 	if(d.date > new Date('2014-10-24')) {
-		// 		d.originalVolume = d.volume;
-		// 		d.volume = d.volume - 10.6;
-		// 	}
+			if(d.date > new Date('2014-10-24')) {
+				// d.originalVolume = d.volume;
+				d.volume_indice_2 = null;
+				d.volume_indice_3 = d.originalVolume;
+				d.volume = d.volume - 10.7;
+			}
 
-		// }
+		}
 
 		if(parsed[i] && isNaN(d.volume)) {
-			console.log('Missing data on ' + d.date);
 			delete parsed[i];
 		}
 	});
-
-	console.log(parsed[parsed.length-1].date);
 
 	parsed = _.compact(parsed);
 

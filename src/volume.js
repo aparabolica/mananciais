@@ -1,6 +1,7 @@
 'use strict';
 
 var d3 = require('d3');
+var _ = require('underscore');
 
 var timeFormat = d3.time.format.multi([
 	["%a %d", function(d) { return d.getMilliseconds(); }],
@@ -31,21 +32,39 @@ module.exports = function() {
 
 		volume.data = data;
 
+		volume.data_2 = _.filter(data, function(d) { return d.volume_indice_2; });
+		volume.data_3 = _.filter(data, function(d) { return d.volume_indice_3; });
+
 		var x = d3.time.scale().range([0, width]);
 		var y = d3.scale.linear().range([height, 220]);
+
 		var area = d3.svg.area()
 			.x(function(d) { return volume.svg.x(d.date); })
 			.y0(height)
 			.y1(function(d) { return volume.svg.y(d.volume); });
 
+		var area_2 = d3.svg.area()
+			.x(function(d) { return volume.svg.x(d.date); })
+			.y0(height)
+			.y1(function(d) { return volume.svg.y(d.volume_indice_2); });
+
+		var area_3 = d3.svg.area()
+			.x(function(d) { return volume.svg.x(d.date); })
+			.y0(height)
+			.y1(function(d) { return volume.svg.y(d.volume_indice_3); });
+
 		volume.svg = {
 			x: x,
 			y: y,
 			area: area,
+			area_2: area_2,
+			area_3: area_3,
 			axis: {
 				x: d3.svg.axis().scale(x).tickFormat(timeFormat).orient("bottom"),
 				y: d3.svg.axis().scale(y).tickSize(width).tickFormat(yAxisFormat).orient("right")
 			},
+			node_2: svgContainer.append("path").attr("class", "area volume_2"),
+			node_3: svgContainer.append("path").attr("class", "area volume_3"),
 			node: svgContainer.append("path").attr("class", "area volume")
 		};
 
@@ -55,6 +74,14 @@ module.exports = function() {
 		volume.svg.node
 			.datum(data)
 			.attr('d', area);
+
+		volume.svg.node_2
+			.datum(volume.data_2)
+			.attr('d', area_2);
+
+		volume.svg.node_3
+			.datum(volume.data_3)
+			.attr('d', area_3);
 
 		svgContainer
 			.append("g")
@@ -98,6 +125,8 @@ module.exports = function() {
 	volume.redraw = function() {
 
 		volume.svg.node.attr("d", volume.svg.area);
+		volume.svg.node_2.attr("d", volume.svg.area_2);
+		volume.svg.node_3.attr("d", volume.svg.area_3);
 		volume.container.select(".x.axis").call(volume.svg.axis.x);
 
 	};
@@ -106,8 +135,13 @@ module.exports = function() {
 
 		volume.data = data;
 
+		volume.data_2 = _.filter(data, function(d) { return d.volume_indice_2; });
+		volume.data_3 = _.filter(data, function(d) { return d.volume_indice_3; });
+
 		volume.container.select(".x.axis").call(volume.svg.axis.x);
 		volume.svg.node.datum(data).transition().duration(2000).attr("d", volume.svg.area);
+		volume.svg.node_2.datum(volume.data_2).transition().duration(2000).attr("d", volume.svg.area_2);
+		volume.svg.node_3.datum(volume.data_3).transition().duration(2000).attr("d", volume.svg.area_3);
 
 	};
 

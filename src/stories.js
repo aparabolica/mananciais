@@ -44,57 +44,14 @@ module.exports = function() {
 			stories.data = data;
 			_.each(stories.data, function(item) {
 				item.date = moment(item.data, 'DD/MM/YYYY');
-			});			
+			});
 
 			stories.svg.x.scale.domain(domain.svg.x.domain());
 			stories.svg.y.scale.domain(domain.svg.y.domain());
 
 			var clusters = clusterize(stories.data);
 
-			stories.svg.node
-				.selectAll('line')
-				.data(clusters)
-					.enter().append('line')
-					.attr("x1", function(d) { return d.cx; })
-					.attr("y1", function(d) { return d.cy; })
-					.attr("x2", function(d) { return d.cx; })
-					.attr("y2", function(d) { return d.cyO; })
-					.attr('class', 'story-line')
-					.style({stroke: '#fc0', 'stroke-width': '1px', 'stroke-opacity': .5});
-
-			stories.svg.node
-				.selectAll(".story")
-				.data(clusters)
-					.enter().append("circle")
-					.attr("class", function(d) {
-						var c = 'story';
-						if(d.stories.length > 1) {
-							c += ' cluster';
-						}
-						return c;
-					})
-					.attr("r", 5)
-					.attr("cx", function(d) { return d.cx; })
-					.attr("cy", function(d) { return d.cy; })
-					.on("mouseover", function(d) {
-						stories.tooltip.transition()
-							.duration(200)
-							.style("opacity", 1);
-
-							stories.tooltip.html('<h3>' + d.titulo + '</h3>')
-							.style("left", (d3.event.pageX) + "px")
-							.style("top", (d3.event.pageY) + "px");
-					})
-					.on("mousemove", function(d) {
-						stories.tooltip
-							.style("left", (d3.event.pageX) + "px")
-							.style("top", (d3.event.pageY) + "px");
-					})
-					.on("mouseout", function(d) {
-						stories.tooltip.transition()
-							.duration(500)
-							.style("opacity", 0);
-					});
+			stories._draw(clusters);
 
 		}, 'json');
 
@@ -105,6 +62,97 @@ module.exports = function() {
 	stories.hide = function() {
 		stories.svg.node.style({'display': 'none'});
 	};
+
+	stories._draw = function(data) {
+
+		stories.svg.node.selectAll('line').remove();
+		stories.svg.node.selectAll('.story').remove();
+
+		stories.svg.node
+			.selectAll('line')
+			.data(data)
+				.enter().append('line')
+				.attr("x1", function(d) { return d.cx; })
+				.attr("y1", function(d) { return d.cy; })
+				.attr("x2", function(d) { return d.cx; })
+				.attr("y2", function(d) { return d.cyO; })
+				.attr('class', 'story-line')
+				.style({stroke: '#fc0', 'stroke-width': '1px', 'stroke-opacity': .5});
+
+		stories.svg.node
+			.selectAll(".story")
+			.data(data)
+				.enter().append("circle")
+				.attr("class", function(d) {
+					var c = 'story';
+					if(d.stories.length > 1) {
+						c += ' cluster';
+					}
+					return c;
+				})
+				.attr("r", 5)
+				.attr("cx", function(d) { return d.cx; })
+				.attr("cy", function(d) { return d.cy; })
+				.on("click", function(d) {
+					if(d.stories.length == 1) {
+						if(d.stories[0].url) {
+							window.open(d.stories[0].url, '_blank');
+						}
+					} else {
+						if(d.fixed) {
+							d.fixed = false;
+							stories.tooltip.html('<h3>' + d.titulo + '</h3>');
+							stories.tooltip.attr('class', 'story-content cluster');
+						} else {
+							d.fixed = true;
+							stories.tooltip.style('opacity', 1);
+							var html = '<ul>';
+							_.each(d.stories, function(s) {
+								html += '<li><span>' + s.data + ' | ' + s.tipo + '</span><h3><a href="' + s.url + '" target="_blank">' + s.titulo + '</a></h3></li>';
+							});
+							html += '</ul>';
+							stories.tooltip.attr('class', 'story-content opened').html(html);
+						}
+					}
+				})
+				.on("mouseover", function(d) {
+					if(!d.fixed) {
+						stories.tooltip
+							.attr('class', function() {
+								var c = 'story-content';
+								if(d.stories.length > 1) {
+									c += ' cluster';
+								}
+								return c;
+							})
+							.style("opacity", 1);
+
+						if(d.stories.length > 1) {
+							stories.tooltip.html('<h3>' + d.titulo + '</h3>');
+						} else {
+							stories.tooltip.html('<span>' + d.stories[0].data + ' | ' + d.stories[0].tipo + '</span><h3>' + d.titulo + '</h3>');
+						}
+
+						stories.tooltip.html
+							.style("left", (d3.event.pageX) + "px")
+							.style("top", (d3.event.pageY) + "px");
+					}
+				})
+				.on("mousemove", function(d) {
+					if(!d.fixed) {
+						stories.tooltip
+							.style("left", (d3.event.pageX) + "px")
+							.style("top", (d3.event.pageY) + "px");
+					}
+				})
+				.on("mouseout", function(d) {
+					if(!d.fixed) {
+						stories.tooltip.transition()
+							.duration(500)
+							.style("opacity", 0);
+					}
+				});
+	}
 
 	stories.preBrush = function(extent) {
 
@@ -134,30 +182,11 @@ module.exports = function() {
 
 		var clusters = clusterize(stories.data);
 
-		stories.svg.node
-			.selectAll('line')
-			.data(clusters)
-			.attr("x1", function(d) { return d.cx; })
-			.attr("y1", function(d) { return d.cy; })
-			.attr("x2", function(d) { return d.cx; })
-			.attr("y2", function(d) { return d.cyO; });
-
-		stories.svg.node
-			.selectAll(".story")
-			.data(clusters)
-			.attr("class", function(d) {
-				var c = 'story';
-				if(d.stories.length > 1) {
-					c += ' cluster';
-				}
-				return c;
-			})
-			.attr("cx", function(d) { return d.cx; })
-			.attr("cy", function(d) { return d.cy; });
+		stories._draw(clusters);
 
 	};
 
-	stories.updateData = function(data) {
+	stories.updateData = function(data, manancial) {
 
 		stories.svg.y.value = function(d) {
 			var volumeData = _.find(data, function(p) {
@@ -171,22 +200,9 @@ module.exports = function() {
 			}
 		};
 
-		var clusters = clusterize(stories.data);
+		var clusters = clusterize(_.filter(stories.data, function(s) { return s.manancial == manancial || s.manancial == 'todos'; }));
 
-		stories.svg.node
-			.selectAll('line')
-			.data(clusters)
-			.transition()
-			.duration(2000)
-			.attr("y1", function(d) { return d.cy; })
-			.attr("y2", function(d) { return d.cyO; });
-
-		stories.svg.node
-			.selectAll(".story")
-			.data(clusters)
-			.transition()
-			.duration(2000)
-			.attr("cy", function(d) { return d.cy; });
+		stories._draw(clusters);
 
 	};
 
@@ -222,8 +238,14 @@ module.exports = function() {
 
 		_.each(groups, function(group) {
 
+			var title = group.length + ' histórias';
+
+			if(group.length == 1) {
+				title = group[0].titulo;
+			}
+
 			clusters.push(_.extend({
-				titulo: group.length + ' artigos',
+				titulo: title,
 				stories: group
 			}, getClusterCoords(group)));
 

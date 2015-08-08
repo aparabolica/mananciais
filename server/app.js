@@ -76,19 +76,19 @@ if(program.serve) {
 	}
 
 	var events = [];
-	// getEvents(function(data) {
-	// 	if(data) events = data;
-	// });
+	getEvents(function(data) {
+		if(data) events = data;
+	});
 
-	// setInterval(function() {
-	// 	getEvents(function(data) {
-	// 		if(data) events = data;
-	// 	});
-	// }, 1000 * 60 * 2);
+	setInterval(function() {
+		getEvents(function(data) {
+			if(data) events = data;
+		});
+	}, 1000 * 60 * 2);
 
-	// app.get('/events', function(req, res) {
-	// 	res.send(events);
-	// });
+	app.get('/events', function(req, res) {
+		res.send(events);
+	});
 
 	var getData = function(req, res) {
 		res.header("Content-Type", 'text/plain');

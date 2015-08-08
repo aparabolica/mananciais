@@ -2,7 +2,8 @@
 
 var moment = require('moment'),
 	$ = require('jquery'),
-	icons = require('./icons');
+	icons = require('./icons'),
+	_ = require('underscore');
 
 require('moment/locale/pt-br');
 moment.locale('pt-BR');
@@ -27,14 +28,30 @@ module.exports = function(data) {
 function getInfo(data, key) {
 
 	var label = data[key];
+	var indices = [];
 
 	if(key == 'volume') {
 		label = label.toFixed(1).replace('.', ',') + ' %';
+
+		if(data.volume_indice_2) {
+			indices[0] = data.volume_indice_2.toFixed(1).replace('.', ',') + ' %';
+		}
+		if(data.volume_indice_3) {
+			indices[1] = data.volume_indice_3.toFixed(1).replace('.', ',') + ' %';
+		}
 	}
 
 	var $tr = $('<tr />');
 	var $label = $('<td />');
 	var $value = $('<td>' + label + '</td>');
+
+	if(indices.length) {
+		_.each(indices, function(indice, i) {
+			if(indice && typeof indice !== 'undefined') {
+				$value.append($('<span class="indice indice-' + (i+1) + '">' + indice + '</span>'));
+			}
+		});
+	}
 
 	// Volume
 	if(key == 'volume') {

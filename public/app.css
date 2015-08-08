@@ -211,6 +211,11 @@ h3 {
 	font-family: "Lato";
 	float: right;
 }
+#info table span.indice {
+	font-size: 18px;
+	line-height: 10px;
+	display: block;
+}
 #info table tr {
 	float: left;
 	margin-right: 20px;
@@ -378,6 +383,23 @@ h3 {
 	fill: steelblue;
 	stroke: rgba(0,0,0,0.1);
 	stroke-width: 2px;
+}
+
+.area.volume_2,
+.area.volume_3 {
+	stroke-width: 2px;
+	stroke-dasharray: 2;
+	opacity: 0.4;
+}
+
+.area.volume_2 {
+	stroke: yellow;
+	fill: rgb(236, 234, 79);
+}
+
+.area.volume_3 {
+	stroke: red;
+	fill: rgb(215, 71, 71);
 }
 
 .context .area.volume {
@@ -565,9 +587,8 @@ h3 {
 	position: absolute;
 	width: 200px;
 	padding: 10px;
-	margin-left: -250px;
-	margin-top: -20px;
-	text-align: center;
+	margin-left: -240px;
+	margin-top: -25px;
 	background: #f0f0f0;
 	color: #333;
 	font-size: 14px;
@@ -576,6 +597,48 @@ h3 {
 	line-height: 18px;
 	font-family: "Lato";
 	font-weight: 200;
+	/*transition: all .02s linear;
+	-webkit-transition: all .02s linear;
+	-moz-transition: all .02s linear;*/
+}
+.story-content.cluster {
+	width: 100px;
+	padding: 20px 10px;
+	margin-left: -140px;
+	text-align: center;
+}
+.story-content.opened {
+	max-height: 200px;
+	margin-left: -220px;
+	overflow-y: visible;
+	overflow-x: auto;
+	pointer-events: auto;
+	padding: 0;
+}
+.story-content.opened:after {
+	display: none;
+}
+.story-content.opened ul {
+	margin: 0;
+	padding: 10px;
+	list-style: none;
+}
+.story-content.opened ul li {
+	margin: 0 0 10px;
+	padding: 0;
+}
+.story-content.opened ul li a {
+	text-decoration: none;
+	color: #333;
+}
+.story-content span {
+	color: #999;
+}
+.story-content h3 {
+	margin: 0;
+	font-size: 18px;
+	line-height: 24px;
+	color: #333;
 }
 .story-content:after {
 	content: '';

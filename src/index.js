@@ -58,8 +58,8 @@ $(document).ready(function() {
 
 	var pluviometria = require('./pluviometria')();
 
-	// var stories = require('./stories')();
-	var stories = false;
+	var stories = require('./stories')();
+	// var stories = false;
 
 	var svg = d3.select("body").append("svg")
 		.attr("width", width + margin.left + margin.right)
@@ -112,9 +112,9 @@ $(document).ready(function() {
 
 			volume.updateData(data);
 			filter.updateData(data);
-			if(stories)
-				stories.updateData(data);
 			pluviometria.updateData(data);
+			if(stories)
+				stories.updateData(data, manancial);
 
 			selection = _.last(data);
 			updateInfo(selection);
@@ -140,9 +140,11 @@ $(document).ready(function() {
 			.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5, 'pointer-events': 'none'})
 			.attr("opacity", 0);
 
+
+		pluviometria.draw(parsed, focus, volume, width, height);
+
 		if(stories)
 			stories.draw(parsed, focus, volume, width, height);
-		pluviometria.draw(parsed, focus, volume, width, height);
 
 		$('#site-header .arrow').append($(icons.arrow));
 
@@ -201,9 +203,9 @@ $(document).ready(function() {
 		if(zoom) {
 			zoom.x(volume.svg.x).scaleExtent([1,15]).on("zoom", function() {
 				volume.redraw();
+				pluviometria.hide();
 				if(stories)
 					stories.preBrush(volume.svg.x.domain());
-				pluviometria.hide();
 				drawTools();
 			});
 		}
@@ -211,9 +213,9 @@ $(document).ready(function() {
 		var drawTools = _.debounce(function() {
 			setTimeout(function() {
 				filter.brushArea(volume.svg.x.domain());
-				pluviometria.brush(volume.svg.x.domain());
 				if(stories)
 					stories.brush(volume.svg.x.domain());
+				pluviometria.brush(volume.svg.x.domain());
 			}, 100);
 		}, 300);
 
