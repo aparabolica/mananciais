@@ -366,6 +366,103 @@ h3 {
 	color: #aaa;
 }
 
+#legend {
+	position: absolute;
+	right: 20px;
+	top: 145px;
+	z-index: 100;
+	background: #262626;
+	padding: 10px 10px 5px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#legend .label {
+	display: block;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 600;
+	margin: 0 0 5px;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+#legend p {
+	margin: 0 auto 5px;
+	position: relative;
+	opacity: .2;
+	transition: opacity .2s linear;
+	-moz-transition: opacity .2s linear;
+	-wekbit-transition: opacity .2s linear;
+	-o-transition: opacity .2s linear;
+}
+
+#legend:hover p {
+	opacity: 1;
+}
+
+#legend p:hover .tip {
+	display: block;
+}
+
+#legend p .tip {
+	display: none;
+	position: absolute;
+	top: -20px;
+	right: 100%;
+	margin-right: 20px;
+	width: 200px;
+	background: #fff;
+	color: #333;
+	padding: 10px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+#legend p .tip:after {
+	position: absolute;
+	display: block;
+	content: '';
+	background: #fff;
+	transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	top: 15px;
+	right: -5px;
+	width: 10px;
+	height: 10px;
+}
+
+#legend p .color {
+	width: 60px;
+	height: 5px;
+	display: block;
+}
+
+#legend p.stories {
+	display: block;
+	height: 10px;
+	width: 10px;
+}
+
+#legend p.stories .color {
+	width: 10px;
+	height: 10px;
+	display: block;
+	border-radius: 100%;
+	-moz-border-radius: 100%;
+	-webkit-border-radius: 100%;
+	background: #ffe86e;
+	border: 1px solid rgba(0,0,0,0.5);
+}
+
+#legend p.stories .tip {
+	width: 80px;
+	top: -14px;
+}
+
 .focus {
 	cursor: move;
 	cursor: -moz-grab;
@@ -439,19 +536,17 @@ h3 {
 
 .area.volume_2,
 .area.volume_3 {
-	stroke-width: 2px;
-	stroke-dasharray: 2;
+	/*stroke-width: 2px;
+	stroke-dasharray: 2;*/
 	/*opacity: 0.4;*/
 }
 
 .area.volume_2 {
-	stroke: yellow;
-	fill: rgb(236, 234, 79);
+	fill: #ecea4f;
 }
 
 .area.volume_3 {
-	stroke: red;
-	fill: rgb(215, 71, 71);
+	fill: #d74747;
 }
 
 .context .area.volume {

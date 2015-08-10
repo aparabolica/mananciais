@@ -102,6 +102,9 @@ $(document).ready(function() {
 				$('.manancial-info').append('<div class="info"><div class="toggler">' + icons.info + '</div><div class="info-container"><div class="info-content">' + info + '</div></div>');
 			}
 
+			$('#legend .manancial').hide();
+			$('#legend .' + manancial).show();
+
 			return manancial;
 
 		};
