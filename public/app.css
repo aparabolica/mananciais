@@ -236,7 +236,7 @@ h3 {
 	background: #fff;
 	margin-right: 5px;
 	margin-top: 2px;
-	opacity: 0.4;
+	/*opacity: 0.4;*/
 }
 #info table span.indice.indice-1:before {
 	background: rgb(236, 234, 79);
@@ -441,7 +441,7 @@ h3 {
 .area.volume_3 {
 	stroke-width: 2px;
 	stroke-dasharray: 2;
-	opacity: 0.4;
+	/*opacity: 0.4;*/
 }
 
 .area.volume_2 {
@@ -628,8 +628,9 @@ h3 {
 	pointer-events: none;
 }
 .story {
-	stroke-width: 0;
-	fill: #fc0;
+	stroke: rgba(0,0,0,0.5);
+	stroke-width: 1px;
+	fill: #ffe86e;
 	cursor: pointer;
 }
 .story.cluster {

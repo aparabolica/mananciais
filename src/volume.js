@@ -63,8 +63,8 @@ module.exports = function() {
 				x: d3.svg.axis().scale(x).tickFormat(timeFormat).orient("bottom"),
 				y: d3.svg.axis().scale(y).tickSize(width).tickFormat(yAxisFormat).orient("right")
 			},
-			node_2: svgContainer.append("path").attr("class", "area volume_2"),
 			node_3: svgContainer.append("path").attr("class", "area volume_3"),
+			node_2: svgContainer.append("path").attr("class", "area volume_2"),
 			node: svgContainer.append("path").attr("class", "area volume")
 		};
 
