@@ -117,6 +117,12 @@ module.exports = function() {
 				})
 				.on("mouseover", function(d) {
 					if(!d.fixed) {
+
+						var removeFixed = _.filter(data, function(dF) { return dF !== d; });
+						_.each(removeFixed, function(dF) {
+							dF.fixed = false;
+						});
+
 						stories.tooltip
 							.attr('class', function() {
 								var c = 'story-content';

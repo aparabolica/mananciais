@@ -50,10 +50,10 @@ $(document).ready(function() {
 
 	var filter = require('./filter')(function(extent) {
 		// Brush graph by filter
-		volume.brush(extent);
-		pluviometria.brush(extent);
-		if(stories)
-			stories.brush(extent);
+		// volume.brush(extent);
+		// pluviometria.brush(extent);
+		// if(stories)
+		// 	stories.brush(extent);
 	});
 
 	var pluviometria = require('./pluviometria')();
@@ -66,20 +66,20 @@ $(document).ready(function() {
 		.attr("height", height + margin.top + margin.bottom)
 		.attr("id", "main-chart");
 
-	// var zoom = d3.behavior.zoom();
-	var zoom = zoom;
+	var zoom = d3.behavior.zoom();
+	// var zoom = zoom;
 
 	var focus = svg.append("g")
 		.attr("class", "focus")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-		//.call(zoom);
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+		.call(zoom);
 
-	// svg.append("rect")
-	// 	.attr("class", "zoom-pane")
-	// 	.attr('fill', 'transparent')
-	// 	.attr("width", width + margin.left + margin.right)
-	// 	.attr("height", height + margin.top + margin.bottom)
-	// 	.call(zoom);
+	svg.append("rect")
+		.attr("class", "zoom-pane")
+		.attr('fill', 'transparent')
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.call(zoom);
 
 	load(svg, function(err, d) {
 
@@ -201,7 +201,7 @@ $(document).ready(function() {
 		}).resize();
 
 		if(zoom) {
-			zoom.x(volume.svg.x).scaleExtent([1,15]).on("zoom", function() {
+			zoom.x(volume.svg.x).scaleExtent([1,17]).on("zoom", function() {
 				volume.redraw();
 				pluviometria.hide();
 				if(stories)

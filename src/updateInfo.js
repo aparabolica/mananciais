@@ -44,11 +44,14 @@ function getInfo(data, key) {
 	var $tr = $('<tr />');
 	var $label = $('<td />');
 	var $value = $('<td>' + label + '</td>');
+	var $subvalues = $('<p class="subvalues"></p>');
+
+	$value.append($subvalues);
 
 	if(indices.length) {
 		_.each(indices, function(indice, i) {
 			if(indice && typeof indice !== 'undefined') {
-				$value.append($('<span class="indice indice-' + (i+1) + '">' + indice + '</span>'));
+				$subvalues.append($('<span class="indice indice-' + (i+1) + '">' + indice + '</span>'));
 			}
 		});
 	}

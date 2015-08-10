@@ -38,20 +38,21 @@ module.exports = function(brushedCb) {
 
 		filter.context = filter.svg.node.append("path")
 			.datum(data)
+			.attr('transform', 'scale(1, 0.7)')
 			.attr("class", "area volume")
 			.attr("d", filter.svg.area);
-		
+
 		filter.svg.node.append("g")
 			.attr("class", "x axis")
-			.attr("transform", "translate(0," + filter.positions.height + ")")
+			.attr("transform", "translate(0," + (filter.positions.height - 20) + ")")
 			.call(filter.svg.axis.x);
 
 		filter.svg.node.append("g")
 			.attr("class", "x brush")
 			.call(filter.brush)
 			.selectAll("rect")
-			.attr("y", -6)
-			.attr("height", filter.positions.height + 7);
+			.attr("y", 1)
+			.attr("height", filter.positions.height - 2);
 
 		var selection = _.last(data);
 
@@ -97,7 +98,7 @@ module.exports = function(brushedCb) {
 
 		return {
 			width: width - filterMargin.right - filterMargin.left,
-			height: margin.bottom - 160,
+			height: margin.bottom - 130,
 			margin: filterMargin
 		}
 
@@ -113,6 +114,17 @@ module.exports = function(brushedCb) {
 			.y0(filter.positions.height)
 			.y1(function(d) { return filter.svg.y(d.volume); });
 
+		var node = container.append('foreignObject')
+			.attr("transform", "translate(" + filter.positions.margin.left + "," + filter.positions.margin.top + ")")
+			.attr('width', filter.positions.width)
+			.attr('height', filter.positions.height)
+			.append('svg')
+				.attr('width', filter.positions.width)
+				.attr('height', filter.positions.height)
+				.style({'overflow': 'hidden'})
+				.append("g")
+					.attr("class", "context");
+
 		return {
 			x: x,
 			y: y,
@@ -120,7 +132,7 @@ module.exports = function(brushedCb) {
 			axis: {
 				x: d3.svg.axis().scale(x).orient("bottom")
 			},
-			node: container.append("g").attr("class", "context").attr("transform", "translate(" + filter.positions.margin.left + "," + filter.positions.margin.top + ")").attr('width', filter.positions.width).attr('height', filter.positions.height).style({'overflow': 'hidden'})
+			node: node
 		};
 
 	}
@@ -129,10 +141,21 @@ module.exports = function(brushedCb) {
 
 		var extent = filter.brush.empty() ? filter.svg.x.domain() : filter.brush.extent();
 
+		var first = moment(filter.data[0].date).toDate();
+		var last = moment(_.last(filter.data).date).toDate();
+
+		if(extent[0] < first) {
+			extent[0] = first;
+		}
+
+		if(extent[1] > last) {
+			extent[1] = last;
+		}
+
 		if(!filter.brush.empty())
-			filterInfo(filter.brush.extent());
+			filterInfo(extent);
 		else
-			filterInfo([moment(_.last(filter.data).date).subtract('days', 7).toDate(), _.last(filter.data).date]);
+			filterInfo([moment(_.last(filter.data).date).subtract(7, 'days').toDate(), _.last(filter.data).date]);
 
 		if(typeof brushedCb == 'function')
 			brushedCb(extent);

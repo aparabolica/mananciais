@@ -32,7 +32,7 @@ module.exports = function(data, key) {
 
 			if(d.date > new Date('2014-10-24')) {
 				// d.originalVolume = d.volume;
-				d.volume_indice_2 = null;
+				d.volume_indice_2 = d.volume_indice_2 - 10.7;
 				d.volume_indice_3 = d.originalVolume;
 				d.volume = d.volume - 10.7;
 			}

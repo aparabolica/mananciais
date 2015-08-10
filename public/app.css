@@ -211,11 +211,40 @@ h3 {
 	font-family: "Lato";
 	float: right;
 }
-#info table span.indice {
-	font-size: 18px;
+#info table p.subvalues {
+	margin: 0;
+	font-size: 16px;
 	line-height: 10px;
 	display: block;
+	margin-top: 2px;
 }
+#info table span.indice {
+	display: inline-block;
+	margin-right: 10px;
+	color: #999;
+}
+#info table span.indice:before {
+	content: '';
+	display: block;
+	float: left;
+	border-radius: 100%;
+	-webkit-border-radius: 100%;
+	-moz-border-radius: 100%;
+	-o-border-radius: 100%;
+	width: 8px;
+	height: 8px;
+	background: #fff;
+	margin-right: 5px;
+	margin-top: 2px;
+	opacity: 0.4;
+}
+#info table span.indice.indice-1:before {
+	background: rgb(236, 234, 79);
+}
+#info table span.indice.indice-2:before {
+	background: rgb(215, 71, 71);
+}
+
 #info table tr {
 	float: left;
 	margin-right: 20px;
@@ -319,11 +348,12 @@ h3 {
 }
 
 #info h2 svg {
-	width: 50px;
-	height: 50px;
-	margin-top: 5px;
+	width: 30px;
+	height: 30px;
+	margin-top: 16px;
 	margin-right: 20px;
 	float: left;
+	opacity: .6;
 }
 #info h2 path {
 	fill: #ddd !important;
@@ -334,6 +364,27 @@ h3 {
 	line-height: 18px;
 	margin: 0;
 	color: #aaa;
+}
+
+.focus {
+	cursor: move;
+	cursor: -moz-grab;
+	cursor: -webkit-grab;
+	cursor: grab;
+}
+
+.focus .x.axis line,
+.focus .x.axis text {
+	fill: #fff;
+}
+
+.zoom-pane {
+	pointer-events: none;
+	cursor: grab;
+}
+
+.x.brush {
+	overflow: hidden;
 }
 
 .axis path,
@@ -381,6 +432,7 @@ h3 {
 
 .area.volume {
 	fill: steelblue;
+	fill-opacity: 0.8;
 	stroke: rgba(0,0,0,0.1);
 	stroke-width: 2px;
 }
@@ -405,6 +457,7 @@ h3 {
 .context .area.volume {
 	fill: #333;
 	-webkit-transition: fill .2s ease-in-out;
+	height: 50px;
 }
 
 .context .axis text {
