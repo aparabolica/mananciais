@@ -3,7 +3,8 @@
 var d3 = require('d3'),
 	_ = require('underscore'),
 	$ = require('jquery'),
-	moment = require('moment');
+	moment = require('moment'),
+	updateInfo = require('./updateInfo');
 
 module.exports = function() {
 
@@ -49,11 +50,26 @@ module.exports = function() {
 			stories.svg.x.scale.domain(domain.svg.x.domain());
 			stories.svg.y.scale.domain(domain.svg.y.domain());
 
-			var clusters = clusterize(stories.data);
-
-			stories._draw(clusters);
+			stories._draw(stories.data, true);
 
 		}, 'json');
+
+		var line = svgContainer.select('.selection-line');
+
+		$('#stories').on('mouseenter', 'article', function() {
+			var story = $(this).data('story');
+			line.style({'stroke': '#ffe86e'})
+				.attr("opacity", 1)
+				.attr("x1", story._cx)
+				.attr("x2", story._cx);
+			var dateFormatted = story.date.format('YYYY-M-D');
+			var volume = _.find(data, function(v) { return v.data == dateFormatted; });
+			updateInfo(volume);
+		});
+
+		$('#stories').on('mouseleave', 'article', function() {
+			line.style({'stroke': '#fff'}).attr('opacity', 0);
+		});
 
 		return stories;
 
@@ -63,14 +79,45 @@ module.exports = function() {
 		stories.svg.node.style({'display': 'none'});
 	};
 
-	stories._draw = function(data) {
+	stories._draw = function(data, resetList) {
+
+		/*
+		 * Sidebar stories
+		 */
+
+		if(resetList) {
+
+			var data = _.sortBy(data, function(s) { return -s.date; });
+
+			var $container = $('#stories .stories-list');
+			$container.empty();
+			_.each(data, function(story) {
+				var $node = $('<li />');
+				var $article = $('<article />');
+				var $meta = $('<p class="meta" />');
+				$meta.append('<span class="date">' + story.data + '</span>');
+				$meta.append('<span class="type">' + story.tipo + '</span>');
+				$article.append($meta);
+				$article.append('<h3><a href="' + story.url + '" title="' + story.titulo + '" target="_blank" rel="external">' + story.titulo + '</a></h3>');
+				$article.append('<p>' + story.descricao + '</p>');
+				$article.data('story', story);
+				$container.append($node.append($article));
+			});
+
+		}
+
+		/*
+		 * Chart
+		 */
+
+		var clusters = clusterize(data);
 
 		stories.svg.node.selectAll('line').remove();
 		stories.svg.node.selectAll('.story').remove();
 
 		stories.svg.node
 			.selectAll('line')
-			.data(data)
+			.data(clusters)
 				.enter().append('line')
 				.attr("x1", function(d) { return d.cx; })
 				.attr("y1", function(d) { return d.cy; })
@@ -81,7 +128,7 @@ module.exports = function() {
 
 		stories.svg.node
 			.selectAll(".story")
-			.data(data)
+			.data(clusters)
 				.enter().append("circle")
 				.attr("class", function(d) {
 					var c = 'story';
@@ -118,7 +165,7 @@ module.exports = function() {
 				.on("mouseover", function(d) {
 					if(!d.fixed) {
 
-						var removeFixed = _.filter(data, function(dF) { return dF !== d; });
+						var removeFixed = _.filter(clusters, function(dF) { return dF !== d; });
 						_.each(removeFixed, function(dF) {
 							dF.fixed = false;
 						});
@@ -186,9 +233,7 @@ module.exports = function() {
 
 		stories.svg.x.scale.domain(extent);
 
-		var clusters = clusterize(stories.data);
-
-		stories._draw(clusters);
+		stories._draw(stories.data, false);
 
 	};
 
@@ -206,9 +251,11 @@ module.exports = function() {
 			}
 		};
 
-		var clusters = clusterize(_.filter(stories.data, function(s) { return s.manancial == manancial || s.manancial == 'todos'; }));
+		var filtered = _.filter(stories.data, function(s) { return s.manancial.trim() == manancial || s.manancial.trim() == 'todos'; });
 
-		stories._draw(clusters);
+		console.log(filtered);
+
+		stories._draw(filtered, true);
 
 	};
 

@@ -368,9 +368,9 @@ h3 {
 
 #legend {
 	position: absolute;
-	right: 20px;
-	top: 145px;
-	z-index: 100;
+	right: calc(30% + 30px);
+	top: 160px;
+	z-index: 10;
 	background: #262626;
 	padding: 10px 10px 5px;
 	border-radius: 4px;
@@ -461,6 +461,98 @@ h3 {
 #legend p.stories .tip {
 	width: 80px;
 	top: -14px;
+}
+
+#stories {
+	position: absolute;
+	top: 190px;
+	right: 0;
+	bottom: 80px;
+	width: 30%;
+	overflow: auto;
+	color: #f0f0f0;
+}
+
+#stories h2 {
+	color: #999;
+	text-transform: uppercase;
+	font-size: 18px;
+	margin: 0 0 10px;
+	padding: 0 0 9px;
+	border-bottom: 1px dashed #444;
+}
+
+#stories ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#stories li {
+	margin: 0;
+	padding: 0;
+}
+
+#stories #stories-nav {
+	margin: 0 0 10px;
+}
+
+#stories #stories-nav ul li {
+	display: inline-block;
+	background: #272727;
+	color: #999;
+	padding: 5px;
+	border-radius: 4px;
+	font-size: 12px;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: all .2s linear;
+}
+
+#stories #stories-nav ul li:hover {
+	background: #292929;
+	color: #ddd;
+}
+
+#stories article {
+	background: #292929;
+	padding: 20px;
+	margin: 0 20px 20px 0;
+	box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+	border-radius: 4px;
+	transition: all .2s linear;
+}
+
+#stories article:hover {
+	background: #333;
+}
+
+#stories article p.meta {
+	margin-bottom: 5px;
+}
+
+#stories article p.meta span {
+	display: inline-block;
+	margin-right: 5px;
+	font-size: 14px;
+}
+
+#stories article h3 {
+	margin: 0;
+	padding: 0;
+	color: #fff;
+	margin-bottom: 10px;
+	font-size: 22px;
+}
+
+#stories article a {
+	color: inherit;
+	text-decoration: none;
+}
+
+#stories article p {
+	margin: 0;
+	color: #999;
 }
 
 .focus {
