@@ -40,7 +40,7 @@ $(document).ready(function() {
 		height;
 
 	var updateDimensions = function() {
-		width = $(window).width() - margin.left - margin.right,
+		width = ($(window).width() * 0.7) - margin.left - margin.right,
 		height = $(window).height() - margin.top - margin.bottom;
 	};
 
@@ -180,8 +180,6 @@ $(document).ready(function() {
 				}
 
 			});
-
-
 			updateInfo(selection);
 
 		});

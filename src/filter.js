@@ -91,7 +91,7 @@ module.exports = function(brushedCb) {
 
 		var filterMargin = {
 			top: height + 60,
-			right: width/2,
+			right: width * .6,
 			bottom: 40,
 			left: 20
 		};

@@ -10,18 +10,22 @@ moment.locale('pt-BR');
 
 module.exports = function(data) {
 
-	var $info = $('#info');
+	if(data) {
 
-	$info.empty();
+		var $info = $('#info');
 
-	var $head = $('<h2 />').html(icons.calendar + moment(data.date).format('LL'));
-	var $data = $('<table />');
+		$info.empty();
 
-	$data.append(getInfo(data, 'volume'));
-	$data.append(getInfo(data, 'pluviometria do dia'));
+		var $head = $('<h2 />').html(icons.calendar + moment(data.date).format('LL'));
+		var $data = $('<table />');
 
-	$info.append($head);
-	$info.append($data);
+		$data.append(getInfo(data, 'volume'));
+		$data.append(getInfo(data, 'pluviometria do dia'));
+
+		$info.append($head);
+		$info.append($data);
+
+	}
 
 }
 
