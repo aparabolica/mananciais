@@ -16,7 +16,17 @@ window.$ = window.jQuery = $;
 require('moment/locale/pt-br');
 moment.locale('pt-BR');
 
+// Embed
+window.isEmbed = false;
+if(window != window.top) {
+	window.isEmbed = true;
+}
+
 $(document).ready(function() {
+
+	if(isEmbed) {
+		$('body').addClass('embed');
+	}
 
 	$('.about-link').click(function() {
 		ga('send', 'screenview', {'screenName': 'About'});
@@ -40,21 +50,23 @@ $(document).ready(function() {
 		height;
 
 	var updateDimensions = function() {
+		if(isEmbed) {
+			margin.bottom = $(window).height() * 0.25;
+		}
 		width = ($(window).width() * 0.7) - margin.left - margin.right,
 		height = $(window).height() - margin.top - margin.bottom;
+		if(isEmbed) {
+			width = $(window).width() - margin.left - margin.right;
+		}
 	};
 
 	updateDimensions();
 
 	var volume = require('./volume')();
 
-	var filter = require('./filter')(function(extent) {
-		// Brush graph by filter
-		// volume.brush(extent);
-		// pluviometria.brush(extent);
-		// if(stories)
-		// 	stories.brush(extent);
-	});
+	if(!isEmbed) {
+		var filter = require('./filter')();
+	}
 
 	var pluviometria = require('./pluviometria')();
 
@@ -67,7 +79,6 @@ $(document).ready(function() {
 		.attr("id", "main-chart");
 
 	var zoom = d3.behavior.zoom();
-	// var zoom = zoom;
 
 	var focus = svg.append("g")
 		.attr("class", "focus")
@@ -114,7 +125,8 @@ $(document).ready(function() {
 			parsed = data = parseData(d, manancial);
 
 			volume.updateData(data);
-			filter.updateData(data);
+			if(filter)
+				filter.updateData(data);
 			pluviometria.updateData(data);
 			if(stories)
 				stories.updateData(data, manancial);
@@ -126,7 +138,8 @@ $(document).ready(function() {
 
 		volume.draw(parsed, focus, width, height);
 
-		filter.draw(parsed, svg, width, height, margin);
+		if(filter)
+			filter.draw(parsed, svg, width, height, margin);
 
 		var selectionRect = focus.append("svg:rect")
 			.attr("class", "pane")
@@ -191,29 +204,49 @@ $(document).ready(function() {
 
 			updateDimensions();
 
-			svg.attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+			svg
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom);
 
-			//volume.resize(width, height);
+			svg.select('.zoom-pane')
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.call(zoom);
 
-			//filter.resize(width, height, margin);
-			//pluviometria.resize(width, height, margin);
-			//filter.resize(width, height, margin);
+			focus.call(zoom);
+
+			selectionRect
+				.attr("width", width)
+				.attr("height", height);
+
+			selectionLine
+				.attr("y2", height);
+
+			volume.resize(width, height, function() {
+				zoom.x(volume.svg.x);
+			});
+
+			if(filter)
+				filter.resize(width, height, margin);
+
+			pluviometria.resize(width, height);
+			stories.resize(width, height);
 
 		}).resize();
 
 		if(zoom) {
-			zoom.x(volume.svg.x).scaleExtent([1,17]).on("zoom", function() {
+			zoom.x(volume.svg.x).on("zoom", function() {
 				volume.redraw();
 				pluviometria.hide();
-				if(stories)
-					stories.preBrush(volume.svg.x.domain());
+				stories.preBrush(volume.svg.x.domain());
 				drawTools();
 			});
 		}
 
 		var drawTools = _.debounce(function() {
 			setTimeout(function() {
-				filter.brushArea(volume.svg.x.domain());
+				if(filter)
+					filter.brushArea(volume.svg.x.domain());
 				if(stories)
 					stories.brush(volume.svg.x.domain());
 				pluviometria.brush(volume.svg.x.domain());

@@ -37,7 +37,8 @@ module.exports = function() {
 				map: function(d) { return stories.svg.y.scale(stories.svg.y.value(d)) * 0.85; },
 				offsetMap: function(d) { return stories.svg.y.scale(stories.svg.y.value(d)); }
 			},
-			node: svgContainer.append("g").attr("transform", "translate(0,0)").attr("class", "stories")
+			node: svgContainer.append("g").attr("transform", "translate(0,0)").attr("class", "stories"),
+			domain: domain
 		};
 
 		$.get('/events', function(data) {
@@ -74,6 +75,18 @@ module.exports = function() {
 		return stories;
 
 	};
+
+	stories.resize = _.debounce(function(width, height) {
+
+		stories.svg.x.scale.range([0, width]);
+		stories.svg.y.scale.range([height, 220]);
+
+		stories.svg.x.scale.domain(stories.svg.domain.svg.x.domain());
+		stories.svg.y.scale.domain(stories.svg.domain.svg.y.domain());
+
+		stories._draw(stories.filteredData || stories.data, false);
+
+	}, 200);
 
 	stories.hide = function() {
 		stories.svg.node.style({'display': 'none'});
@@ -251,11 +264,9 @@ module.exports = function() {
 			}
 		};
 
-		var filtered = _.filter(stories.data, function(s) { return s.manancial.trim() == manancial || s.manancial.trim() == 'todos'; });
+		stories.filteredData = _.filter(stories.data, function(s) { return s.manancial.trim() == manancial || s.manancial.trim() == 'todos'; });
 
-		console.log(filtered);
-
-		stories._draw(filtered, true);
+		stories._draw(stories.filteredData, true);
 
 	};
 

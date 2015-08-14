@@ -97,23 +97,30 @@ module.exports = function() {
 
 	};
 
-	// Under development
-	volume.resize = function(width, height) {
+	volume.resize = _.debounce(function(width, height, cb) {
 
-		volume.svg.x = d3.time.scale().range([0, width]);
-		volume.svg.y = d3.scale.linear().range([height, 220]);
-		volume.svg.axis.y = d3.svg.axis().scale(volume.svg.y).tickSize(width).tickFormat(yAxisFormat).orient("right");
+		volume.svg.x.range([0, width]);
+		volume.svg.y.range([height, 220]);
+		volume.svg.axis.y.scale(volume.svg.y).tickSize(width);
 		volume.svg.area.y0(height);
+		volume.svg.area_2.y0(height);
+		volume.svg.area_3.y0(height);
 
-		//volume.svg.x.domain(volume.svg.x.domain());
-		//volume.svg.y.domain(volume.svg.y.domain());
+		volume.svg.x.domain(volume.svg.x.domain());
+		volume.svg.y.domain(volume.svg.y.domain());
 
-		//volume.svg.node.datum(volume.data).attr('d', volume.svg.area);
+		volume.svg.node.datum(volume.data).attr('d', volume.svg.area);
+		volume.svg.node_2.datum(volume.data_2).attr('d', volume.svg.area_2);
+		volume.svg.node_3.datum(volume.data_3).attr('d', volume.svg.area_3);
 
 		volume.container.select(".x.axis").attr("transform", "translate(0," + height + ")").call(volume.svg.axis.x);
 		volume.container.select(".y.axis").call(volume.svg.axis.y).call(axisPosition);
 
-	};
+		if(typeof cb == 'function') {
+			cb();
+		};
+
+	}, 200);
 
 	volume.brush = function(extent) {
 

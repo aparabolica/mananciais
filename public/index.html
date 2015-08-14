@@ -77,7 +77,7 @@
 			<span class="tip">Histórias</span>
 		</p>
 	</aside>
-	<section id="stories">
+	<section id="stories" class="hide-if-embed">
 		<h2>Histórias</h2>
 		<!-- <nav id="stories-nav">
 			<ul>
@@ -89,7 +89,7 @@
 		</nav> -->
 		<ul class="stories-list"></ul>
 	</section>
-	<section id="filter">
+	<section id="filter" class="hide-if-embed">
 		<div class="filter-input">
 			<h3>Filtro</h3>
 			<label><span>de</span> <input class="start" type="text" placeholder="data inicial" disabled /></label>
@@ -100,7 +100,10 @@
 		</div>
 	</section>
 	<footer id="site-footer">
-		<div class="social">
+		<div class="show-if-embed site-link">
+			<a href="http://manaciais.tk" title="mananciais.tk">Acesse a navegação completa</a>
+		</div>
+		<div class="social hide-if-embed">
 			<div class="fb-like" data-href="http://mananciais.tk" data-colorscheme="dark" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
 			<a href="https://twitter.com/share" data-url="http://mananciais.tk" class="twitter-share-button" data-lang="pt-BR">Tuitar</a>
 			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
@@ -109,7 +112,7 @@
 			<p class="dev"><span>Desenvolvido por <a href="http://github.com/miguelpeixe/" target="_blank" rel="external" title="Miguel Peixe">Miguel Peixe</a></p>
 			<p class="data"><span>Dados</span> <a href="http://sabesp.com.br/" target="_blank" rel="external" title="SABESP"><img src="img/sabesp.png" alt="SABESP" /></a></p>
 		</div>
-		<div class="fork">
+		<div class="fork hide-if-embed">
 			<p><a href="http://github.com/codigourbano/mananciais" target="_blank" rel="external" title="GitHub">Código disponível no GitHub</a></p>
 		</div>
 	</footer>

@@ -18,6 +18,8 @@ module.exports = function(brushedCb) {
 
 		filter.data = data;
 
+		filter.margin = margin;
+
 		filter.positions = getPositions(width, height, margin);
 
 		$('#filter').css({
@@ -57,9 +59,44 @@ module.exports = function(brushedCb) {
 		var selection = _.last(data);
 
 		$('#filter').show();
-		filterInfo([moment(selection.date).subtract('days', 7).toDate(), moment(selection.date).toDate()]);
+		filterInfo([moment(selection.date).subtract(7, 'days').toDate(), moment(selection.date).toDate()]);
 
 	}
+
+	filter.resize = _.debounce(function(width, height, margin) {
+
+		filter.positions = getPositions(width, height, margin);
+
+		$('#filter').css({
+			'position': 'absolute',
+			'top': filter.positions.margin.top,
+			'left': filter.positions.width + 40,
+			'width': filter.positions.margin.right,
+			'height': filter.positions.height
+		});
+
+		filter.svg.x.range([0, filter.positions.width]);
+		filter.svg.y.range([filter.positions.height, 0]);
+
+		filter.brush.x(filter.svg.x);
+
+		filter.svg.area.y0(filter.positions.height);
+
+		filter.svg.node.select('.x.axis').attr("transform", "translate(0," + (filter.positions.height - 20) + ")");
+		filter.svg.node.select('.x.brush').attr("height", filter.positions.height - 2);
+
+		$('.filter-area-container')
+			.attr("transform", "translate(" + filter.positions.margin.left + "," + filter.positions.margin.top + ")")
+			.attr('width', filter.positions.width)
+			.attr('height', filter.positions.height);
+
+		$('.filter-area-svg')
+			.attr('width', filter.positions.width)
+			.attr('height', filter.positions.height);
+
+		filter.redraw();
+
+	}, 200);
 
 	filter.brushArea = function(extent) {
 
@@ -83,7 +120,7 @@ module.exports = function(brushedCb) {
 		filter.svg.node.select(".x.axis").call(filter.svg.axis.x);
 
 		$('#filter').show();
-		filterInfo([moment(selection.date).subtract('days', 7).toDate(), moment(selection.date).toDate()]);
+		filterInfo([moment(selection.date).subtract(7, 'days').toDate(), moment(selection.date).toDate()]);
 
 	}
 
@@ -115,10 +152,12 @@ module.exports = function(brushedCb) {
 			.y1(function(d) { return filter.svg.y(d.volume); });
 
 		var node = container.append('foreignObject')
+			.attr('class', 'filter-area-container')
 			.attr("transform", "translate(" + filter.positions.margin.left + "," + filter.positions.margin.top + ")")
 			.attr('width', filter.positions.width)
 			.attr('height', filter.positions.height)
 			.append('svg')
+				.attr('class', 'filter-area-svg')
 				.attr('width', filter.positions.width)
 				.attr('height', filter.positions.height)
 				.style({'overflow': 'hidden'})

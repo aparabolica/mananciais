@@ -1,7 +1,8 @@
 'use strict';
 
 var d3 = require('d3'),
-	icons = require('./icons');
+	icons = require('./icons'),
+	_ = require('underscore');
 
 module.exports = function() {
 
@@ -27,7 +28,8 @@ module.exports = function() {
 				scale: d3.scale.linear().range([0, 10]),
 				map: function(d) { return pluviometria.svg.s.scale(pluviometria.svg.s.value(d)); }
 			},
-			node: svgContainer.append("g").attr("transform", "translate(0,0)").attr("class", "pluviometria")
+			node: svgContainer.append("g").attr("transform", "translate(0,0)").attr("class", "pluviometria"),
+			domain: domain
 		};
 
 		pluviometria.svg.x.scale.domain(domain.svg.x.domain());
@@ -64,6 +66,18 @@ module.exports = function() {
 
 
 	};
+
+	pluviometria.resize = _.debounce(function(width, height) {
+
+		pluviometria.svg.x.scale.range([0, width]);
+		pluviometria.svg.y.scale.range([height, 220]);
+
+		pluviometria.svg.x.scale.domain(pluviometria.svg.domain.svg.x.domain());
+		pluviometria.svg.y.scale.domain(pluviometria.svg.domain.svg.y.domain());
+
+		pluviometria.redraw();
+
+	}, 200);
 
 	pluviometria.hide = function() {
 		pluviometria.svg.node.style({'display': 'none'});

@@ -10,6 +10,18 @@ html,body {
 	background: #222;
 }
 
+.embed .hide-if-embed {
+	display: none !important;
+}
+
+.show-if-embed {
+	display: none;
+}
+
+.embed .show-if-embed {
+	display: block;
+}
+
 h1,
 h2,
 h3 {
@@ -112,6 +124,10 @@ h3 {
 	text-align: center;
 }
 
+.embed #site-header .header-option .options li {
+	font-size: 14px;
+}
+
 #site-header .header-option .options li:last-child {
 	border-radius: 0 0 5px 5px;
 }
@@ -133,6 +149,10 @@ h3 {
 	font-weight: 200;
 	color: steelblue;
 	text-align: center;
+}
+
+.embed #site-header .manancial-drop h1 {
+	font-size: 18px;
 }
 
 #site-header h1 .arrow {
@@ -211,6 +231,9 @@ h3 {
 	font-family: "Lato";
 	float: right;
 }
+.embed #info table {
+	font-size: 24px;
+}
 #info table p.subvalues {
 	margin: 0;
 	font-size: 16px;
@@ -253,14 +276,22 @@ h3 {
 	width: 80px;
 }
 
+.embed #info table td:first-child {
+	width: 40px;
+}
+
 #info table td {
 	color: #eee;
 	width: 150px;
 }
 
+.embed #info table td {
+	width: 150px;
+}
+
 #info table svg {
-	width: 50px;
-	height: 50px;
+	width: 30px;
+	height: 30px;
 }
 #info table path {
 	fill: #fff !important;
@@ -347,6 +378,12 @@ h3 {
 	float: left;
 }
 
+.embed #info h2 {
+	width: auto;
+	font-size: 20px;
+	line-height: 40px;
+}
+
 #info h2 svg {
 	width: 30px;
 	height: 30px;
@@ -355,6 +392,14 @@ h3 {
 	float: left;
 	opacity: .6;
 }
+
+.embed #info h2 svg {
+	width: 15px;
+	height: 15px;
+	margin-top: 12px;
+	margin-right: 10px;
+}
+
 #info h2 path {
 	fill: #ddd !important;
 }
@@ -376,6 +421,11 @@ h3 {
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+}
+
+.embed #legend {
+	right: 20px;
+	top: 120px;
 }
 
 #legend .label {
@@ -974,6 +1024,10 @@ h3 {
 #site-footer .social {
 	float: left;
 	margin: 5px 0 10px 40px;
+}
+#site-footer .site-link {
+	float: left;
+	margin: 5px 0 0 20px;
 }
 #site-footer .social > div,
 #site-footer .social > iframe {
