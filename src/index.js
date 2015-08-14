@@ -34,12 +34,18 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$(document).keyup(function(e) {
-		if (e.keyCode == 27) { $('section#about').hide() }
+	$('.embed-link').click(function() {
+		ga('send', 'screenview', {'screenName': 'Embed'});
+		$('section#embed-chart').show();
+		return false;
 	});
 
-	$('.close-about').click(function() {
-		$('section#about').hide();
+	$(document).keyup(function(e) {
+		if (e.keyCode == 27) { $('.modal').hide() }
+	});
+
+	$('.close-modal').click(function() {
+		$('.modal').hide();
 		return false;
 	});
 

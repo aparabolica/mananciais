@@ -40,18 +40,28 @@
 				<div class="manancial-info"></div>
 			</div>
 		</div>
-		<a class="about-link" href="#">Sobre</a>
+		<nav>
+			<a class="about-link" href="#">Sobre</a>
+			<a class="embed-link hide-if-embed" href="#">Incorpore o gráfico</a>
+		</nav>
 	</header>
-	<section id="about">
-		<a class="close-about"></a>
-		<div class="about-content">
+	<section id="about" class="modal">
+		<a class="close-about close-modal"></a>
+		<div class="about-content modal-content">
 			<p>O aplicativo sobre os sistemas de abastecimento de São Paulo obtêm, através de um programa, dados de nível dos reservatórios e precipitação do <a href="http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx" target="_blank" rel="external">site da Sabesp</a>. Para obter estes dados, a técnica utilizada foi a raspagem, ou scrapping como é conhecido em inglês. De maneira resumida, o que fizemos foi <a href="https://github.com/oeco/mananciais/blob/master/server/scrap.js" target="_blank" rel="external">um código em linguagem JavaScript</a>, que permite que a cada atualização no site da Sabesp esteja sincronizada com <a href="https://github.com/oeco/mananciais/blob/master/data/data.csv" target="_blank" rel="external">nossa base de dados</a>.</p>
 
 			<p>A visualização utiliza a <a href="http://d3js.org/" target="_blank" rel="external">biblioteca D3 (Data Driven Documents)</a>, que também é baseada em JavaScript. Ela permite também a filtragem dos dados por períodos específicos de tempo.</p>
 
 			<p>O trabalho foi inspirado pela <a href="http://matheus.co/represas/#/" target="_blank" rel="external">visualização realizada pelo estúdio Jurema</a> há duas semanas. Nossa contribuição é exatamente permitir uma análise da série histórica dos dados sobre os reservatórios</p>
 
-			<p>Segue aqui o o código-aberto da aplicação: <a href="https://github.com/codigourbano/mananciais">https://github.com/oeco/mananciais</a></p>
+			<p>Segue aqui o o código-aberto da aplicação: <a href="https://github.com/codigourbano/mananciais">https://github.com/codigourbano/mananciais</a></p>
+		</div>
+	</section>
+	<section id="embed-chart" class="modal">
+		<a class="close-embed-chart close-modal"></a>
+		<div class="embed-chart-content modal-content">
+			<p>Copie e cole o código abaixo pra incorporar o gráfico no seu site!</p>
+			<textarea style="width:100%;height:30px;"><iframe src="http://mananciais.tk" frameborder="0" width="100%" height="600"></iframe></textarea>
 		</div>
 	</section>
 	<section id="info">

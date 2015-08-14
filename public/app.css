@@ -41,7 +41,7 @@ h3 {
 }
 
 #site-header h2,
-#site-header .about-link {
+#site-header nav {
 	display: inline-block;
 	margin: 0;
 	padding: 0;
@@ -60,8 +60,14 @@ h3 {
 	margin-top: -15px;
 }
 
-#site-header .about-link {
+#site-header nav {
 	text-align: right;
+}
+
+#site-header nav a {
+	color: #aaa;
+	text-decoration: none;
+	margin-left: 20px;
 }
 
 #site-header a {
@@ -286,7 +292,7 @@ h3 {
 }
 
 .embed #info table td {
-	width: 150px;
+	width: 140px;
 }
 
 #info table svg {
@@ -944,7 +950,7 @@ h3 {
 	margin-left: -5px;
 	background: #f0f0f0;
 }
-#about {
+.modal {
 	display: none;
 	position: fixed;
 	top: 0;
@@ -954,7 +960,7 @@ h3 {
 	background: rgba(0,0,0,0.5);
 	z-index: 999999;
 }
-#about .close-about {
+.modal .close-modal {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -963,7 +969,7 @@ h3 {
 	z-index: 1;
 	cursor: pointer;
 }
-#about .about-content {
+.modal .modal-content {
 	position: absolute;
 	top: 10%;
 	bottom: 10%;
@@ -979,10 +985,10 @@ h3 {
 	overflow: auto;
 	z-index: 2;
 }
-#about .about-content p {
+.modal .modal-content p {
 	margin: 0 0 40px;
 }
-#about .about-content p a {
+.modal .modal-content p a {
 	color: #000;
 }
 #site-footer {
