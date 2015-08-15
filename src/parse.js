@@ -28,16 +28,29 @@ module.exports = function(data, key) {
 		 */
 		if(key == 'sistemaCantareira') {
 
-			d.volume_m3 = (volumeTotal-reserva1-reserva2) * (d.volume/100);
-			if(d.date > new Date('2014-05-16')) {
-				d.volume_indice_2 = (d.volume_m3/volumeTotal)*100;
-				d.volume = d.volume - 18.5;
-			}
+			if(d.date <= new Date('2014-05-16')) {
 
-			if(d.date > new Date('2014-10-24')) {
-				d.volume_indice_2 = ((d.volume_m3-reserva2)/volumeTotal)*100;
+				// d.volume_m3 = (volumeTotal) * (d.volume/100);
+				//
+				// d.volume = (d.volume_m3/volumeTotal)*100;
+
+			} else if(d.date > new Date('2014-05-16') && d.date <= new Date('2014-10-24')) {
+
+				d.volume_m3 = (volumeTotal-reserva1) * ((d.volume)/100);
+
+				d.volume_indice_2 = (d.volume_m3/(volumeTotal))*100;
+
+				d.volume = (((volumeTotal) * ((d.volume)/100)/volumeTotal)*100) - 18.5;
+
+			} else if(d.date > new Date('2014-10-24')) {
+
+				d.volume_m3 = (volumeTotal-reserva1-reserva2) * (d.volume/100);
+
+				d.volume = ((d.volume_m3-reserva1-reserva2)/(volumeTotal-reserva1-reserva2))*100;
+
+				d.volume_indice_2 = ((d.volume_m3-reserva2)/(volumeTotal-reserva2))*100;
+
 				d.volume_indice_3 = (d.volume_m3/(volumeTotal))*100;
-				d.volume = d.volume - 10.7;
 			}
 
 
