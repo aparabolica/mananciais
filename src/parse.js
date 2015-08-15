@@ -4,6 +4,10 @@ var _ = require('underscore'),
 	moment = require('moment'),
 	d3 = require('d3');
 
+var volumeTotal = 1269.5;
+var reserva1 = 182.5;
+var reserva2 = 105;
+
 module.exports = function(data, key) {
 
 	var parsed = _.filter(data, function(d) { return d.manancial == key; });
@@ -24,17 +28,18 @@ module.exports = function(data, key) {
 		 */
 		if(key == 'sistemaCantareira') {
 
+			d.volume_m3 = (volumeTotal-reserva1-reserva2) * (d.volume/100);
 			if(d.date > new Date('2014-05-16')) {
-				d.originalVolume = d.volume;
-				d.volume_indice_2 = d.volume;
+				d.volume_indice_2 = (d.volume_m3/volumeTotal)*100;
 				d.volume = d.volume - 18.5;
 			}
 
 			if(d.date > new Date('2014-10-24')) {
-				d.volume_indice_2 = d.volume_indice_2 - 10.7;
-				d.volume_indice_3 = d.originalVolume;
+				d.volume_indice_2 = ((d.volume_m3-reserva2)/volumeTotal)*100;
+				d.volume_indice_3 = (d.volume_m3/(volumeTotal))*100;
 				d.volume = d.volume - 10.7;
 			}
+
 
 		}
 
