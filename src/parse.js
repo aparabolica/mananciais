@@ -56,6 +56,17 @@ module.exports = function(data, key) {
 
 		}
 
+		if(key == 'sistemaAltoTiete') {
+
+			if(d.date > new Date('2014-12-14')) {
+
+				d.volume_indice_2 = d.volume;
+				d.volume = d.volume-6.6;
+
+			}
+
+		}
+
 		if(parsed[i] && isNaN(d.volume)) {
 			delete parsed[i];
 		}

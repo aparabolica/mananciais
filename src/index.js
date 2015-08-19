@@ -98,6 +98,8 @@ $(document).ready(function() {
 		.attr("height", height + margin.top + margin.bottom)
 		.call(zoom);
 
+	$('#legend,#stories').hide();
+
 	load(svg, function(err, d) {
 
 		var parsed = parseData(d, 'sistemaCantareira');
@@ -118,6 +120,8 @@ $(document).ready(function() {
 				var info = '<p>' + details[manancial].join('</p><p>') + '</p>';
 				$('.manancial-info').append('<div class="info"><div class="toggler">' + icons.info + '</div><div class="info-container"><div class="info-content">' + info + '</div></div>');
 			}
+
+			$('#legend,#stories').show();
 
 			$('#legend .manancial').hide();
 			$('#legend .' + manancial).show();
