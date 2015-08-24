@@ -1,13 +1,11 @@
 #!/usr/bin/env node
 
 var program = require('commander'),
-	colorsTmpl = require('colors-tmpl'),
-	tablify = require('tablify'),
-	fs = require('fs'),
-	_ = require('underscore'),
-	csv = require('csv'),
-	scrape = require('./scrape'),
-	request = require('request');
+colorsTmpl = require('colors-tmpl'),
+tablify = require('tablify'),
+fs = require('fs'),
+scrape = require('./scrape'),
+stories = require('./stories');
 
 function print(s) {
 	console.log(colorsTmpl(s));
@@ -34,60 +32,19 @@ if(program.serve) {
 
 	var app = express();
 
-	//app.use(require('compression')());
-
 	app.use('/', express.static(__dirname + '/../public'));
-
-	//app.use(require('cors')());
-
-	function getEvents(cb) {
-		var csvUrl = 'https://docs.google.com/spreadsheets/d/17oq0WUIfUZTp7l0y1dtN9mqZuPInSZW2wclgUAvU8YQ/export?format=csv';
-		request(csvUrl, function(err, res, body) {
-			if(!err) {
-				csv.parse(body, { columns: true }, function(err, output) {
-					if(!err) {
-						cb(output);
-					} else {
-						cb(false);
-					}
-				});
-			} else {
-				cb(false);
-			}
-		});
-	}
-
-	var events = [];
-	getEvents(function(data) {
-		if(data) events = data;
-	});
-
-	setInterval(function() {
-		getEvents(function(data) {
-			if(data) events = data;
-		});
-	}, 1000 * 60 * 2);
-
-	app.get('/events', function(req, res) {
-		res.send(events);
-	});
 
 	var getData = function(req, res) {
 		res.header("Content-Type", 'text/plain');
 		res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Headers", "X-Requested-With");
 		res.sendfile('data/data.csv');
-		// fs.readFile('data/data.csv', function(err, data) {
-		// 	res.header("Content-Type", 'text/plain');
-		// 	res.header("Content-Length", data.length);
-		// 	res.header("Access-Control-Allow-Origin", "*");
-		// 	res.header("Access-Control-Allow-Headers", "X-Requested-With");
-		// 	res.send(data);
-		// });
 	};
 
 	app.get('/data', getData);
 	app.get('/data.csv', getData);
+
+	stories(app);
 
 	app.get('/*', function(req, res) {
 		res.sendfile('public/index.html');
@@ -97,8 +54,5 @@ if(program.serve) {
 		print('{yellow}{bold}Server running at port ' + port + '{/bold}{/yellow}');
 		print('{bold}Data url: http://localhost:' + port + '/data.csv{/bold}');
 	});
-
-	// setInterval(scrape, 1000 * 60 * 60 * 3); // 3 hours interval
-	// scrape();
 
 }

@@ -41,7 +41,7 @@ module.exports = function() {
 			domain: domain
 		};
 
-		$.get('/events', function(data) {
+		$.get('/stories', function(data) {
 
 			stories.data = data;
 			_.each(stories.data, function(item) {
