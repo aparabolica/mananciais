@@ -10,7 +10,7 @@ tablify = require('tablify'),
 progress = require('progress');
 
 var sabesp = 'http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx',
-startTime = moment('2003-01-01'),
+startTime = moment('2003-01-01', 'YYYY-MM-DD'),
 endTime = moment(),
 itr = startTime.twix(endTime).iterate('days'),
 range = [];
@@ -41,19 +41,18 @@ module.exports = function() {
 		csv.parse(csvData, { columns: true }, function(err, output) {
 			var data = [];
 			if(err) {
-				console.log('Iniciando nova base de dados');
+				console.log('Iniciando nova base de dados', err);
 			} else {
 				data = output;
+				console.log('Base de dados encontrada.');
 			}
-			scrap(data);
+			scrape(data);
 		});
 	});
 
-	console.log('Base de dados encontrada.');
-
 };
 
-function scrap(data) {
+function scrape(data) {
 
 	var toDownload = [];
 	var newData = [];
