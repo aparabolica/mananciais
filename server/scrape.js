@@ -1,6 +1,6 @@
 var $ = require('cheerio'),
 _ = require('underscore'),
-csv = require('csv'),
+csvParse = require('csv-parse'),
 async = require('async'),
 request = require('request'),
 moment = require('moment'),
@@ -37,10 +37,9 @@ module.exports = function() {
 	* Initialize db
 	*/
 
-	fs.readFile('data/data.csv', function(err, csvData) {
-		csv.parse(csvData, { columns: true }, function(err, output) {
+	fs.readFile('data/data.csv', {encoding: 'utf8'}, function(err, csvData) {
+		csvParse(csvData, { columns: true }, function(err, output) {
 			var data = [];
-			console.log(output);
 			if(err) {
 				console.log('Iniciando nova base de dados');
 			} else {
