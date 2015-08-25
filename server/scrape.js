@@ -40,6 +40,7 @@ module.exports = function() {
 	fs.readFile('data/data.csv', function(err, csvData) {
 		csv.parse(csvData, { columns: true }, function(err, output) {
 			var data = [];
+			console.log(output);
 			if(err) {
 				console.log('Iniciando nova base de dados');
 			} else {
@@ -196,7 +197,7 @@ function scrape(data) {
 											/*
 											* Houve uma diferença na métrica de 20% utilizada a partir de 1 de setembro de 2004 no Sistema Cantareira
 											*/
-											if(title == 'sistemaCantareira' && key == 'volume armazenado' && moment(date, 'YYYY-MM-DD').isBefore(moment('2004-09-01', 'YYYY-MM-DD'))) {
+											if(title == 'sistemaCantareira' && key == 'volume armazenado' && moment(date, 'YYYY-M-D').isBefore(moment('2004-09-01', 'YYYY-MM-DD'))) {
 												var parsed = parseFloat(value.replace(' %', '').replace(',', '.'));
 												parsed = (parsed + 16.4).toFixed(1);
 												value = parsed + ' %';
