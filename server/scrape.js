@@ -41,7 +41,7 @@ module.exports = function() {
 		csv.parse(csvData, { columns: true }, function(err, output) {
 			var data = [];
 			if(err) {
-				console.log('Iniciando nova base de dados', err);
+				console.log('Iniciando nova base de dados');
 			} else {
 				data = output;
 				console.log('Base de dados encontrada.');
