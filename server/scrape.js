@@ -197,7 +197,7 @@ function scrap(data) {
 											/*
 											* Houve uma diferença na métrica de 20% utilizada a partir de 1 de setembro de 2004 no Sistema Cantareira
 											*/
-											if(title == 'sistemaCantareira' && key == 'volume armazenado' && moment(date).isBefore('2004-09-01', 'YYYY-MM-DD')) {
+											if(title == 'sistemaCantareira' && key == 'volume armazenado' && moment(date).isBefore(moment('2004-09-01', 'YYYY-MM-DD'))) {
 												var parsed = parseFloat(value.replace(' %', '').replace(',', '.'));
 												parsed = (parsed + 16.4).toFixed(1);
 												value = parsed + ' %';
