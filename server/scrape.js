@@ -1,4 +1,5 @@
 var $ = require('cheerio'),
+path = require('path'),
 _ = require('underscore'),
 csvParse = require('csv-parse'),
 async = require('async'),
@@ -14,6 +15,8 @@ startTime = moment('2003-01-01', 'YYYY-MM-DD'),
 endTime = moment(),
 itr = startTime.twix(endTime).iterate('days'),
 range = [];
+
+var appDir = path.dirname(require.main.filename);
 
 module.exports = function() {
 
@@ -37,7 +40,7 @@ module.exports = function() {
 	* Initialize db
 	*/
 
-	fs.readFile('data/data.csv', {encoding: 'utf8'}, function(err, csvData) {
+	fs.readFile(appDir + '/data/data.csv', {encoding: 'utf8'}, function(err, csvData) {
 		csvParse(csvData, { columns: true }, function(err, output) {
 			var data = [];
 			if(err) {
@@ -242,7 +245,7 @@ function scrape(data) {
 				console.log(err);
 			} else {
 				data = _.sortBy(newData, function(d) { return new Date(d['data']).getTime(); });
-				fs.writeFile('data/data.csv', toCSV(data), function(err) {
+				fs.writeFile(appDir + '/data/data.csv', toCSV(data), function(err) {
 					if(err) console.log(err);
 					else console.log('CSV updated');
 					data = newData = [];
