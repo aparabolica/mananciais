@@ -49,6 +49,21 @@ $(document).ready(function() {
 		return false;
 	});
 
+	var mouseTip = true;
+	setTimeout(function() {
+		$('body').on('mousemove', '#main-chart', function() {
+			if(mouseTip) {
+				setTimeout(function() {
+					mouseTip = false;
+					$('.mouse-tip').addClass('inactive');
+					setTimeout(function() {
+						$('.mouse-tip').hide();
+					}, 400);
+				}, 1500);
+			}
+		});
+	}, 2000);
+
 	var selection;
 
 	var margin = {top: 0, right: 20, bottom: 260, left: 20},
