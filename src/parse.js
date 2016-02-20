@@ -4,7 +4,7 @@ var _ = require('underscore'),
 	moment = require('moment'),
 	d3 = require('d3');
 
-var volumeTotal = 1269.5;
+var volumeUtil = 982;
 var reserva1 = 182.5;
 var reserva2 = 105;
 
@@ -30,27 +30,42 @@ module.exports = function(data, key) {
 
 			if(d.date <= new Date('2014-05-16')) {
 
-				// d.volume_m3 = (volumeTotal) * (d.volume/100);
-				//
-				// d.volume = (d.volume_m3/volumeTotal)*100;
+				// d.volume_m3 = volumeUtil * (d.volume/100);
+				// d.volume = (d.volume_m3/volumeUtil)*100;
 
 			} else if(d.date > new Date('2014-05-16') && d.date <= new Date('2014-10-24')) {
 
-				d.volume_m3 = (volumeTotal-reserva1) * ((d.volume)/100);
+				/*
+				 * Corrigindo os índices da reserva 1 (1º volume morto)
+				 */
 
-				d.volume_indice_2 = (d.volume_m3/(volumeTotal))*100;
+				// Retorna em m3 o índice utilizado pela SABESP
+				d.volume_m3 = volumeUtil * (d.volume/100);
 
-				d.volume = (((volumeTotal) * ((d.volume)/100)/volumeTotal)*100) - 18.5;
+				// Índice 2 mantém o valor armazenado acrescentando a reserva 1 ao volume útil
+				d.volume_indice_2 = (d.volume_m3/(volumeUtil+reserva1))*100;
+
+				// Índice 1 subtrai o valor armazenado da reserva 1 e matném o volume útil
+				d.volume = ((d.volume_m3-reserva1)/volumeUtil)*100;
 
 			} else if(d.date > new Date('2014-10-24')) {
 
-				d.volume_m3 = (volumeTotal-reserva1-reserva2) * (d.volume/100);
+				/*
+				 * Corrigindo os índices da reserva 2 (2º volumo morto)
+				 */
 
-				d.volume = ((d.volume_m3-reserva1-reserva2)/(volumeTotal-reserva1-reserva2))*100;
+				// Retorna em m3 o índice o utilizado pela SABESP
+				d.volume_m3 = volumeUtil * (d.volume/100);
 
-				d.volume_indice_2 = ((d.volume_m3-reserva2)/(volumeTotal-reserva2))*100;
+				// Índice 2 subtrai o valor armazenado da reserva 2 e acrescenta a reserva 1 ao volume útil
+				d.volume_indice_2 = ((d.volume_m3-reserva2)/(volumeUtil+reserva1))*100;
 
-				d.volume_indice_3 = (d.volume_m3/(volumeTotal))*100;
+				// Índice 3 mantem a valor armazenado acrescentando as 2 reservas ao volume útil
+				d.volume_indice_3 = (d.volume_m3/(volumeUtil+reserva1+reserva2))*100;
+
+				// Índice 1 subrai o valor armazenado da reserva 1 e 2 e mantém o volume útil
+				d.volume = ((d.volume_m3-reserva1-reserva2)/volumeUtil)*100;
+
 			}
 
 
