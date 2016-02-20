@@ -207,6 +207,12 @@ module.exports = function(brushedCb) {
 		$('#filter .filter-input .start').val(moment(extent[0]).format('DD/MM/YYYY'));
 		$('#filter .filter-input .end').val(moment(extent[1]).format('DD/MM/YYYY'));
 
+		if(variation.volume > 0) {
+			variation.volume = '+' + variation.volume;
+			$('#filter .filter-result .volume').addClass('positive');
+		} else {
+			$('#filter .filter-result .volume').removeClass('positive');
+		}
 		$('#filter .filter-result .volume .val').text(variation.volume + ' %');
 		$('#filter .filter-result .pluviometria .val').text(variation.pluviometria + ' mm');
 
@@ -226,7 +232,7 @@ module.exports = function(brushedCb) {
 
 		var dataFrom = _.rest(filter.data, startIndex);
 
-		var between = [start];
+		var between = [];
 
 		var end = _.find(dataFrom, function(d) {
 			between.push(d);
@@ -235,9 +241,11 @@ module.exports = function(brushedCb) {
 				extent[1].getDate() == d.date.getDate();
 		});
 
-		var pluviometria = start.pluviometria + end.pluviometria;
+		var pluviometria = 0;
 
-		_.each(between, function(d) { pluviometria = pluviometria + d.pluviometria });
+		_.each(between, function(d) {
+			pluviometria = pluviometria + d.pluviometria
+		});
 
 		return {
 			volume: (-start.volume + end.volume).toFixed(1),

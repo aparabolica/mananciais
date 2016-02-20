@@ -817,6 +817,13 @@ h3 {
 	font-weight: 400;
 }
 
+#filter .filter-result p.volume .val {
+	color: red;
+}
+#filter .filter-result p.volume.positive .val {
+	color: green;
+}
+
 .progress-meter .background {
   fill: transparent;
 }
