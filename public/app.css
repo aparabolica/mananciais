@@ -22,6 +22,12 @@ html,body {
 	display: block;
 }
 
+.container:after {
+	content:"";
+	display:block;
+	clear:both;
+}
+
 h1,
 h2,
 h3 {
@@ -776,6 +782,25 @@ h3 {
 	padding-left: 10px;
 }
 
+#filter .button {
+	border: 1px solid #444;
+	padding: 10px 15px;
+	border-radius: 4px;
+	text-decoration: none;
+	display: block;
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 14px;
+	line-height: 30px;
+	margin-top: 5px;
+	font-weight: 600;
+	color: #999;
+}
+
+#filter .button:hover {
+	color: #fff;
+}
+
 #filter h3 {
 	font-size: 12px;
 	line-height: 12px;
@@ -804,7 +829,7 @@ h3 {
 	font-size: 12px;
 	text-transform: uppercase;
 	display: inline-block;
-	margin-left: 10px;
+	margin-left: 5px;
 	padding: 0;
 	font-weight: 200;
 	text-align: left;
@@ -1096,4 +1121,104 @@ h3 {
 
 .mouse-tip.inactive {
 	opacity: 0;
+}
+
+#compare-chart .line {
+	stroke-width: 1.5;
+	stroke: steelblue;
+	fill: transparent;
+}
+
+#compare-chart circle {
+	stroke: steelblue;
+	stroke-width: 1.5;
+	fill: #f0f0f0;
+	cursor: none;
+}
+
+#compare-chart .compare-tooltip {
+	position: fixed;
+	width: 160px;
+	padding: 10px;
+	margin-left: -80px;
+	margin-top: -80px;
+	text-align: center;
+	background: #f0f0f0;
+	color: #333;
+	font-size: 14px;
+	border-radius: 3px;
+	pointer-events: none;
+	line-height: 20px;
+	font-family: "Lato";
+	font-weight: 200;
+	border: 1px solid #ccc;
+}
+
+#compare-chart .compare-tooltip h3 {
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	margin: 0 0 20px;
+	line-height: 12px;
+}
+
+#compare-chart .compare-tooltip p {
+	margin: 0 0 20px;
+}
+
+#compare-chart .compare-tooltip p.volume span {
+	font-size: 40px;
+	line-height: 40px;
+	font-weight: 600;
+	display: block;
+}
+
+#compare-table table {
+	width: 100%;
+	margin-top: 40px;
+}
+
+#compare-table th {
+	font-size: 14px;
+	line-height: 1.2;
+	color: #999;
+	text-align: left;
+	vertical-align: middle;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #c4c4c4;
+	padding-right: 10px;
+}
+
+#compare-table td {
+	padding: 15px 15px 15px 0;
+	border-bottom: 1px solid #ccc;
+}
+
+#compare-table td.year,
+#compare-table td.volume {
+	width: 22%;
+}
+
+#compare-table td.year {
+	font-weight: 600;
+	font-size: 16px;
+	padding-right: 30px;
+	color: #666;
+}
+
+#compare-table td.volume {
+	font-weight: 600;
+}
+
+#compare-table td span.volume {
+	font-size: 14px;
+	font-weight: 600;
+}
+
+#compare-table td span.volume.positive {
+	color: green;
+}
+
+#compare-table td span.volume.negative {
+	color: red;
 }

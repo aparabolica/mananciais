@@ -40,6 +40,15 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$('.compare-link').click(function() {
+		ga('send', 'screenview', {'screenName': 'Compare'});
+		$('section#compare-data').show();
+		if(compare) {
+			compare.chart();
+		}
+		return false;
+	});
+
 	$(document).keyup(function(e) {
 		if (e.keyCode == 27) { $('.modal').hide() }
 	});
@@ -66,7 +75,7 @@ $(document).ready(function() {
 
 	var selection;
 
-	var margin = {top: 0, right: 20, bottom: 260, left: 20},
+	var margin = {top: 0, right: 20, bottom: 300, left: 20},
 		width,
 		height;
 
@@ -87,6 +96,7 @@ $(document).ready(function() {
 
 	if(!isEmbed) {
 		var filter = require('./filter')();
+		var compare = require('./compare')(filter);
 	}
 
 	var pluviometria = require('./pluviometria')();
@@ -156,6 +166,9 @@ $(document).ready(function() {
 			if(stories)
 				stories.updateData(data, manancial);
 
+			if(compare)
+				compare.draw();
+
 			selection = _.last(data);
 			updateInfo(selection);
 
@@ -165,6 +178,9 @@ $(document).ready(function() {
 
 		if(filter)
 			filter.draw(parsed, svg, width, height, margin);
+
+		if(compare)
+			compare.draw();
 
 		var selectionRect = focus.append("svg:rect")
 			.attr("class", "pane")

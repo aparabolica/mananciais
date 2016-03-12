@@ -124,6 +124,42 @@ module.exports = function(brushedCb) {
 
 	}
 
+	filter.getVariation = function(extent) {
+
+		var startIndex;
+
+		var start = _.find(filter.data, function(d, i) {
+			startIndex = i;
+			return extent[0].getFullYear() == d.date.getFullYear() &&
+				extent[0].getMonth() == d.date.getMonth() &&
+				extent[0].getDate() == d.date.getDate();
+		});
+
+		var dataFrom = _.rest(filter.data, startIndex);
+
+		var between = [];
+
+		var end = _.find(dataFrom, function(d) {
+			between.push(d);
+			return extent[1].getFullYear() == d.date.getFullYear() &&
+				extent[1].getMonth() == d.date.getMonth() &&
+				extent[1].getDate() == d.date.getDate();
+		});
+
+		var pluviometria = 0;
+
+		_.each(between, function(d) {
+			pluviometria = pluviometria + d.pluviometria
+		});
+
+		return {
+			data: between,
+			volume: (-start.volume + end.volume).toFixed(1),
+			pluviometria: pluviometria.toFixed(1)
+		};
+
+	}
+
 	function getPositions(width, height, margin) {
 
 		var filterMargin = {
@@ -202,7 +238,7 @@ module.exports = function(brushedCb) {
 	}
 
 	function filterInfo(extent) {
-		var variation = getVariation(extent);
+		var variation = filter.getVariation(extent);
 
 		$('#filter .filter-input .start').val(moment(extent[0]).format('DD/MM/YYYY'));
 		$('#filter .filter-input .end').val(moment(extent[1]).format('DD/MM/YYYY'));
@@ -217,41 +253,6 @@ module.exports = function(brushedCb) {
 		$('#filter .filter-result .pluviometria .val').text(variation.pluviometria + ' mm');
 
 		$('#filter .filter-result').show();
-	}
-
-	function getVariation(extent) {
-
-		var startIndex;
-
-		var start = _.find(filter.data, function(d, i) {
-			startIndex = i;
-			return extent[0].getFullYear() == d.date.getFullYear() &&
-				extent[0].getMonth() == d.date.getMonth() &&
-				extent[0].getDate() == d.date.getDate();
-		});
-
-		var dataFrom = _.rest(filter.data, startIndex);
-
-		var between = [];
-
-		var end = _.find(dataFrom, function(d) {
-			between.push(d);
-			return extent[1].getFullYear() == d.date.getFullYear() &&
-				extent[1].getMonth() == d.date.getMonth() &&
-				extent[1].getDate() == d.date.getDate();
-		});
-
-		var pluviometria = 0;
-
-		_.each(between, function(d) {
-			pluviometria = pluviometria + d.pluviometria
-		});
-
-		return {
-			volume: (-start.volume + end.volume).toFixed(1),
-			pluviometria: pluviometria.toFixed(1)
-		};
-
 	}
 
 	return filter;

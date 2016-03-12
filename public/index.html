@@ -73,6 +73,14 @@
 			<textarea style="width:100%;height:30px;"><iframe src="http://mananciais.tk" frameborder="0" width="100%" height="600"></iframe></textarea>
 		</div>
 	</section>
+	<section id="compare-data" class="modal">
+		<a class="close-modal"></a>
+		<div class="compare-data-content modal-content">
+			<p>Compare dados de volume armazenado e pluviometria acumulada de um período em diferentes ciclos anuais</p>
+			<div id="compare-chart"></div>
+			<div id="compare-table"></div>
+		</div>
+	</section>
 	<section id="info">
 	</section>
 	<aside id="legend" style="display:none;">
@@ -118,13 +126,18 @@
 		<ul class="stories-list"></ul>
 	</section>
 	<section id="filter" class="hide-if-embed">
-		<div class="filter-input">
-			<h3>Filtro</h3>
-			<label><span>de</span> <input class="start" type="text" placeholder="data inicial" disabled /></label>
-			<label><span>até</span> <input class="end" type="text" placeholder="data final" disabled /></label>
+		<div class="container">
+			<div class="filter-input">
+				<h3>Filtro</h3>
+				<label><span>de</span> <input class="start" type="text" placeholder="data inicial" disabled /></label>
+				<label><span>até</span> <input class="end" type="text" placeholder="data final" disabled /></label>
+			</div>
+			<div class="filter-result">
+				<h3>Dados</h3>
+			</div>
 		</div>
-		<div class="filter-result">
-			<h3>Dados</h3>
+		<div class="filter-compare container">
+			<a class="button compare-link" href="javascript:void(0);">Comparar dados com outros anos</a>
 		</div>
 	</section>
 	<footer id="site-footer">
