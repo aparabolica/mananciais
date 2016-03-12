@@ -89,8 +89,6 @@ module.exports = function(filter) {
     var width = $container.width() - margin.left - margin.right;
     var height = 400 - margin.top - margin.bottom;
 
-    console.log(data);
-
     var x = d3.time.scale().range([0, width]);
     var y = d3.scale.linear().range([height, 0]);
     var s = d3.scale.linear().range([3, 12]);
@@ -151,7 +149,6 @@ module.exports = function(filter) {
       .attr("cx", function(d) { return x(xValue(d)); })
       .attr("cy", function(d) { return y(yValue(d)); })
       .on('mouseover', function(d) {
-        console.log(d);
         tooltip.transition()
           .duration(200)
           .style("opacity", 1);

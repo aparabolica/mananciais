@@ -114,6 +114,8 @@ module.exports = function(brushedCb) {
 
 	filter.updateData = function(data) {
 
+		filter.data = data;
+
 		var selection = _.last(data);
 
 		filter.context.datum(data).transition().duration(2000).attr("d", filter.svg.area);
