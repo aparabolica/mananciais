@@ -1123,6 +1123,12 @@ h3 {
 	opacity: 0;
 }
 
+#compare-data .modal-content {
+	left: 18%;
+	right: 18%;
+	padding: 40px 60px;
+}
+
 #compare-chart .line {
 	stroke-width: 1.5;
 	stroke: steelblue;

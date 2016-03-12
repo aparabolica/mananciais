@@ -51,9 +51,12 @@ module.exports = function(filter) {
 
     var $container = $('#compare-table');
 
+    $container.parent().find('h2 span').text(end.format('DD/MM'));
+
     var volumeText = 'Volume em ' + end.format('DD/MM');
 
     $container.empty();
+
     $container.append('<table><thead><tr><th>Ano</th><th>' + volumeText + '</th><th>Variação de volume nos 30 dias anteriores</th><th>Pluviometria acumulada dos 30 dias anteriores</th></tr></head><tbody></tbody></table>');
 
     _.each(Data, function(yearData) {
@@ -81,17 +84,17 @@ module.exports = function(filter) {
 
     var margin = {
       top: 20,
-      right: 20,
+      right: 12,
       bottom: 40,
-      left: 30
+      left: 12
     };
 
     var width = $container.width() - margin.left - margin.right;
-    var height = 400 - margin.top - margin.bottom;
+    var height = 250 - margin.top - margin.bottom;
 
     var x = d3.time.scale().range([0, width]);
     var y = d3.scale.linear().range([height, 0]);
-    var s = d3.scale.linear().range([3, 12]);
+    var s = d3.scale.linear().range([3, 10]);
 
     var xAxis = d3.svg.axis()
       .scale(x)
@@ -126,15 +129,15 @@ module.exports = function(filter) {
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
-    svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Volume");
+    // svg.append("g")
+    //   .attr("class", "y axis")
+    //   .call(yAxis)
+    // .append("text")
+    //   .attr("transform", "rotate(-90)")
+    //   .attr("y", 6)
+    //   .attr("dy", ".71em")
+    //   .style("text-anchor", "end")
+    //   .text("Volume");
 
     svg.append('path')
       .datum(data)
