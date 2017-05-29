@@ -28,7 +28,7 @@ module.exports = function(data, key) {
 		 */
 		if(key == 'sistemaCantareira') {
 
-			if(d.date <= new Date('2014-05-16')) {
+			if(d.date <= new Date('2014-05-16') || d.date >= new Date('2017-05-15')) {
 
 				// d.volume_m3 = volumeUtil * (d.volume/100);
 				// d.volume = (d.volume_m3/volumeUtil)*100;
