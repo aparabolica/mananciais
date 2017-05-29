@@ -119,6 +119,7 @@ function scrape(data) {
 		method: 'GET',
 		headers: {
 			'User-Agent': 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.114 Safari/537.36',
+			'Upgrade-Insecure-Requests': '1',
 			'Host': 'www2.sabesp.com.br'
 		}
 	}, function(err, res, body) {
@@ -148,6 +149,7 @@ function scrape(data) {
 					'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
 					'Host': 'www2.sabesp.com.br',
 					'Origin': 'http://www2.sabesp.com.br',
+					'Upgrade-Insecure-Requests': '1',
 					'Referer': sabesp,
 					'User-Agent': 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.114 Safari/537.36'
 				},
@@ -262,6 +264,7 @@ function getValidation(body) {
 	return {
 		'__VIEWSTATE': html('#__VIEWSTATE').val(),
 		'__EVENTVALIDATION': html('#__EVENTVALIDATION').val(),
+		'__VIEWSTATEENCRYPTED': html('#__VIEWSTATEENCRYPTED').val(),
 		'Imagebutton1.x': 8,
 		'Imagebutton1.y': 6
 	};
