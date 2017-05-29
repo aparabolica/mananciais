@@ -31,8 +31,8 @@ module.exports = function(app) {
     Stories.feed = new RSS({
       title: 'Mananciais de São Paulo',
       description: 'Histórias coletadas sobre os mananciais de SP',
-      feed_url: 'http://mananciais.tk/feed',
-      site_url: 'http://mananciais.tk'
+      feed_url: 'https://mananciais.tk/feed',
+      site_url: 'https://mananciais.tk'
     });
     var items = _.map(data, function(item) {
       item.date = moment(item.data, 'DD/MM/YYYY').utc();
