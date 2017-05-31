@@ -8,7 +8,6 @@ module.exports = function(svg, callback) {
 	var progress = {
 		twoPi: 2 * Math.PI,
 		progress: 0,
-		total:  1725166,
 		formatPercent: d3.format(".0%"),
 		arc: d3.svg.arc().startAngle(0).innerRadius(180).outerRadius(240)
 	};
@@ -24,7 +23,7 @@ module.exports = function(svg, callback) {
 
 	d3.csv('/data')
 		.on('progress', function() {
-			var i = d3.interpolate(progress.progress, d3.event.loaded / progress.total);
+			var i = d3.interpolate(progress.progress, d3.event.loaded / d3.event.total);
 			d3.transition().tween('progress', function() {
 				return function(t) {
 					progress.progress = i(t);
