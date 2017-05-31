@@ -23,7 +23,7 @@ module.exports = function(svg, callback) {
 
 	d3.csv('/data')
 		.on('progress', function() {
-			var i = d3.interpolate(progress.progress, d3.event.loaded / d3.event.total);
+			var i = d3.interpolate(progress.progress, d3.event.loaded / (d3.event.total || d3.event.loaded-1));
 			d3.transition().tween('progress', function() {
 				return function(t) {
 					progress.progress = i(t);
