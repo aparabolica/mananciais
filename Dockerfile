@@ -1,6 +1,6 @@
 FROM node:6
 
-EXPOSE 8000
+EXPOSE 3000
 
 # Grab gosu for easy step-down from root
 ENV GOSU_VERSION 1.7
