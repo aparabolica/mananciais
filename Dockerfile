@@ -31,4 +31,4 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Run node server
-CMD ["npm", "start"]
+CMD ["node", "mananciais.js", "serve"]
