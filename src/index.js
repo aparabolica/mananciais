@@ -75,7 +75,7 @@ $(document).ready(function() {
 
 	var selection;
 
-	var margin = {top: 0, right: 20, bottom: 300, left: 20},
+	var margin = {top: 0, right: 20, bottom: 270, left: 20},
 		width,
 		height;
 
@@ -94,9 +94,11 @@ $(document).ready(function() {
 
 	var volume = require('./volume')();
 
+	var filter = false;
+	var compare = false;
 	if(!isEmbed) {
-		var filter = require('./filter')();
-		var compare = require('./compare')(filter);
+		filter = require('./filter')();
+		compare = require('./compare')(filter);
 	}
 
 	var pluviometria = require('./pluviometria')();

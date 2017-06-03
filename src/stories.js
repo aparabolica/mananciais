@@ -199,7 +199,7 @@ module.exports = function() {
 							stories.tooltip.html('<span>' + d.stories[0].data + ' | ' + d.stories[0].tipo + '</span><h3>' + d.titulo + '</h3>');
 						}
 
-						stories.tooltip.html
+						stories.tooltip
 							.style("left", (d3.event.pageX) + "px")
 							.style("top", (d3.event.pageY) + "px");
 					}

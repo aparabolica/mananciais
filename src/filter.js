@@ -22,44 +22,78 @@ module.exports = function(brushedCb) {
 
 		filter.positions = getPositions(width, height, margin);
 
+		// filter.svg = getSvg(svgContainer);
+
 		$('#filter').css({
 			'position': 'absolute',
 			'top': filter.positions.margin.top,
-			'left': filter.positions.width + 40,
-			'width': filter.positions.margin.right,
+			'left': filter.svg ? filter.positions.width + 40 : 20,
+			'width': filter.svg ? filter.positions.margin.right : width,
 			'height': filter.positions.height
 		});
 		$('#filter .filter-result').hide().append($(resultsTmpl));
 
-		filter.svg = getSvg(svgContainer);
-
-		filter.brush = d3.svg.brush().x(filter.svg.x).on("brush", _.debounce(brushed, 200));
-
-		filter.svg.x.domain(d3.extent(data, function(d) { return d.date; }));
-		filter.svg.y.domain([0, d3.max(data, function(d) { return d.volume; })]);
-
-		filter.context = filter.svg.node.append("path")
-			.datum(data)
-			.attr('transform', 'scale(1, 0.7)')
-			.attr("class", "area volume")
-			.attr("d", filter.svg.area);
-
-		filter.svg.node.append("g")
-			.attr("class", "x axis")
-			.attr("transform", "translate(0," + (filter.positions.height - 20) + ")")
-			.call(filter.svg.axis.x);
-
-		filter.svg.node.append("g")
-			.attr("class", "x brush")
-			.call(filter.brush)
-			.selectAll("rect")
-			.attr("y", 1)
-			.attr("height", filter.positions.height - 2);
-
 		var selection = _.last(data);
 
+		var maxDate = moment(_.last(data).date);
+		var minDate = moment(data[0].date);
+
+		var filterExtent = [
+			moment(selection.date).subtract(7, 'days').toDate(),
+			moment(selection.date).toDate()
+		];
+
 		$('#filter').show();
-		filterInfo([moment(selection.date).subtract(7, 'days').toDate(), moment(selection.date).toDate()]);
+		filterInfo(filterExtent);
+
+		if(filter.svg) {
+
+			filter.brush = d3.svg.brush().x(filter.svg.x).on("brush", _.debounce(brushed, 200));
+
+			filter.svg.x.domain(d3.extent(data, function(d) { return d.date; }));
+			filter.svg.y.domain([0, d3.max(data, function(d) { return d.volume; })]);
+
+			filter.context = filter.svg.node.append("path")
+				.datum(data)
+				.attr('transform', 'scale(1, 0.7)')
+				.attr("class", "area volume")
+				.attr("d", filter.svg.area);
+
+			filter.svg.node.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0," + (filter.positions.height - 20) + ")")
+				.call(filter.svg.axis.x);
+
+			filter.svg.node.append("g")
+				.attr("class", "x brush")
+				.call(filter.brush)
+				.selectAll("rect")
+				.attr("y", 1)
+				.attr("height", filter.positions.height - 2);
+
+		} else {
+
+			$('#filter input').attr('max', maxDate.format('YYYY-MM-DD'));
+			$('#filter input').attr('min', minDate.format('YYYY-MM-DD'));
+
+			$('#filter input').on('input change', _.debounce(function() {
+
+				var date = moment($(this).val());
+
+				var i = $(this).is('.start') ? 0 : 1;
+
+				if(!date.isValid()) {
+					$(this).addClass('invalid');
+					delete filterExtent[i];
+				} else {
+					filterExtent[i] = date.toDate();
+				}
+
+				filterInfo(filterExtent);
+
+			}, 50));
+
+		}
 
 	}
 
@@ -70,45 +104,53 @@ module.exports = function(brushedCb) {
 		$('#filter').css({
 			'position': 'absolute',
 			'top': filter.positions.margin.top,
-			'left': filter.positions.width + 40,
-			'width': filter.positions.margin.right,
+			'left': filter.svg ? filter.positions.width + 40 : 20,
+			'width': filter.svg ? filter.positions.margin.right : width,
 			'height': filter.positions.height
 		});
 
-		filter.svg.x.range([0, filter.positions.width]);
-		filter.svg.y.range([filter.positions.height, 0]);
+		if(filter.svg) {
+			filter.svg.x.range([0, filter.positions.width]);
+			filter.svg.y.range([filter.positions.height, 0]);
 
-		filter.brush.x(filter.svg.x);
+			filter.brush.x(filter.svg.x);
 
-		filter.svg.area.y0(filter.positions.height);
+			filter.svg.area.y0(filter.positions.height);
 
-		filter.svg.node.select('.x.axis').attr("transform", "translate(0," + (filter.positions.height - 20) + ")");
-		filter.svg.node.select('.x.brush').attr("height", filter.positions.height - 2);
+			filter.svg.node.select('.x.axis').attr("transform", "translate(0," + (filter.positions.height - 20) + ")");
+			filter.svg.node.select('.x.brush').attr("height", filter.positions.height - 2);
+		}
 
 		$('.filter-area-container')
 			.attr("transform", "translate(" + filter.positions.margin.left + "," + filter.positions.margin.top + ")")
 			.attr('width', filter.positions.width)
 			.attr('height', filter.positions.height);
 
-		$('.filter-area-svg')
-			.attr('width', filter.positions.width)
-			.attr('height', filter.positions.height);
+		if(filter.svg) {
+			$('.filter-area-svg')
+				.attr('width', filter.positions.width)
+				.attr('height', filter.positions.height);
 
-		filter.redraw();
+			filter.redraw();
+		}
 
 	}, 200);
 
 	filter.brushArea = function(extent) {
 
-		filter.svg.x.domain(extent);
-		filter.redraw();
+		if(filter.svg) {
+			filter.svg.x.domain(extent);
+			filter.redraw();
+		}
 
 	};
 
 	filter.redraw = function() {
 
-		filter.context.attr("d", filter.svg.area);
-		filter.svg.node.select('.x.axis').call(filter.svg.axis.x);
+		if(filter.svg) {
+			filter.context.attr("d", filter.svg.area);
+			filter.svg.node.select('.x.axis').call(filter.svg.axis.x);
+		}
 
 	};
 
@@ -118,8 +160,10 @@ module.exports = function(brushedCb) {
 
 		var selection = _.last(data);
 
-		filter.context.datum(data).transition().duration(2000).attr("d", filter.svg.area);
-		filter.svg.node.select(".x.axis").call(filter.svg.axis.x);
+		if(filter.svg) {
+			filter.context.datum(data).transition().duration(2000).attr("d", filter.svg.area);
+			filter.svg.node.select(".x.axis").call(filter.svg.axis.x);
+		}
 
 		$('#filter').show();
 		filterInfo([moment(selection.date).subtract(7, 'days').toDate(), moment(selection.date).toDate()]);
@@ -130,12 +174,26 @@ module.exports = function(brushedCb) {
 
 		var startIndex;
 
+		var empty = {
+			data: [],
+			volume: 0,
+			pluviometria: 0
+		};
+
+		if(!extent[0] || !extent[1]) {
+			return empty;
+		}
+
 		var start = _.find(filter.data, function(d, i) {
 			startIndex = i;
 			return extent[0].getFullYear() == d.date.getFullYear() &&
 				extent[0].getMonth() == d.date.getMonth() &&
 				extent[0].getDate() == d.date.getDate();
 		});
+
+		if(!start) {
+			return empty;
+		}
 
 		var dataFrom = _.rest(filter.data, startIndex);
 
@@ -147,6 +205,10 @@ module.exports = function(brushedCb) {
 				extent[1].getMonth() == d.date.getMonth() &&
 				extent[1].getDate() == d.date.getDate();
 		});
+
+		if(!end) {
+			return empty;
+		}
 
 		var pluviometria = 0;
 
@@ -240,10 +302,11 @@ module.exports = function(brushedCb) {
 	}
 
 	function filterInfo(extent) {
+
 		var variation = filter.getVariation(extent);
 
-		$('#filter .filter-input .start').val(moment(extent[0]).format('DD/MM/YYYY'));
-		$('#filter .filter-input .end').val(moment(extent[1]).format('DD/MM/YYYY'));
+		$('#filter .filter-input .start').val(moment(extent[0]).format('YYYY-MM-DD'));
+		$('#filter .filter-input .end').val(moment(extent[1]).format('YYYY-MM-DD'));
 
 		if(variation.volume > 0) {
 			variation.volume = '+' + variation.volume;
@@ -260,27 +323,3 @@ module.exports = function(brushedCb) {
 	return filter;
 
 }
-
-
-// var inputExtent = [];
-
-// $('#filter input').on('keyup', _.debounce(function() {
-
-// 	var date = moment($(this).val(), 'DD/MM/YYYY');
-
-// 	var i = $(this).is('.start') ? 0 : 1;
-
-// 	if($(this).val().length !== 10 || !date.isValid()) {
-// 		$(this).addClass('invalid');
-// 		delete inputExtent[i];
-// 		brush.clear();
-// 	} else {
-// 		inputExtent[i] = date.toDate();
-// 		if(inputExtent[0] && inputExtent[1]) {
-// 			brush.extent(inputExtent);
-// 		}
-// 		brush.event(context.selectAll(".brush"));
-// 	}
-
-
-// }, 50));

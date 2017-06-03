@@ -763,7 +763,7 @@ h3 {
 	width: 15%;
 	display: inline-block;
 	line-height: 30px;
-	font-size: 12px;
+	font-size: 10px;
 	border-right: 1px solid #404040;
 }
 
@@ -773,7 +773,7 @@ h3 {
 	background: transparent;
 	border: 0;
 	color: #fff;
-	font-size: 20px;
+	font-size: 16px;
 	height: 30px;
 	font-family: "Lato";
 	font-weight: 200;
@@ -783,14 +783,15 @@ h3 {
 }
 
 #filter .button {
-	border: 1px solid #444;
-	padding: 10px 15px;
-	border-radius: 4px;
+	border-top: 1px solid #292929;
+	background: #202020;
+	padding: 0 15px;
+	/*border-radius: 4px;*/
 	text-decoration: none;
 	display: block;
 	text-align: center;
 	text-transform: uppercase;
-	font-size: 14px;
+	font-size: 12px;
 	line-height: 30px;
 	margin-top: 5px;
 	font-weight: 600;
@@ -802,14 +803,14 @@ h3 {
 }
 
 #filter h3 {
-	font-size: 12px;
-	line-height: 12px;
+	font-size: 10px;
+	line-height: 10px;
 	color: #999;
 	margin: 0 0 10px;
 	padding: 0 0 10px;
 	border-bottom: 1px solid #444;
 	text-transform: uppercase;
-	font-weight: 400;
+	font-weight: 600;
 }
 
 #filter .filter-result svg {
@@ -826,7 +827,7 @@ h3 {
 }
 
 #filter .filter-result p .label {
-	font-size: 12px;
+	font-size: 10px;
 	text-transform: uppercase;
 	display: inline-block;
 	margin-left: 5px;
@@ -837,7 +838,7 @@ h3 {
 }
 
 #filter .filter-result p .val {
-	font-size: 20px;
+	font-size: 16px;
 	color: #fff;
 	font-weight: 400;
 }
