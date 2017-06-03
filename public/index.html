@@ -20,7 +20,12 @@
 <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
 <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
 <link href='app.css?v=3.8.3' rel='stylesheet' type='text/css'>
+<link href='responsive.css' rel='stylesheet' type='text/css'>
 <link rel="alternate" type="application/rss+xml" href="https://mananciais.tk/feed" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="msapplication-navbutton-color" content="#000000">
+<meta name="apple-mobile-web-app-status-bar-style" content="#000000">
 <body>
 	<div id="fb-root"></div>
 	<script>(function(d, s, id) {
@@ -31,7 +36,15 @@
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));</script>
 	<header id="site-header">
-		<h2><a href="http://codigourbano.org/" target="_blank" rel="external" title="Código Urbano"><img src="img/codigourbano.png" alt="Código Urbano" /></a></h2>
+		<h2><a href="http://codigourbano.org/" target="_blank" rel="external" title="Código Urbano">
+			<img src="img/codigourbano.png" alt="Código Urbano" class="hide-if-small" />
+			<img src="img/codigourbano_small.png" alt="Código Urbano" class="show-if-small" />
+		</a></h2>
+		<nav>
+			<a class="about-link" href="#">Sobre</a>
+			<a class="data-link" href="/data.csv" target="_blank">Baixe os dados</a>
+			<a class="embed-link hide-if-embed" href="#">Embed</a>
+		</nav>
 		<div class="header-options">
 			<div class="manancial-drop header-option">
 				<div class="header-option-trigger">
@@ -48,11 +61,6 @@
 				<div class="manancial-info"></div>
 			</div>
 		</div>
-		<nav>
-			<a class="about-link" href="#">Sobre</a>
-			<a class="data-link" href="/data.csv" target="_blank">Baixe os dados</a>
-			<a class="embed-link hide-if-embed" href="#">Embed</a>
-		</nav>
 	</header>
 	<section id="about" class="modal">
 		<a class="close-about close-modal"></a>
@@ -141,11 +149,11 @@
 			<a class="button compare-link" href="javascript:void(0);">Comparar dados com outros anos</a>
 		</div>
 	</section>
-	<footer id="site-footer">
+	<footer id="site-footer" class="hide-if-mobile">
 		<div class="show-if-embed site-link">
 			<a href="https://mananciais.tk" title="mananciais.tk" target="_blank">Acesse a navegação completa</a>
 		</div>
-		<div class="social hide-if-embed">
+		<div class="social hide-if-embed hide-if-small">
 			<div class="fb-like" data-href="https://mananciais.tk" data-colorscheme="dark" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
 			<a href="https://twitter.com/share" data-url="https://mananciais.tk" class="twitter-share-button" data-lang="pt-BR">Tuitar</a>
 			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
@@ -154,7 +162,7 @@
 			<p class="dev"><span>Desenvolvido por <a href="https://github.com/miguelpeixe/" target="_blank" rel="external" title="Miguel Peixe">Miguel Peixe</a></p>
 			<p class="data"><span>Dados</span> <a href="http://sabesp.com.br/" target="_blank" rel="external" title="SABESP"><img src="img/sabesp.png" alt="SABESP" /></a></p>
 		</div>
-		<div class="fork hide-if-embed">
+		<div class="fork hide-if-embed hide-if-small">
 			<p><a href="https://github.com/codigourbano/mananciais" target="_blank" rel="external" title="GitHub">Código disponível no GitHub</a></p>
 		</div>
 	</footer>

@@ -1,0 +1,53 @@
+.show-if-mobile {
+  display: none;
+}
+.show-if-small {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .hide-if-mobile {
+    display: none !important;
+  }
+  .show-if-mobile {
+    display: block !important;
+  }
+}
+
+@media (max-width: 970px) {
+  .hide-if-small {
+    display: none !important;
+  }
+  .show-if-small {
+    display: block;
+  }
+  #site-header .manancial-drop h1 {
+    font-size: 18px;
+  }
+  #site-header h2 {
+    width: auto;
+  }
+  #site-header .header-options {
+    width: auto;
+    float: none;
+  }
+  #site-header nav {
+    width: auto;
+    float: right;
+  }
+  #info h2 {
+    font-size: 20px;
+    line-height: 40px;
+    width: 270px;
+  }
+  #info h2 svg {
+    margin-top: 3px;
+  }
+  #info table {
+    font-size: 25px;
+    line-height: 40px;
+  }
+  #info table td {
+    width: auto !important;
+  }
+}
