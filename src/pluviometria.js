@@ -15,17 +15,17 @@ module.exports = function() {
 		pluviometria.svg = {
 			x: {
 				value: function(d) { return d.date; },
-				scale: d3.time.scale().range([0, width]),
+				scale: d3.scaleTime().range([0, width]),
 				map: function(d) { return pluviometria.svg.x.scale(pluviometria.svg.x.value(d)); }
 			},
 			y: {
 				value: function(d) { return d.volume; },
-				scale: d3.scale.linear().range([height, 220]),
+				scale: d3.scaleLinear().range([height, 220]),
 				map: function(d) { return pluviometria.svg.y.scale(pluviometria.svg.y.value(d)); }
 			},
 			s: {
 				value: function(d) { return d.pluviometria; },
-				scale: d3.scale.linear().range([0, 10]),
+				scale: d3.scaleLinear().range([0, 10]),
 				map: function(d) { return pluviometria.svg.s.scale(pluviometria.svg.s.value(d)); }
 			},
 			node: svgContainer.append("g").attr("transform", "translate(0,0)").attr("class", "pluviometria"),
@@ -34,7 +34,9 @@ module.exports = function() {
 
 		pluviometria.svg.x.scale.domain(domain.svg.x.domain());
 		pluviometria.svg.y.scale.domain(domain.svg.y.domain());
-		pluviometria.svg.s.scale.domain(d3.extent(data, function(d) { return d.pluviometria; }));
+		pluviometria.svg.s.scale.domain(d3.extent(data, function(d) {
+			return d.pluviometria;
+		}));
 
 		pluviometria.svg.node
 			.selectAll(".dot")
@@ -68,42 +70,31 @@ module.exports = function() {
 	};
 
 	pluviometria.resize = _.debounce(function(width, height) {
-
 		pluviometria.svg.x.scale.range([0, width]);
 		pluviometria.svg.y.scale.range([height, 220]);
-
-		pluviometria.svg.x.scale.domain(pluviometria.svg.domain.svg.x.domain());
 		pluviometria.svg.y.scale.domain(pluviometria.svg.domain.svg.y.domain());
-
-		pluviometria.redraw();
-
+		var extent = pluviometria.svg.domain.svg.x.domain();
+		pluviometria.zoom(extent);
 	}, 200);
 
 	pluviometria.hide = function() {
-		pluviometria.svg.node.style({'display': 'none'});
+		if(!pluviometria.hidden) {
+			pluviometria.svg.node.style('opacity', 0);
+			pluviometria.hidden = true;
+		}
 	};
 
-	pluviometria.brush = function(extent) {
-
-		pluviometria.svg.node.style({'display': 'block'});
-
+	pluviometria.zoom = function(extent) {
+		pluviometria.hidden = false;
+		pluviometria.svg.node.style('opacity', 1);
 		pluviometria.svg.x.scale.domain(extent);
-
-		pluviometria.redraw();
-
-	};
-
-	pluviometria.redraw = function() {
-
 		pluviometria.svg.node
 			.selectAll(".dot")
-			.attr("r", pluviometria.svg.s.map)
 			.attr("cx", pluviometria.svg.x.map)
 			.attr("cy", pluviometria.svg.y.map);
 	}
 
 	pluviometria.updateData = function(data) {
-
 		pluviometria.svg.node
 			.selectAll(".dot")
 			.data(data)
@@ -113,7 +104,6 @@ module.exports = function() {
 			.attr("r", pluviometria.svg.s.map)
 			.attr("cx", pluviometria.svg.x.map)
 			.attr("cy", pluviometria.svg.y.map);
-
 	};
 
 	return pluviometria;

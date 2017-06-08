@@ -8,28 +8,42 @@ var moment = require('moment'),
 require('moment/locale/pt-br');
 moment.locale('pt-BR');
 
-module.exports = function(data) {
+module.exports = _.once(function() {
 
-	if(data) {
+	var $info = $('#info');
 
-		var $info = $('#info');
+	var $head = $('<h2 />');
+	var $data = $('<table />');
 
-		$info.empty();
+	var $volume = $('<tr />');
+	$volume.append('<td class="label" /><td class="value "/>');
+	$volume.find('.label').html($(icons.water));
 
-		var $head = $('<h2 />').html(icons.calendar + moment(data.date).format('LL'));
-		var $data = $('<table />');
+	var $pluviometria = $('<tr />');
+	$pluviometria.append('<td class="label" /><td class="value "/>');
+	$pluviometria.find('.label').html($(icons.rain));
 
-		$data.append(getInfo(data, 'volume'));
-		$data.append(getInfo(data, 'pluviometria do dia'));
+	$data.append($volume);
+	$data.append($pluviometria);
 
-		$info.append($head);
-		$info.append($data);
+	$info.append($head);
+	$info.append($data);
 
-	}
+	var update = _.debounce(function(data) {
+		if(data) {
+			$head.html(icons.calendar + moment(data.date).format('LL'));
+			getInfo(data, 'volume', $volume);
+			getInfo(data, 'pluviometria do dia', $pluviometria);
+		}
+	}, 3);
 
-}
+	return {
+		update: update
+	};
 
-function getInfo(data, key) {
+});
+
+function getInfo(data, key, $node) {
 
 	var label = data[key];
 	var indices = [];
@@ -45,24 +59,24 @@ function getInfo(data, key) {
 		}
 	}
 
-	var $tr = $('<tr />');
-	var $label = $('<td />');
-	var $value = $('<td>' + label + '</td>');
-	var $subvalues = $('<p class="subvalues"></p>');
-
-	$value.append($subvalues);
+	$node.find('.value').text(label);
 
 	if(indices.length) {
+		var $subvalues = $('<p class="subvalues"/>');
 		_.each(indices, function(indice, i) {
 			if(indice && typeof indice !== 'undefined') {
 				$subvalues.append($('<span class="indice indice-' + (i+1) + '">' + indice + '</span>'));
 			}
 		});
+		$node.find('.value').append($subvalues);
 	}
+
+	$node.removeClass(function(index, className) {
+		return(className.match (/(^|\s)status-\S+/g) || []).join(' ');
+	});
 
 	// Volume
 	if(key == 'volume') {
-		$label.append($(icons.water));
 		var cssClass = '';
 		if(data.volume < 10) {
 			cssClass = 'status-5';
@@ -75,11 +89,10 @@ function getInfo(data, key) {
 		} else {
 			cssClass = 'status-1';
 		}
-		$tr.addClass(cssClass);
-		$tr.addClass('volume');
+		$node.addClass(cssClass);
+		$node.addClass('volume');
 	// Pluviometria
 	} else if(key == 'pluviometria do dia') {
-		$label.append($(icons.rain));
 		var cssClass = '';
 		if(data.pluviometria < 0.5) {
 			cssClass = 'status-5';
@@ -92,13 +105,8 @@ function getInfo(data, key) {
 		} else {
 			cssClass = 'status-1';
 		}
-		$tr.addClass(cssClass);
-		$tr.addClass('pluviometria');
+		$node.addClass(cssClass);
+		$node.addClass('pluviometria');
 	}
-
-	$tr.append($label);
-	$tr.append($value);
-
-	return $tr;
 
 }

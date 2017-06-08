@@ -12,13 +12,13 @@ module.exports = function(data, key) {
 
 	var parsed = _.filter(data, function(d) { return d.manancial == key; });
 
-	var formatTime = d3.time.format("%Y-%-m-%-d");
+	var parseTime = d3.timeParse("%Y-%-m-%-d");
 
 	_.each(parsed, function(d, i) {
 		try {
 			d.volume = parseFloat(d['volume armazenado'].replace(' %', '').replace(',', '.'));
 			d.pluviometria = parseFloat(d['pluviometria do dia'].replace(' mm', '').replace(',', '.'));
-			d.date = formatTime.parse(d['data']);
+			d.date = parseTime(d['data']);
 		} catch(err) {
 			delete parsed[i];
 		}

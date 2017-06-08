@@ -92,24 +92,22 @@ module.exports = function(filter) {
     var width = $container.width() - margin.left - margin.right;
     var height = 250 - margin.top - margin.bottom;
 
-    var x = d3.time.scale().range([0, width]);
-    var y = d3.scale.linear().range([height, 0]);
-    var s = d3.scale.linear().range([3, 10]);
+    var x = d3.scaleTime().range([0, width]);
+    var y = d3.scaleLinear().range([height, 0]);
+    var s = d3.scaleLinear().range([3, 10]);
 
-    var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
+    var xAxis = d3.axisBottom()
+      .scale(x);
 
-    var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left");
+    var yAxis = d3.axisLeft()
+      .scale(y);
 
     var xValue = function(d) { return End.clone().year(d.year).toDate(); };
     var yValue = function(d) { return _.last(d.variation.data).volume; };
     var sValue = function(d) { return parseFloat(d.variation.pluviometria); };
 
-    var line = d3.svg.line()
-      .interpolate('linear')
+    var line = d3.line()
+      .curve(d3.curveLinear)
       .x(function(d) { return x(xValue(d)); })
       .y(function(d) { return y(yValue(d)); });
 

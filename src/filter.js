@@ -35,7 +35,7 @@ module.exports = function(brushedCb) {
 
 		var selection = _.last(data);
 
-		var maxDate = moment(_.last(data).date);
+		var maxDate = moment(selection.date);
 		var minDate = moment(data[0].date);
 
 		var filterExtent = [
@@ -48,7 +48,7 @@ module.exports = function(brushedCb) {
 
 		if(filter.svg) {
 
-			filter.brush = d3.svg.brush().x(filter.svg.x).on("brush", _.debounce(brushed, 200));
+			filter.brush = d3.brush().x(filter.svg.x).on("brush", _.debounce(brushed, 200));
 
 			filter.svg.x.domain(d3.extent(data, function(d) { return d.date; }));
 			filter.svg.y.domain([0, d3.max(data, function(d) { return d.volume; })]);
@@ -243,9 +243,9 @@ module.exports = function(brushedCb) {
 
 	function getSvg(container) {
 
-		var x = d3.time.scale().range([0, filter.positions.width]);
-		var y = d3.scale.linear().range([filter.positions.height, 0]);
-		var area = d3.svg.area()
+		var x = d3.scaleTime().range([0, filter.positions.width]);
+		var y = d3.scaleLinear().range([filter.positions.height, 0]);
+		var area = d3.area()
 			.interpolate("monotone")
 			.x(function(d) { return filter.svg.x(d.date); })
 			.y0(filter.positions.height)
@@ -260,7 +260,7 @@ module.exports = function(brushedCb) {
 				.attr('class', 'filter-area-svg')
 				.attr('width', filter.positions.width)
 				.attr('height', filter.positions.height)
-				.style({'overflow': 'hidden'})
+				.style('overflow', 'hidden')
 				.append("g")
 					.attr("class", "context");
 
@@ -269,7 +269,7 @@ module.exports = function(brushedCb) {
 			y: y,
 			area: area,
 			axis: {
-				x: d3.svg.axis().scale(x).orient("bottom")
+				x: d3.axisBottom().scale(x)
 			},
 			node: node
 		};

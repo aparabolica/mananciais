@@ -102,6 +102,7 @@ $(document).ready(function() {
 	}
 
 	var pluviometria = require('./pluviometria')();
+	// var pluviometria = false;
 
 	var stories = require('./stories')();
 	// var stories = false;
@@ -111,7 +112,10 @@ $(document).ready(function() {
 		.attr("height", height + margin.top + margin.bottom)
 		.attr("id", "main-chart");
 
-	var zoom = d3.behavior.zoom();
+	var zoom = d3.zoom()
+		.scaleExtent([1, Infinity])
+		.translateExtent([[-100, 0], [width+100, height]])
+		.extent([[-100, 0], [width+100, height]]);
 
 	var focus = svg.append("g")
 		.attr("class", "focus")
@@ -127,9 +131,17 @@ $(document).ready(function() {
 
 	$('#legend,#stories').hide();
 
+	var info = updateInfo();
+	// var info = false;
+
 	load(svg, function(err, d) {
 
 		var parsed = parseData(d, 'sistemaCantareira');
+		var parsedPerDate = {};
+
+		_.each(parsed, function(element) {
+			parsedPerDate[moment(element.date).format('YYYY-MM-DD')] = element;
+		});
 
 		// set global
 		data = parsed;
@@ -160,11 +172,16 @@ $(document).ready(function() {
 		var updateData = function(manancial) {
 
 			parsed = data = parseData(d, manancial);
+			parsedPerDate = {};
+			_.each(parsed, function(element) {
+				parsedPerDate[moment(element.date).format('YYYY-MM-DD')] = element;
+			});
 
 			volume.updateData(data);
 			if(filter)
 				filter.updateData(data);
-			pluviometria.updateData(data);
+			if(pluviometria)
+				pluviometria.updateData(data);
 			if(stories)
 				stories.updateData(data, manancial);
 
@@ -172,7 +189,8 @@ $(document).ready(function() {
 				compare.draw();
 
 			selection = _.last(data);
-			updateInfo(selection);
+			if(info)
+				info.update(selection);
 
 		};
 
@@ -195,12 +213,15 @@ $(document).ready(function() {
 			.attr("y1", 0)
 			.attr("x2", 0)
 			.attr("y2", height)
-			.attr("class", "selection-line")
-			.style({stroke: '#fff', "stroke-width": '2px', 'stroke-opacity': .5, 'pointer-events': 'none'})
-			.attr("opacity", 0);
+			.attr("class", "selection-line");
 
+		selectionLine.style('stroke', '#fff');
+		selectionLine.style('stroke-width', '2px');
+		selectionLine.style('stroke-opacity', '.5');
+		selectionLine.style('pointer-events', 'none');
 
-		pluviometria.draw(parsed, focus, volume, width, height);
+		if(pluviometria)
+			pluviometria.draw(parsed, focus, volume, width, height);
 
 		if(stories)
 			stories.draw(parsed, focus, volume, width, height);
@@ -212,36 +233,28 @@ $(document).ready(function() {
 			updateData(manancial);
 		});
 
-		changeManancial($('#site-header .mananciais li:nth-child(1)'));
+		changeManancial($('#site-header .mananciais li:eq(0)'));
 
 		selectionRect.on("mousemove", function() {
 			var X_pixel = d3.mouse(this)[0],
 				X_date = volume.svg.x.invert(X_pixel),
 				selection = false;
 
-			selectionLine.attr("opacity", 1)
+			selectionLine
+				.attr("opacity", 1)
 				.attr("x1", X_pixel)
 				.attr("x2", X_pixel);
 
-			_.each(parsed, function(element, index, array) {
+			selection = parsedPerDate[moment(X_date).format('YYYY-MM-DD')];
 
-				if(selection)
-					return false;
-
-				if ((index+1 < array.length) && (array[index].date <= X_date) && (array[index+1].date >= X_date)) {
-					if (X_date-array[index].date < array[index+1].date-X_date)
-						selection = array[index];
-					else
-						selection = array[index+1];
-				}
-
-			});
-			updateInfo(selection);
+			if(info)
+				info.update(selection);
 
 		});
 
 		selection = _.last(parsed);
-		updateInfo(selection);
+		if(info)
+			info.update(selection);
 
 		$(window).resize(function() {
 
@@ -251,13 +264,6 @@ $(document).ready(function() {
 				.attr("width", width + margin.left + margin.right)
 				.attr("height", height + margin.top + margin.bottom);
 
-			svg.select('.zoom-pane')
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom)
-				.call(zoom);
-
-			focus.call(zoom);
-
 			selectionRect
 				.attr("width", width)
 				.attr("height", height);
@@ -265,35 +271,63 @@ $(document).ready(function() {
 			selectionLine
 				.attr("y2", height);
 
-			volume.resize(width, height, function() {
-				zoom.x(volume.svg.x);
-			});
+			zoom
+				.translateExtent([[-100, 0], [width+100, height]])
+				.extent([[-100, 0], [width+100, height]])
+
+			volume.resize(width, height);
 
 			if(filter)
 				filter.resize(width, height, margin);
 
-			pluviometria.resize(width, height);
-			stories.resize(width, height);
+			if(pluviometria)
+				pluviometria.resize(width, height);
+
+			if(stories)
+				stories.resize(width, height);
+
+			svg.select('.zoom-pane')
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.call(zoom);
+
+			focus.call(zoom);
 
 		}).resize();
 
 		if(zoom) {
-			zoom.x(volume.svg.x).on("zoom", function() {
-				volume.redraw();
-				pluviometria.hide();
-				stories.preBrush(volume.svg.x.domain());
+			zoom.on("zoom", function() {
+				var transform = d3.event.transform;
+				var scale = transform.rescaleX(volume.svg.x2);
+				volume.svg.axis.x.scale(scale);
+				volume.svg.x.domain(scale.domain());
+				volume.zoom();
+				if(pluviometria)
+					pluviometria.hide();
+				if(stories) {
+					// stories.preBrush(volume.svg.x.domain());
+					stories.hide();
+				}
 				drawTools();
 			});
 		}
 
 		var drawTools = _.debounce(function() {
-			setTimeout(function() {
-				if(filter)
+			if(pluviometria) {
+				setTimeout(function() {
+					pluviometria.zoom(volume.svg.x.domain());
+				}, 5);
+			}
+			if(stories) {
+				setTimeout(function() {
+					stories.zoom(volume.svg.x.domain());
+				}, 10);
+			}
+			if(filter.svg) {
+				setTimeout(function() {
 					filter.brushArea(volume.svg.x.domain());
-				if(stories)
-					stories.brush(volume.svg.x.domain());
-				pluviometria.brush(volume.svg.x.domain());
-			}, 100);
+				}, 15);
+			}
 		}, 300);
 
 	});

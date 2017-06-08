@@ -19,8 +19,8 @@
 <meta name="twitter:image" content="https://mananciais.tk/img/thumb_2.png?v=3">
 <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
 <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
-<link href='app.css?v=3.8.3' rel='stylesheet' type='text/css'>
-<link href='responsive.css' rel='stylesheet' type='text/css'>
+<link href='app.css?v=4.0.0' rel='stylesheet' type='text/css'>
+<link href='responsive.css?v=4.0.0' rel='stylesheet' type='text/css'>
 <link rel="alternate" type="application/rss+xml" href="https://mananciais.tk/feed" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <meta name="theme-color" content="#000000">
@@ -65,13 +65,13 @@
 	<section id="about" class="modal">
 		<a class="close-about close-modal"></a>
 		<div class="about-content modal-content">
-			<p>O aplicativo sobre os sistemas de abastecimento de São Paulo obtêm, através de um programa, dados de nível dos reservatórios e precipitação do <a href="http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx" target="_blank" rel="external">site da Sabesp</a>. Para obter estes dados, a técnica utilizada foi a raspagem, ou scrapping como é conhecido em inglês. De maneira resumida, o que fizemos foi <a href="https://github.com/oeco/mananciais/blob/master/server/scrap.js" target="_blank" rel="external">um código em linguagem JavaScript</a>, que permite que a cada atualização no site da Sabesp esteja sincronizada com <a href="https://github.com/oeco/mananciais/blob/master/data/data.csv" target="_blank" rel="external">nossa base de dados</a>.</p>
+			<p>O aplicativo sobre os sistemas de abastecimento de São Paulo obtêm, através de um programa, dados de nível dos reservatórios e precipitação do <a href="http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx" target="_blank" rel="external">site da Sabesp</a>. Para obter estes dados, a técnica utilizada foi a raspagem, ou scraping como é conhecido em inglês. De maneira resumida, o que fizemos foi <a href="https://github.com/aparabolica/mananciais/blob/master/server/scrape.js" target="_blank" rel="external">um código em linguagem JavaScript</a>, que permite que a cada atualização no site da Sabesp esteja sincronizada com <a href="/data.csv" target="_blank" rel="external">nossa base de dados</a>.</p>
 
-			<p>A visualização utiliza a <a href="http://d3js.org/" target="_blank" rel="external">biblioteca D3 (Data Driven Documents)</a>, que também é baseada em JavaScript. Ela permite também a filtragem dos dados por períodos específicos de tempo.</p>
+			<p>A visualização utiliza a <a href="http://d3js.org/" target="_blank" rel="external">biblioteca D3 (Data Driven Documents)</a>.</p>
 
-			<p>O trabalho foi inspirado pela <a href="http://matheus.co/represas/#/" target="_blank" rel="external">visualização realizada pelo estúdio Jurema</a> há duas semanas. Nossa contribuição é exatamente permitir uma análise da série histórica dos dados sobre os reservatórios</p>
+			<p>O trabalho foi inspirado pela visualização realizada pelo estúdio Jurema. Nossa contribuição é exatamente permitir uma análise da série histórica dos dados sobre os reservatórios, com a ajuda de histórias localizadas no tempo para maior contexto.</p>
 
-			<p>Segue aqui o o código-aberto da aplicação: <a href="https://github.com/codigourbano/mananciais">https://github.com/codigourbano/mananciais</a></p>
+			<p>Segue o código-aberto da aplicação: <a href="https://github.com/aparabolica/mananciais">https://github.com/aparabolica/mananciais</a></p>
 		</div>
 	</section>
 	<section id="embed-chart" class="modal">
@@ -174,7 +174,7 @@
 	  ga('create', 'UA-50372213-1', 'mananciais.tk');
 	  ga('send', 'pageview');
 	</script>
-	<script type="text/javascript" src="app.js?v=3.8.2"></script>
+	<script type="text/javascript" src="app.js?v=4.0.0"></script>
 	<div class="mouse-tip">Utilize a rolagem do mouse para dar zoom no gráfico</div>
 </body>
 </html>

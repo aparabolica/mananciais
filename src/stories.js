@@ -17,7 +17,7 @@ module.exports = function() {
 		stories.svg = {
 			x: {
 				value: function(d) { return d.date; },
-				scale: d3.time.scale().range([0, width]),
+				scale: d3.scaleTime().range([0, width]),
 				map: function(d) { return stories.svg.x.scale(stories.svg.x.value(d)); }
 			},
 			y: {
@@ -33,7 +33,7 @@ module.exports = function() {
 						return -1000;
 					}
 				},
-				scale: d3.scale.linear().range([height, 220]),
+				scale: d3.scaleLinear().range([height, 220]),
 				map: function(d) { return stories.svg.y.scale(stories.svg.y.value(d)) * 0.85; },
 				offsetMap: function(d) { return stories.svg.y.scale(stories.svg.y.value(d)); }
 			},
@@ -59,7 +59,8 @@ module.exports = function() {
 
 		$('#stories').on('mouseenter', 'article', function() {
 			var story = $(this).data('story');
-			line.style({'stroke': '#ffe86e'})
+			line.style('stroke', '#ffe86e');
+			line
 				.attr("opacity", 1)
 				.attr("x1", story._cx)
 				.attr("x2", story._cx);
@@ -69,7 +70,8 @@ module.exports = function() {
 		});
 
 		$('#stories').on('mouseleave', 'article', function() {
-			line.style({'stroke': '#fff'}).attr('opacity', 0);
+			line.style('stroke', '#fff');
+			line.attr('opacity', 0);
 		});
 
 		return stories;
@@ -77,19 +79,15 @@ module.exports = function() {
 	};
 
 	stories.resize = _.debounce(function(width, height) {
-
 		stories.svg.x.scale.range([0, width]);
 		stories.svg.y.scale.range([height, 220]);
-
 		stories.svg.x.scale.domain(stories.svg.domain.svg.x.domain());
 		stories.svg.y.scale.domain(stories.svg.domain.svg.y.domain());
-
 		stories._draw(stories.filteredData || stories.data, false);
-
 	}, 200);
 
 	stories.hide = function() {
-		stories.svg.node.style({'display': 'none'});
+		stories.svg.node.style('display', 'none');
 	};
 
 	stories._draw = function(data, resetList) {
@@ -137,7 +135,9 @@ module.exports = function() {
 				.attr("x2", function(d) { return d.cx; })
 				.attr("y2", function(d) { return d.cyO; })
 				.attr('class', 'story-line')
-				.style({stroke: '#fc0', 'stroke-width': '1px', 'stroke-opacity': .5});
+				.style('stroke', '#fc0')
+				.style('stroke-width', '1px')
+				.style('stroke-opacity', .5);
 
 		stories.svg.node
 			.selectAll(".story")
@@ -221,33 +221,32 @@ module.exports = function() {
 	}
 
 	stories.preBrush = function(extent) {
-
-		stories.svg.node.style({'display': 'block'});
-
 		stories.svg.x.scale.domain(extent);
-
 		stories.svg.node
 			.selectAll('line')
 			.attr("x1", function(d) { return getClusterCoords(d.stories).cx; })
 			.attr("y1", function(d) { return getClusterCoords(d.stories).cy; })
 			.attr("x2", function(d) { return getClusterCoords(d.stories).cx; })
 			.attr("y2", function(d) { return getClusterCoords(d.stories).cyO; });
-
 		stories.svg.node
 			.selectAll(".story")
 			.attr("cx", function(d) { return getClusterCoords(d.stories).cx; })
 			.attr("cy", function(d) { return getClusterCoords(d.stories).cy; });
-
 	};
 
-	stories.brush = function(extent) {
+	stories.hide = function() {
+		if(!stories.hidden) {
+			stories.svg.node.style('opacity', 0);
+			stories.hidden = true;
+		}
+	};
 
-		stories.svg.node.style({'display': 'block'});
-
+	stories.zoom = function(extent) {
+		stories.hidden = false;
+		stories.svg.node.style('opacity', 1);
+		stories.svg.node.style('display', 'block');
 		stories.svg.x.scale.domain(extent);
-
 		stories._draw(stories.data, false);
-
 	};
 
 	stories.updateData = function(data, manancial) {
@@ -321,21 +320,29 @@ module.exports = function() {
 
 	function getClusterCoords(group) {
 
+		// This is very expensive.
 		_.each(group, function(story) {
 			story._cx = stories.svg.x.scale(stories.svg.x.value(story));
 			story._cy = stories.svg.y.scale(stories.svg.y.value(story)) * 0.9;
 			story._cyO = stories.svg.y.scale(stories.svg.y.value(story));
 		});
 
-		var cx = _.map(group, function(c) { return c._cx; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
-		var cy = _.map(group, function(c) { return c._cy; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
-		var cyO = _.map(group, function(c) { return c._cyO; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
-
 		return {
-			cx: cx,
-			cy: cy,
-			cyO: cyO
+			cx: group[0]._cx,
+			cy: group[0]._cy,
+			cyO: group[0]._cyO
 		};
+
+		// This is even more.
+		// var cx = _.map(group, function(c) { return c._cx; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
+		// var cy = _.map(group, function(c) { return c._cy; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
+		// var cyO = _.map(group, function(c) { return c._cyO; }).reduce(function(prev, cur) { return prev + cur; }) / group.length;
+		//
+		// return {
+		// 	cx: cx,
+		// 	cy: cy,
+		// 	cyO: cyO
+		// };
 	}
 
 	return stories;

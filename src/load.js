@@ -9,7 +9,7 @@ module.exports = function(svg, callback) {
 		twoPi: 2 * Math.PI,
 		progress: 0,
 		formatPercent: d3.format(".0%"),
-		arc: d3.svg.arc().startAngle(0).innerRadius(180).outerRadius(240)
+		arc: d3.arc().startAngle(0).innerRadius(180).outerRadius(240)
 	};
 
 	progress.meter = svg.append('g').attr('class', 'progress-meter').attr("transform", "translate(" + $('body').width() / 2 + "," + $('body').height() / 2 + ")");
@@ -22,8 +22,8 @@ module.exports = function(svg, callback) {
 	ga('send', 'screenview', {'screenName': 'Loading'});
 
 	d3.csv('/data')
-		.on('progress', function() {
-			var i = d3.interpolate(progress.progress, d3.event.loaded / (d3.event.total || d3.event.loaded-1));
+		.on('progress', function(ev) {
+			var i = d3.interpolate(progress.progress, ev.loaded / (ev.total || ev.loaded-1));
 			d3.transition().tween('progress', function() {
 				return function(t) {
 					progress.progress = i(t);
