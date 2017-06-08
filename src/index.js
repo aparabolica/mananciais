@@ -92,6 +92,8 @@ $(document).ready(function() {
 
 	updateDimensions();
 
+	var info = updateInfo();
+
 	var volume = require('./volume')();
 
 	var filter = false;
@@ -104,7 +106,7 @@ $(document).ready(function() {
 	var pluviometria = require('./pluviometria')();
 	// var pluviometria = false;
 
-	var stories = require('./stories')();
+	var stories = require('./stories')(info);
 	// var stories = false;
 
 	var svg = d3.select("body").append("svg")
@@ -130,9 +132,6 @@ $(document).ready(function() {
 		.call(zoom);
 
 	$('#legend,#stories').hide();
-
-	var info = updateInfo();
-	// var info = false;
 
 	load(svg, function(err, d) {
 

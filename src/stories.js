@@ -3,10 +3,9 @@
 var d3 = require('d3'),
 	_ = require('underscore'),
 	$ = require('jquery'),
-	moment = require('moment'),
-	updateInfo = require('./updateInfo');
+	moment = require('moment');
 
-module.exports = function() {
+module.exports = function(info) {
 
 	var stories = {};
 
@@ -66,7 +65,7 @@ module.exports = function() {
 				.attr("x2", story._cx);
 			var dateFormatted = story.date.format('YYYY-M-D');
 			var volume = _.find(data, function(v) { return v.data == dateFormatted; });
-			updateInfo(volume);
+			info.update(volume);
 		});
 
 		$('#stories').on('mouseleave', 'article', function() {
