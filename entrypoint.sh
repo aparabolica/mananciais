@@ -1,8 +1,7 @@
-#!/bin/bash
-set -e
-# allow the container to be started with `--user`
-if [ "$1" = 'node' ] || [ "$1" = 'nodemon' ]; then
-  chown -R $APP_USER:$APP_USER $HOME
-	exec gosu $APP_USER:$APP_USER "$@"
-fi
-exec "$@"
+#!/bin/sh
+echo "Updating permissions..."
+chown -Rf node:node /src /usr/local/lib/node_modules
+echo "Generating static files..."
+su-exec node:node gulp bundle
+echo "Executing process..."
+exec su-exec node:node /sbin/tini -- "$@"

@@ -2,8 +2,9 @@ version: '2'
 services:
   app:
     build: .
+    command: nodemon mananciais.js serve
     ports:
     - 3000:3000
     volumes:
-    - /home/node/app/node_modules
-    - .:/home/node/app
+    - /src/node_modules
+    - .:/src

@@ -32,11 +32,14 @@ if(program.serve) {
 
 	var app = express();
 
+	var bundles = require('../bundle.result.json');
+
 	app.set('view engine', 'ejs');
 
 	app.get('/', function(req, res) {
-		res.render(__dirname + '/../public/index.ejs', {
-			'cdn': process.env.MANANCIAIS_CDN_HOST || ''
+		res.render(__dirname + '/../src/index.ejs', {
+			'cdn': process.env.MANANCIAIS_CDN_HOST || '',
+			'bundle': bundles
 		});
 	});
 
@@ -53,10 +56,6 @@ if(program.serve) {
 	app.get('/data.csv', getData);
 
 	stories(app);
-
-	app.get('/*', function(req, res) {
-		res.sendfile('public/index.html');
-	});
 
 	app.listen(port, function() {
 		print('{yellow}{bold}Server running at port ' + port + '{/bold}{/yellow}');

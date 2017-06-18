@@ -21,6 +21,13 @@ node mananciais.js --update
 
 Dentro desta aplicação também existe um servidor que atualiza a base de 3 em 3 horas e serve os dados com [CORS](http://pt.wikipedia.org/wiki/Cross-origin_resource_sharing) ativado.
 
+Compile as dependências:
+
+```
+sudo npm install -g gulp-cli
+npm run build
+```
+
 Rode o servidor:
 ```
 node mananciais.js serve

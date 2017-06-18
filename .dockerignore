@@ -1,3 +1,4 @@
 node_modules
 npm-debug.log
-public/app.js
+public
+bundle.result.json

@@ -1,10 +1,6 @@
 'use strict';
 
-var d3 = require('d3'),
-	_ = require('underscore'),
-	$ = require('jquery'),
-	moment = require('moment'),
-	parseData = require('./parse'),
+var parseData = require('./parse'),
 	icons = require('./icons'),
 	details = require('./details'),
 	load = require('./load'),
@@ -12,8 +8,6 @@ var d3 = require('d3'),
 	data;
 
 window.$ = window.jQuery = $;
-
-require('moment/locale/pt-br');
 moment.locale('pt-BR');
 
 // Embed

@@ -17,19 +17,17 @@
   "version": "0.0.1",
   "author": "Miguel Peixe <miguel@cardume.art.br>",
   "engines": {
-    "node": "0.10.x",
-    "npm": "1.2.x"
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
   },
   "main": "mananciais.js",
   "scripts": {
-    "postinstall": "npm run build",
-    "build": "./node_modules/.bin/browserify src/index.js | ./node_modules/.bin/uglifyjs -mtc > public/app.js",
+    "build": "gulp bundle",
     "start": "node mananciais.js serve"
   },
   "bin": "./mananciais.js",
   "dependencies": {
     "async": "1.4.2",
-    "browserify": "11.0.1",
     "cheerio": "0.19.0",
     "colors-tmpl": "1.0.0",
     "commander": "2.8.1",
@@ -43,12 +41,20 @@
     "jquery": "2.1.4",
     "moment": "2.10.6",
     "progress": "1.1.8",
-    "request": "2.61.0",
+    "request": "2.81.0",
     "rss": "1.1.1",
     "tablify": "0.1.5",
     "twix": "0.7.2",
     "uglify-js": "2.4.24",
     "underscore": "1.8.3"
+  },
+  "devDependencies": {
+    "vinyl-source-stream": "1.1.0",
+    "gulp": "^3.9.1",
+    "gulp-util": "^3.0.8",
+    "gulp-rimraf": "^0.2.1",
+    "gulp-bundle-assets": "^2.28.0",
+    "browserify": "^14.4.0"
   },
   "keywords": [
     "scrapping",
