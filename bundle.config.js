@@ -32,6 +32,12 @@ module.exports = {
         transforms: {
           scripts: transformHelper.browserify(mainStream)
         },
+        pluginOptions: {
+          'gulp-uglify': {
+            mangle: true,
+            compress: true
+          }
+        },
         result: {
           type: {
             scripts: function xJavascript(path) {
@@ -52,6 +58,12 @@ module.exports = {
         './node_modules/moment/min/moment-with-locales.js'
       ],
       options: {
+        pluginOptions: {
+          'gulp-uglify': {
+            mangle: true,
+            compress: true
+          }
+        },
         result: {
           type: {
             scripts: function html(path) {
