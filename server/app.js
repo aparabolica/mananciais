@@ -32,6 +32,14 @@ if(program.serve) {
 
 	var app = express();
 
+	app.set('view engine', 'ejs');
+
+	app.get('/', function(req, res) {
+		res.render(__dirname + '/../public/index.ejs', {
+			'cdn': process.env.MANANCIAIS_CDN_HOST || ''
+		});
+	});
+
 	app.use('/', express.static(__dirname + '/../public'));
 
 	var getData = function(req, res) {

@@ -5,10 +5,10 @@
 <meta name="author" content="Miguel Peixe" />
 <meta name="keywords" content="visualização,dados,cantareira,mananciais,são paulo,sabesp,nível dos reservatórios" />
 <link rel="author" href="https://plus.google.com/107521790602026194910"/>
-<meta property="og:image" content="https://mananciais.tk/img/thumb_2.png?v=3" />
+<meta property="og:image" content="https://www.mananciais.tk/img/thumb_2.png?v=3" />
 <meta property="og:title" content="Dados dos mananciais de São Paulo" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://mananciais.tk" />
+<meta property="og:url" content="https://www.mananciais.tk" />
 <meta property="article:author" content="https://www.facebook.com/miguel.peixe" />
 <meta property="article:publisher" content="https://www.facebook.com/codigourb" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -16,12 +16,12 @@
 <meta name="twitter:creator" content="@miguelpeixe" />
 <meta name="twitter:title" content="Dados dos mananciais de São Paulo" />
 <meta name="twitter:description" content="Uma visualização navegável pelos sistemas administrados pela SABESP: Cantareira, Guarapiranga, Alto Tietê, Alto Cotia, Rio Grande e Rio Claro." />
-<meta name="twitter:image" content="https://mananciais.tk/img/thumb_2.png?v=3">
-<link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon" />
+<meta name="twitter:image" content="https://www.mananciais.tk/img/thumb_2.png?v=3">
+<link rel="shortcut icon" href="<%= cdn %>/img/favicon.ico" type="image/x-icon" />
 <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
-<link href='app.css?v=4.0.0' rel='stylesheet' type='text/css'>
-<link href='responsive.css?v=4.0.0' rel='stylesheet' type='text/css'>
-<link rel="alternate" type="application/rss+xml" href="https://mananciais.tk/feed" />
+<link href='<%= cdn %>/app.css?v=4.0.0' rel='stylesheet' type='text/css'>
+<link href='<%= cdn %>/responsive.css?v=4.0.0' rel='stylesheet' type='text/css'>
+<link rel="alternate" type="application/rss+xml" href="https://www.mananciais.tk/feed" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <meta name="theme-color" content="#000000">
 <meta name="msapplication-navbutton-color" content="#000000">
@@ -37,8 +37,8 @@
 	}(document, 'script', 'facebook-jssdk'));</script>
 	<header id="site-header">
 		<h2><a href="http://codigourbano.org/" target="_blank" rel="external" title="Código Urbano">
-			<img src="img/codigourbano.png" alt="Código Urbano" class="hide-if-small" />
-			<img src="img/codigourbano_small.png" alt="Código Urbano" class="show-if-small" />
+			<img src="<%= cdn %>/img/codigourbano.png" alt="Código Urbano" class="hide-if-small" />
+			<img src="<%= cdn %>/img/codigourbano_small.png" alt="Código Urbano" class="show-if-small" />
 		</a></h2>
 		<nav>
 			<a class="about-link" href="#">Sobre</a>
@@ -78,7 +78,7 @@
 		<a class="close-embed-chart close-modal"></a>
 		<div class="embed-chart-content modal-content">
 			<p>Copie e cole o código abaixo pra incorporar o gráfico no seu site!</p>
-			<textarea style="width:100%;height:30px;"><iframe src="https://mananciais.tk" frameborder="0" width="100%" height="600"></iframe></textarea>
+			<textarea style="width:100%;height:30px;"><iframe src="https://www.mananciais.tk" frameborder="0" width="100%" height="600"></iframe></textarea>
 		</div>
 	</section>
 	<section id="compare-data" class="modal">
@@ -151,7 +151,7 @@
 	</section>
 	<footer id="site-footer" class="hide-if-mobile">
 		<div class="show-if-embed site-link">
-			<a href="https://mananciais.tk" title="mananciais.tk" target="_blank">Acesse a navegação completa</a>
+			<a href="https://www.mananciais.tk" title="mananciais.tk" target="_blank">Acesse a navegação completa</a>
 		</div>
 		<div class="social hide-if-embed hide-if-small">
 			<div class="fb-like" data-href="https://mananciais.tk" data-colorscheme="dark" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div>
@@ -160,10 +160,10 @@
 		</div>
 		<div class="credits">
 			<p class="dev"><span>Desenvolvido por <a href="https://github.com/miguelpeixe/" target="_blank" rel="external" title="Miguel Peixe">Miguel Peixe</a></p>
-			<p class="data"><span>Dados</span> <a href="http://sabesp.com.br/" target="_blank" rel="external" title="SABESP"><img src="img/sabesp.png" alt="SABESP" /></a></p>
+			<p class="data"><span>Dados</span> <a href="http://sabesp.com.br/" target="_blank" rel="external" title="SABESP"><img src="<%= cdn %>/img/sabesp.png" alt="SABESP" /></a></p>
 		</div>
 		<div class="fork hide-if-embed hide-if-small">
-			<p><a href="https://github.com/codigourbano/mananciais" target="_blank" rel="external" title="GitHub">Código disponível no GitHub</a></p>
+			<p><a href="https://github.com/aparabolica/mananciais" target="_blank" rel="external" title="GitHub">Código disponível no GitHub</a></p>
 		</div>
 	</footer>
 	<script>
@@ -174,7 +174,7 @@
 	  ga('create', 'UA-50372213-1', 'mananciais.tk');
 	  ga('send', 'pageview');
 	</script>
-	<script type="text/javascript" src="app.js?v=4.0.0" async></script>
+	<script type="text/javascript" src="<%= cdn %>/app.js?v=4.0.0" async></script>
 	<div class="mouse-tip">Utilize a rolagem do mouse para dar zoom no gráfico</div>
 </body>
 </html>
