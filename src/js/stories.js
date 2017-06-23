@@ -151,6 +151,7 @@ module.exports = function(info) {
 				});
 				stories.tooltip.transition()
 					.duration(500)
+					.style("pointer-events", "none")
 					.style("opacity", 0);
 			}
 			hasFixed = false;
@@ -190,7 +191,10 @@ module.exports = function(info) {
 									html += '<li><span>' + s.data + ' | ' + s.tipo + '</span><h3><a href="' + s.url + '" target="_blank">' + s.titulo + '</a></h3></li>';
 								});
 								html += '</ul>';
-								stories.tooltip.attr('class', 'story-content opened').html(html);
+								stories.tooltip
+									.attr('class', 'story-content opened')
+									.style("pointer-events", "auto")
+									.html(html);
 							}, 100);
 						}
 					}
@@ -229,6 +233,7 @@ module.exports = function(info) {
 					if(!d.fixed) {
 						stories.tooltip.transition()
 							.duration(500)
+							.style("pointer-events", "none")
 							.style("opacity", 0);
 					}
 				});
