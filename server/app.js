@@ -37,6 +37,7 @@ if(program.serve) {
 	app.set('view engine', 'ejs');
 
 	app.get('/', function(req, res) {
+		res.header('Cache-Control', 'public,max-age=172800');
 		res.render(__dirname + '/../src/index.ejs', {
 			'cdn': process.env.MANANCIAIS_CDN_HOST || '',
 			'bundle': bundles
@@ -49,6 +50,7 @@ if(program.serve) {
 		res.header("Content-Type", 'text/plain');
 		res.header("Access-Control-Allow-Origin", "*");
 		res.header("Access-Control-Allow-Headers", "X-Requested-With");
+		res.header('Cache-Control', 'public,max-age=7200');
 		res.sendfile('data/data.csv');
 	};
 
