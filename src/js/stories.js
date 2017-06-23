@@ -9,7 +9,11 @@ module.exports = function(info) {
 
 	var stories = {};
 
+	var container;
+
 	stories.draw = function(data, svgContainer, domain, width, height) {
+
+		container = svgContainer;
 
 		stories.tooltip = d3.select("body").append("div").attr("class", "story-content").style("opacity", 0);
 
@@ -138,6 +142,20 @@ module.exports = function(info) {
 				.style('stroke-width', '1px')
 				.style('stroke-opacity', .5);
 
+		var hasFixed = false;
+
+		container.on('click', function() {
+			if(hasFixed) {
+				_.each(clusters, function(c) {
+					c.fixed = false;
+				});
+				stories.tooltip.transition()
+					.duration(500)
+					.style("opacity", 0);
+			}
+			hasFixed = false;
+		});
+
 		stories.svg.node
 			.selectAll(".story")
 			.data(clusters)
@@ -163,14 +181,17 @@ module.exports = function(info) {
 							stories.tooltip.html('<h3>' + d.titulo + '</h3>');
 							stories.tooltip.attr('class', 'story-content cluster');
 						} else {
-							d.fixed = true;
-							stories.tooltip.style('opacity', 1);
-							var html = '<ul>';
-							_.each(d.stories, function(s) {
-								html += '<li><span>' + s.data + ' | ' + s.tipo + '</span><h3><a href="' + s.url + '" target="_blank">' + s.titulo + '</a></h3></li>';
-							});
-							html += '</ul>';
-							stories.tooltip.attr('class', 'story-content opened').html(html);
+							setTimeout(function() {
+								hasFixed = true;
+								d.fixed = true;
+								stories.tooltip.style('opacity', 1);
+								var html = '<ul>';
+								_.each(d.stories, function(s) {
+									html += '<li><span>' + s.data + ' | ' + s.tipo + '</span><h3><a href="' + s.url + '" target="_blank">' + s.titulo + '</a></h3></li>';
+								});
+								html += '</ul>';
+								stories.tooltip.attr('class', 'story-content opened').html(html);
+							}, 100);
 						}
 					}
 				})
@@ -181,6 +202,7 @@ module.exports = function(info) {
 						_.each(removeFixed, function(dF) {
 							dF.fixed = false;
 						});
+						hasFixed = false;
 
 						stories.tooltip
 							.attr('class', function() {
@@ -199,15 +221,8 @@ module.exports = function(info) {
 						}
 
 						stories.tooltip
-							.style("left", (d3.event.pageX) + "px")
-							.style("top", (d3.event.pageY) + "px");
-					}
-				})
-				.on("mousemove", function(d) {
-					if(!d.fixed) {
-						stories.tooltip
-							.style("left", (d3.event.pageX) + "px")
-							.style("top", (d3.event.pageY) + "px");
+							.style("left", d.cx + "px")
+							.style("top", d.cy + "px");
 					}
 				})
 				.on("mouseout", function(d) {

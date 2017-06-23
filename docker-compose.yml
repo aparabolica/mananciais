@@ -8,3 +8,5 @@ services:
     volumes:
     - /src/node_modules
     - .:/src
+    environment:
+      NODE_ENV: development

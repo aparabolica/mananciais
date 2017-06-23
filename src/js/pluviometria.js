@@ -52,13 +52,8 @@ module.exports = function() {
 						.style("opacity", 1);
 
 						pluviometria.tooltip.html(icons.rain + d.pluviometria + "mm")
-						.style("left", (d3.event.pageX) + "px")
-						.style("top", (d3.event.pageY) + "px");
-				})
-				.on("mousemove", function(d) {
-					pluviometria.tooltip
-						.style("left", (d3.event.pageX) + "px")
-						.style("top", (d3.event.pageY) + "px");
+						.style("left", (pluviometria.svg.x.map(d)+20) + "px")
+						.style("top", (pluviometria.svg.y.map(d)) + "px");
 				})
 				.on("mouseout", function(d) {
 					pluviometria.tooltip.transition()

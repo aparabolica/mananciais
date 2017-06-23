@@ -29,6 +29,8 @@ module.exports = {
         './src/css/responsive.css'
       ],
       options: {
+        uglify: ['production', 'staging'],
+        rev: ['production', 'staging'],
         transforms: {
           scripts: transformHelper.browserify(mainStream)
         },
@@ -58,6 +60,8 @@ module.exports = {
         './node_modules/moment/min/moment-with-locales.js'
       ],
       options: {
+        uglify: ['production', 'staging'],
+        rev: ['production', 'staging'],
         pluginOptions: {
           'gulp-uglify': {
             mangle: true,
