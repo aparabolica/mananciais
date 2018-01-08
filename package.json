@@ -39,22 +39,22 @@
     "express": "4.13.3",
     "ejs": "2.5.6",
     "jquery": "2.1.4",
-    "moment": "2.10.6",
+    "moment": "2.20.1",
     "progress": "1.1.8",
     "request": "2.81.0",
     "rss": "1.1.1",
     "tablify": "0.1.5",
     "twix": "0.7.2",
-    "uglify-js": "2.4.24",
+    "uglify-js": "3.3.5",
     "underscore": "1.8.3"
   },
   "devDependencies": {
-    "vinyl-source-stream": "1.1.0",
+    "browserify": "^14.5.0",
     "gulp": "^3.9.1",
+    "gulp-bundle-assets": "^2.29.0",
+    "gulp-rimraf": "^0.2.2",
     "gulp-util": "^3.0.8",
-    "gulp-rimraf": "^0.2.1",
-    "gulp-bundle-assets": "^2.28.0",
-    "browserify": "^14.4.0"
+    "vinyl-source-stream": "1.1.0"
   },
   "keywords": [
     "scrapping",
