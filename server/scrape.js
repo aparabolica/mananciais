@@ -10,7 +10,8 @@ fs = require('fs'),
 tablify = require('tablify'),
 progress = require('progress');
 
-var sabesp = 'http://www2.sabesp.com.br/mananciais/DivulgacaoSiteSabesp.aspx',
+var sabesp = 'http://mananciais.sabesp.com.br/Home',
+sabesp2 = 'http://mananciais.sabesp.com.br/api/Mananciais/ResumoSistemas/'
 startTime = moment('2003-01-01', 'YYYY-MM-DD'),
 endTime = moment(),
 itr = startTime.twix(endTime).iterate('days'),
@@ -78,7 +79,7 @@ function scrape(data) {
 
 			var valid = true;
 
-			if(dateData.length == 6) {
+			if(dateData.length >= 6) {
 				dateData.forEach(function(item) {
 					for(var key in item) {
 						if(!item[key])
@@ -120,11 +121,9 @@ function scrape(data) {
 		headers: {
 			'User-Agent': 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.114 Safari/537.36',
 			'Upgrade-Insecure-Requests': '1',
-			'Host': 'www2.sabesp.com.br'
+			'Host': 'mananciais.sabesp.com.br'
 		}
 	}, function(err, res, body) {
-
-		var validation = getValidation(body);
 
 		console.log();
 		var bar = new progress('Baixando :title [:bar] :percent', {
@@ -143,102 +142,40 @@ function scrape(data) {
 			var dateData = [];
 
 			request({
-				url: sabesp,
-				method: 'POST',
+				url: sabesp2 + date.replace(/-(\d)\b/g, "-0$1"),
+				method: 'GET',
 				headers: {
 					'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-					'Host': 'www2.sabesp.com.br',
-					'Origin': 'http://www2.sabesp.com.br',
+					'Host': 'mananciais.sabesp.com.br',
+					'Origin': sabesp,
 					'Upgrade-Insecure-Requests': '1',
 					'Referer': sabesp,
 					'User-Agent': 'Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.114 Safari/537.36'
 				},
 				jar: true,
-				form: _.extend(option, validation)
 			}, function(err, res, body) {
 
 				if(!err) {
 
-					validation = getValidation(body);
+					var json = JSON.parse(body);
 
-					var html = $.load(body);
-					var dataTable = html('#tabDados');
-
-					if(dataTable.length) {
-
-						var trPos = 1;
-
-						// Mananciais
-						for(var m = 0; m <= 5; m++) {
-
-							var item = {
-								data: date
-							};
-
-							// Dados
-							for(var d = 1; d <= 6; d++) {
-
-								var dataItem = dataTable.find('tr:nth-child(' + trPos + ')');
-
-								if(dataItem.length) {
-
-									if(d == 1) {
-
-										var title = dataItem.find('td img').attr('src');
-										if(title) {
-											title = title.replace('imagens/', '').replace('.gif', '');
-										}
-
-										item['manancial'] = title;
-
-									} else if(d !== 6) {
-
-										if(title) {
-
-											var key = dataItem.find('td:nth-child(1)').text();
-											var value = dataItem.find('td:nth-child(2)').text();
-
-											/*
-											* Houve uma diferença na métrica de 20% utilizada a partir de 1 de setembro de 2004 no Sistema Cantareira
-											*/
-											if(title == 'sistemaCantareira' && key == 'volume armazenado' && moment(date, 'YYYY-M-D').isBefore(moment('2004-09-01', 'YYYY-MM-DD'))) {
-												var parsed = parseFloat(value.replace(' %', '').replace(',', '.'));
-												parsed = (parsed + 16.4).toFixed(1);
-												value = parsed + ' %';
-												value = value.replace('.',',');
-											}
-
-											// Arruma atualização da tabela exibindo diferentes índices a partir de 16/03/2015
-											var indicesRegex = /.*1:\s+(.*)\s+%Índice 2.*/;
-											if(value.match(indicesRegex)) {
-												value = value.replace(indicesRegex, '$1') + ' %';
-											}
-
-											item[key] = value;
-										}
-
-									}
-
-								} else {
-
-									cb();
-
-								}
-
-								trPos++;
-
-							}
-
-							dateData.push(item);
-
-						}
-
-						newData = newData.concat(dateData);
-
+					for(var sist of json.ReturnObj.sistemas) {
+						var item = {
+							data: date,
+							manancial: "sistema" + sist.Nome.replace("ê", "e").replace("ã", "a").replace("ç", "c").replace(" ", ""),
+							'volume armazenado': sist.VolumePorcentagemAR + " %",
+							'pluviometria do dia': sist.PrecDia + " mm",
+							'pluviometria acumulada no mês': sist.PrecMensal + " mm",
+							'média histórica do mês': sist.PrecHist + " mm"
+						};
+						dateData.push(item);
 					}
 
-					cb();
+					newData = newData.concat(dateData);
+
 				}
+
+				cb();
 
 			})
 
@@ -256,18 +193,6 @@ function scrape(data) {
 		});
 
 	});
-}
-
-function getValidation(body) {
-	var html = $.load(body);
-
-	return {
-		'__VIEWSTATE': html('#__VIEWSTATE').val(),
-		'__EVENTVALIDATION': html('#__EVENTVALIDATION').val(),
-		'__VIEWSTATEENCRYPTED': html('#__VIEWSTATEENCRYPTED').val(),
-		'Imagebutton1.x': 8,
-		'Imagebutton1.y': 6
-	};
 }
 
 function toCSV(data) {
